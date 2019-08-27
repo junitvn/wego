@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.firebase.FirebaseApp;
 import com.lamnn.wego.R;
 import com.lamnn.wego.screen.login.phone.PhoneLoginActivity;
 
@@ -20,6 +21,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+
+
     }
 
     private void initView() {

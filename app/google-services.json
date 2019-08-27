@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "979384630225",
+    "firebase_url": "https://wego-af401.firebaseio.com",
+    "project_id": "wego-af401",
+    "storage_bucket": "wego-af401.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979384630225:android:478bb3e71bf107d7",
+        "android_client_info": {
+          "package_name": "com.lamnn.wego"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979384630225-ir5qdkgpoe491ibe85c1omc7vnm9bjhv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lamnn.wego",
+            "certificate_hash": "585d2386e378e4934022643b68d3970c33fd7870"
+          }
+        },
+        {
+          "client_id": "979384630225-5bg1n5od7j70hvesaos7vhumtgmhtddh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV4deYZ3nbYz7ViBfSbU0FUVjhobc_AQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979384630225-5bg1n5od7j70hvesaos7vhumtgmhtddh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
