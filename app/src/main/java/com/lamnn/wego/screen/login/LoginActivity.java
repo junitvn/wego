@@ -4,18 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.lamnn.wego.R;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.lamnn.wego.screen.login.phone.PhoneLoginActivity;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button mBtnLoginWithPhone;
-    private Button mBtnLoginWithFacebook;
+    private ImageView mImagePhoneLogin;
+    private ImageView mImageFacebookLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,21 +23,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-        mBtnLoginWithFacebook = findViewById(R.id.loginWithFacebook);
-        mBtnLoginWithFacebook.setOnClickListener(this);
-        mBtnLoginWithPhone = findViewById(R.id.loginWithPhone);
-        mBtnLoginWithPhone.setOnClickListener(this);
+        mImagePhoneLogin = findViewById(R.id.image_facebook_login);
+        mImagePhoneLogin.setOnClickListener(this);
+        mImageFacebookLogin = findViewById(R.id.image_phone_login);
+        mImageFacebookLogin.setOnClickListener(this);
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.loginWithPhone:
+            case R.id.image_phone_login:
                 startActivity(PhoneLoginActivity.getIntent(this));
                 break;
 
-            case R.id.loginWithFacebook:
+            case R.id.image_facebook_login:
                 break;
         }
     }
