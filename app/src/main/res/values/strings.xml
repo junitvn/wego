@@ -13,4 +13,8 @@
     <string name="login_failed">"Login failed"</string>
     <string name="login_with_phone">Đăng nhập với số điện thoại</string>
     <string name="login_with_facebook">Đăng nhập với Facebook</string>
+    <string name="text_sign_in">Sign in</string>
+    <string name="text_forgot_password">Forgot password?</string>
+    <string name="text_sign_up">Sign up</string>
+    <string name="text_hint_password">Password</string>
 </resources>
