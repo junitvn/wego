@@ -6,42 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".screen.login.phone.VerifyLoginActivity">
 
-    <ImageView
-        android:id="@+id/btn_go_back"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="340dp"
+        android:layout_height="50dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="232dp"
+        android:background="@drawable/button_primary"
+        android:text="@string/action_next"
+        android:textAllCaps="false"
+        android:textColor="#FFF"
+        android:textSize="@dimen/text_size_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/text_verify_code"
+        android:layout_width="342dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_left_arrow" />
-
-    <TextView
-        android:id="@+id/text_phone_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="09898327899"
-        android:textColor="#00A6FF"
-        android:textSize="26dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_verify_code"
-        app:layout_constraintEnd_toEndOf="@+id/text_verify_code"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="@+id/text_verify_code"
-        app:layout_constraintTop_toBottomOf="@+id/text_title_verify"
-        app:layout_constraintVertical_bias="0.529" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Please enter the verification code received by SMS."
-        app:layout_constraintEnd_toEndOf="@+id/text_verify_code"
-        app:layout_constraintHorizontal_bias="0.409"
-        app:layout_constraintStart_toStartOf="@+id/text_verify_code"
-        app:layout_constraintTop_toBottomOf="@+id/text_verify_code" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="112dp"
+        android:hint="Enter code here"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_medium"
+        app:layout_constraintBottom_toTopOf="@+id/btn_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView2"
@@ -69,23 +66,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/text_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="09898327899"
+        android:textColor="#00A6FF"
+        android:textSize="26dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_verify_code"
+        app:layout_constraintEnd_toEndOf="@+id/text_verify_code"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="@+id/text_verify_code"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_verify"
+        app:layout_constraintVertical_bias="0.529" />
 
-    <EditText
-        android:id="@+id/text_verify_code"
-        android:layout_width="342dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="112dp"
-        android:hint="Enter code here"
-        android:textAlignment="center"
-        android:textSize="@dimen/text_size_medium"
-        app:layout_constraintBottom_toTopOf="@+id/btn_next"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/text_resend_code"
@@ -98,21 +93,26 @@
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
-    <Button
-        android:id="@+id/btn_next"
-        android:layout_width="340dp"
-        android:layout_height="50dp"
-        android:layout_gravity="start"
-        android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="232dp"
-        android:background="@drawable/button_primary"
-        android:text="@string/action_next"
-        android:textAllCaps="false"
-        android:textColor="#FFF"
-        android:textSize="@dimen/text_size_medium"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Please enter the verification code received by SMS."
+        app:layout_constraintEnd_toEndOf="@+id/text_verify_code"
+        app:layout_constraintHorizontal_bias="0.409"
+        app:layout_constraintStart_toStartOf="@+id/text_verify_code"
+        app:layout_constraintTop_toBottomOf="@+id/text_verify_code" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Login"
+        app:titleTextColor="#FFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

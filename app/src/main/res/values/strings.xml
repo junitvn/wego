@@ -1,4 +1,5 @@
 <resources>
+    <string name="facebook_app_id">489363285223363</string> <string name="fb_login_protocol_scheme">fb489363285223363</string>
     <string name="app_name">Wego</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>

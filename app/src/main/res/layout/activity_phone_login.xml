@@ -6,16 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".screen.login.phone.PhoneLoginActivity">
 
-    <ImageView
-        android:id="@+id/btn_go_back"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:title="Login with phone number"
+        app:titleTextColor="#FFF"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_left_arrow" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/text_phone_number"

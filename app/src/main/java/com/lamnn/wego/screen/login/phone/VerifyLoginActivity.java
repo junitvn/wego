@@ -1,10 +1,12 @@
 package com.lamnn.wego.screen.login.phone;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class VerifyLoginActivity extends AppCompatActivity implements View.OnCli
     private TextView mTextResendCode;
     private String mPhoneNumber;
     private String mVerificationId;
+    private Toolbar mToolbar;
     private LoginPresenter mPresenter;
 
     public static Intent getIntent(Context context, String verificationId, String phoneNumber) {
@@ -34,12 +37,34 @@ public class VerifyLoginActivity extends AppCompatActivity implements View.OnCli
         return intent;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_login);
         getDataFromIntent();
         initView();
+        initToolbar();
+    }
+
+    private void initToolbar() {
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Verify");
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.ic_left_arrow);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getDataFromIntent() {
@@ -69,8 +94,6 @@ public class VerifyLoginActivity extends AppCompatActivity implements View.OnCli
             case R.id.text_resend_code:
 
                 break;
-
-
         }
     }
 

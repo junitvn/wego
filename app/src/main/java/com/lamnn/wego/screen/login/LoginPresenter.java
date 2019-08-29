@@ -16,6 +16,8 @@ import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.lamnn.wego.screen.login.phone.VerifyLoginActivity;
 import com.lamnn.wego.screen.map.MapsActivity;
+import com.lamnn.wego.screen.profile.detail.ProfileDetailActivity;
+import com.lamnn.wego.screen.profile.update.ProfileUpdateActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +66,7 @@ public class LoginPresenter implements LoginContract.Presenter {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Log.d("VERIFY hihi", "onVerificationFailed: " + e);
+                //TODO handle exception
             }
 
             @Override
@@ -83,7 +85,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = task.getResult().getUser();
-                            mActivity.startActivity(MapsActivity.getIntent(mActivity));
+                            mActivity.startActivity(ProfileUpdateActivity.getIntent(mActivity));
                         } else {
 
                         }
