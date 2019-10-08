@@ -1,0 +1,20 @@
+{
+  "id": "asd",
+  "code": "asd",
+  "name": "asd",
+  "creatorID": "asd",
+  "creatorTime": "asd",
+  "users": [
+    {
+      "id": "asd",
+      "location": {
+        "lat": 34.4324,
+        "lng": 123.2
+      },
+      "uid": "asd"
+    }
+  ],
+  "points": [
+    { "id": "asd", "lat": 34.4324, "lng": 123.2, "name": "asd" }
+  ]
+}

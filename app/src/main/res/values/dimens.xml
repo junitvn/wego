@@ -10,4 +10,6 @@
     <dimen name="text_size_medium">20dp</dimen>
     <dimen name="text_login_padding">13dp</dimen>
     <dimen name="margin_horizontal_icon">32dp</dimen>
+    <dimen name="margin_horizontal_verify">16dp</dimen>
+    <dimen name="circle_avatar">50dp</dimen>
 </resources>

@@ -3,13 +3,22 @@
     package="com.lamnn.wego">
 
     <application
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".screen.create_event.CreateEventActivity"></activity>
+        <activity android:name=".screen.setting_trip.SettingTripActivity" />
+        <activity android:name=".screen.info_user.InfoUserActivity" />
+        <activity android:name=".screen.info_member.InfoMemberActivity" />
+        <activity android:name=".screen.join_trip.JoinTripActivity" />
+        <activity android:name=".screen.create_trip.ShareCodeActivity" />
+        <activity
+            android:name=".screen.create_trip.NavigationActivity"
+            android:label="@string/title_activity_navigation" />
+        <activity android:name=".screen.create_trip.CreateTripActivity" />
         <activity android:name=".screen.profile.detail.ProfileDetailActivity" />
         <activity android:name=".screen.profile.update.ProfileUpdateActivity" />
         <activity android:name=".screen.login.phone.SelectAreaActivity" />
@@ -23,16 +32,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
-            <intent-filter><action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -40,12 +48,51 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-    </application>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
+        <service
+            android:name=".service.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.LocationService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".service.MyLocationService"
+            android:enabled="true"
+            android:exported="false" />
+    </application>
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

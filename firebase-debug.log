@@ -1,0 +1,132 @@
+[debug] [2019-08-30T10:48:26.594Z] ----------------------------------------------------------------------
+[debug] [2019-08-30T10:48:26.597Z] Command:       /home/lamnn/.nvm/versions/node/v10.15.3/bin/node /home/lamnn/.nvm/versions/node/v10.15.3/bin/firebase emulators:start
+[debug] [2019-08-30T10:48:26.597Z] CLI Version:   7.3.0
+[debug] [2019-08-30T10:48:26.597Z] Platform:      linux
+[debug] [2019-08-30T10:48:26.597Z] Node Version:  v10.15.3
+[debug] [2019-08-30T10:48:26.597Z] Time:          Fri Aug 30 2019 17:48:26 GMT+0700 (Indochina Time)
+[debug] [2019-08-30T10:48:26.597Z] ----------------------------------------------------------------------
+[debug] 
+[info] i  Starting emulators: ["functions","firestore","database"]
+[warn] ⚠  Your requested "node" version "8" doesn't match your global version "10"
+[info] ✔  functions: Emulator started at http://localhost:5001
+[info] i  firestore: Serving WebChannel traffic on at http://localhost:8081
+[info] i  firestore: downloading cloud-firestore-emulator-v1.8.1.jar...
+[debug] [2019-08-30T10:48:41.119Z] Ignoring unsupported arg: projectId
+[debug] [2019-08-30T10:48:41.119Z] Ignoring unsupported arg: auto_download
+[debug] [2019-08-30T10:48:41.119Z] Starting emulator firestore with command {"binary":"java","args":["-Duser.language=en","-jar","/home/lamnn/.cache/firebase/emulators/cloud-firestore-emulator-v1.8.1.jar","--host","localhost","--port",8080,"--rules","/home/lamnn/Wego/firestore.rules","--functions_emulator","localhost:5001","--webchannel_port",8081],"optionalArgs":["port","webchannel_port","host","rules","functions_emulator"]}
+[info] i  firestore: Emulator logging to firestore-debug.log
+[debug] [2019-08-30T10:48:45.456Z] API endpoint: http://localhost
+[debug] [2019-08-30T10:48:45.456Z] :8080
+
+[debug] [2019-08-30T10:48:45.457Z] WebChannel endpoint: http://localhost:
+[debug] [2019-08-30T10:48:45.457Z] 8081
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+[debug] [2019-08-30T10:48:45.457Z] 
+   export FIRESTORE_EMULATOR_HOST=localhost:8080
+
+Dev App Server is now running.
+
+
+[info] ✔  firestore: Emulator started at http://localhost:8080
+[info] i  firestore: For testing set FIRESTORE_EMULATOR_HOST=localhost:8080
+[info] i  database: downloading firebase-database-emulator-v4.2.0.jar...
+[debug] [2019-08-30T10:48:50.443Z] Ignoring unsupported arg: projectId
+[debug] [2019-08-30T10:48:50.444Z] Ignoring unsupported arg: auto_download
+[debug] [2019-08-30T10:48:50.444Z] Ignoring unsupported arg: rules
+[debug] [2019-08-30T10:48:50.444Z] Starting emulator database with command {"binary":"java","args":["-Duser.language=en","-jar","/home/lamnn/.cache/firebase/emulators/firebase-database-emulator-v4.2.0.jar","--host","localhost","--port",9000,"--functions_emulator_host","localhost","--functions_emulator_port",5001],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host"]}
+[info] i  database: Emulator logging to database-debug.log
+[debug] [2019-08-30T10:48:52.878Z] 17:48:52.876 [NamespaceSystem-akka.actor.default-dispatcher-2] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+
+[debug] [2019-08-30T10:48:53.119Z] 17:48:53.119 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+
+[info] ✔  database: Emulator started at http://localhost:9000
+[info] i  database: For testing set FIREBASE_DATABASE_EMULATOR_HOST=localhost:9000
+[info] i  functions: Watching "/home/lamnn/Wego/functions" for Cloud Functions...
+[debug] [2019-08-30T10:48:54.023Z] [runtime-status] Functions runtime initialized. {"cwd":"/home/lamnn/Wego/functions","node_version":"10.15.3"}
+[debug] [2019-08-30T10:48:54.024Z] [runtime-status] Disabled runtime features: undefined {}
+[debug] [2019-08-30T10:48:54.033Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:48:54.040Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:48:54.532Z] [runtime-status] Found google-gax at /home/lamnn/Wego/functions/node_modules/google-gax/build/src/index.js {}
+[debug] [2019-08-30T10:48:54.533Z] [runtime-status] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"},{"name":"google-gax","status":"mocked"}]
+[debug] [2019-08-30T10:48:54.603Z] [runtime-status] Checked functions.config() {"config":{}}
+[debug] [2019-08-30T10:48:54.604Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:48:54.606Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:48:54.686Z] [runtime-status] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}}
+[info] ✔  All emulators started, it is now safe to connect.
+[debug] [2019-08-30T10:50:01.616Z] File /home/lamnn/Wego/functions/index.js changed, reloading triggers
+[debug] [2019-08-30T10:50:03.141Z] [runtime-status] Functions runtime initialized. {"cwd":"/home/lamnn/Wego/functions","node_version":"10.15.3"}
+[debug] [2019-08-30T10:50:03.142Z] [runtime-status] Disabled runtime features: undefined {}
+[debug] [2019-08-30T10:50:03.145Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:50:03.146Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:50:03.400Z] [runtime-status] Found google-gax at /home/lamnn/Wego/functions/node_modules/google-gax/build/src/index.js {}
+[debug] [2019-08-30T10:50:03.401Z] [runtime-status] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"},{"name":"google-gax","status":"mocked"}]
+[debug] [2019-08-30T10:50:03.463Z] [runtime-status] Checked functions.config() {"config":{}}
+[debug] [2019-08-30T10:50:03.465Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:50:03.466Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:50:03.521Z] [runtime-status] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}}
+[info] ✔  functions[helloWorld]: http function initialized (http://localhost:5001/wego-af401/us-central1/helloWorld).
+[debug] [2019-08-30T10:50:42.929Z] File /home/lamnn/Wego/functions/index.js changed, reloading triggers
+[debug] [2019-08-30T10:50:43.549Z] Accepted request GET /wego-af401/us-central1/helloWorld --> helloWorld
+[debug] [2019-08-30T10:50:44.245Z] [runtime-status] Functions runtime initialized. {"cwd":"/home/lamnn/Wego/functions","node_version":"10.15.3"}
+[info] i  functions: Beginning execution of "helloWorld"
+[debug] [2019-08-30T10:50:44.253Z] [runtime-status] Disabled runtime features: undefined {}
+[debug] [2019-08-30T10:50:44.264Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:50:44.265Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:50:44.649Z] [runtime-status] Functions runtime initialized. {"cwd":"/home/lamnn/Wego/functions","node_version":"10.15.3"}
+[debug] [2019-08-30T10:50:44.651Z] [runtime-status] Disabled runtime features: undefined {}
+[debug] [2019-08-30T10:50:44.659Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:50:44.660Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:50:44.811Z] [runtime-status] Found google-gax at /home/lamnn/Wego/functions/node_modules/google-gax/build/src/index.js {}
+[debug] [2019-08-30T10:50:44.812Z] [runtime-status] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"},{"name":"google-gax","status":"mocked"}]
+[debug] [2019-08-30T10:50:44.949Z] [runtime-status] Checked functions.config() {"config":{}}
+[debug] [2019-08-30T10:50:44.951Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:50:44.953Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:50:45.043Z] [runtime-status] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}}
+[debug] [2019-08-30T10:50:45.050Z] [runtime-status] Trigger "helloWorld" has been found, beginning invocation! {}
+[debug] [2019-08-30T10:50:45.050Z] [runtime-status]  {"httpsTrigger":{},"name":"helloWorld","entryPoint":"helloWorld"}
+[debug] [2019-08-30T10:50:45.050Z] [runtime-status] Running helloWorld in mode HTTPS {}
+[debug] [2019-08-30T10:50:45.070Z] {"socketPath":"/tmp/firebase_emulator_invocation_2650.sock"}
+[debug] [2019-08-30T10:50:45.074Z] [functions] Runtime ready! Sending request! {"socketPath":"/tmp/firebase_emulator_invocation_2650.sock"}
+[debug] [2019-08-30T10:50:45.090Z] [runtime-status] Found google-gax at /home/lamnn/Wego/functions/node_modules/google-gax/build/src/index.js {}
+[debug] [2019-08-30T10:50:45.091Z] [runtime-status] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"},{"name":"google-gax","status":"mocked"}]
+[debug] [2019-08-30T10:50:45.103Z] [runtime-status] Ephemeral server used! {}
+[debug] [2019-08-30T10:50:45.121Z] [runtime-status] Ephemeral server survived. {}
+[info] i  functions: Finished "helloWorld" in ~1s
+[debug] [2019-08-30T10:50:45.232Z] [runtime-status] Checked functions.config() {"config":{}}
+[debug] [2019-08-30T10:50:45.234Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:50:45.236Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:50:45.318Z] [runtime-status] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}}
+[info] ✔  functions[hihi]: http function initialized (http://localhost:5001/wego-af401/us-central1/hihi).
+[debug] [2019-08-30T10:52:38.319Z] File /home/lamnn/Wego/functions/index.js changed, reloading triggers
+[debug] [2019-08-30T10:52:42.298Z] [runtime-status] Functions runtime initialized. {"cwd":"/home/lamnn/Wego/functions","node_version":"10.15.3"}
+[debug] [2019-08-30T10:52:42.298Z] [runtime-status] Disabled runtime features: undefined {}
+[debug] [2019-08-30T10:52:42.302Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:52:42.308Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:52:46.890Z] [runtime-status] Found google-gax at /home/lamnn/Wego/functions/node_modules/google-gax/build/src/index.js {}
+[debug] [2019-08-30T10:52:46.895Z] [runtime-status] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"},{"name":"google-gax","status":"mocked"}]
+[debug] [2019-08-30T10:52:47.246Z] [runtime-status] Checked functions.config() {"config":{}}
+[debug] [2019-08-30T10:52:47.256Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:52:47.262Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:52:47.598Z] [runtime-status] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}}
+[debug] [2019-08-30T10:53:01.295Z] Accepted request GET /wego-af401/us-central1/hihi --> hihi
+[debug] [2019-08-30T10:53:03.198Z] [runtime-status] Functions runtime initialized. {"cwd":"/home/lamnn/Wego/functions","node_version":"10.15.3"}
+[info] i  functions: Beginning execution of "hihi"
+[debug] [2019-08-30T10:53:03.198Z] [runtime-status] Disabled runtime features: undefined {}
+[debug] [2019-08-30T10:53:03.207Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:53:03.209Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:53:03.819Z] [runtime-status] Found google-gax at /home/lamnn/Wego/functions/node_modules/google-gax/build/src/index.js {}
+[debug] [2019-08-30T10:53:03.820Z] [runtime-status] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"},{"name":"google-gax","status":"mocked"}]
+[debug] [2019-08-30T10:53:03.947Z] [runtime-status] Checked functions.config() {"config":{}}
+[debug] [2019-08-30T10:53:03.948Z] [runtime-status] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.2.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-functions/lib/index.js"}
+[debug] [2019-08-30T10:53:03.949Z] [runtime-status] Resolved module firebase-admin {"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}
+[debug] [2019-08-30T10:53:04.054Z] [runtime-status] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"8.4.0","resolution":"/home/lamnn/Wego/functions/node_modules/firebase-admin/lib/index.js"}}
+[debug] [2019-08-30T10:53:04.056Z] [runtime-status] Trigger "hihi" has been found, beginning invocation! {}
+[debug] [2019-08-30T10:53:04.057Z] [runtime-status]  {"httpsTrigger":{},"name":"hihi","entryPoint":"hihi"}
+[debug] [2019-08-30T10:53:04.057Z] [runtime-status] Running hihi in mode HTTPS {}
+[debug] [2019-08-30T10:53:04.070Z] {"socketPath":"/tmp/firebase_emulator_invocation_3912.sock"}
+[debug] [2019-08-30T10:53:04.072Z] [functions] Runtime ready! Sending request! {"socketPath":"/tmp/firebase_emulator_invocation_3912.sock"}
+[debug] [2019-08-30T10:53:04.092Z] [runtime-status] Ephemeral server used! {}
+[info] >  hihi
+[debug] [2019-08-30T10:53:04.124Z] [runtime-status] Ephemeral server survived. {}
+[info] i  functions: Finished "hihi" in ~1s

@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".screen.profile.update.ProfileUpdateActivity">
 
 
     <EditText
-        android:id="@+id/text_name"
+        android:id="@+id/text_name_trip"
         android:layout_width="342dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
@@ -17,9 +19,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/colorPrimary"
         android:hint="Name"
         android:textAlignment="center"
         android:textColor="#000"
+        android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
@@ -27,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/image_avatar" />
 
     <EditText
-        android:id="@+id/text_phone_profile"
+        android:id="@+id/text_id_trip"
         android:layout_width="342dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
@@ -35,26 +39,27 @@
         android:layout_marginTop="104dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:backgroundTint="@color/colorPrimary"
         android:hint="Phone"
         android:textAlignment="center"
         android:textColor="#000"
+        android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_avatar" />
 
-    <ImageView
-        android:id="@+id/image_avatar"
-        android:layout_width="144dp"
-        android:layout_height="137dp"
-        android:background="@drawable/image_avatar"
+    <ProgressBar
+        android:id="@+id/progress_bar_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/progress"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.074"
-        app:srcCompat="@drawable/ic_user" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -74,6 +79,22 @@
             android:background="@drawable/button_save"
             android:text="SAVE"
             android:textColor="#fff"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:visibility="invisible" />
     </androidx.appcompat.widget.Toolbar>
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/image_avatar"
+        android:layout_width="160dp"
+        android:layout_height="154dp"
+        android:layout_marginTop="36dp"
+        app:civ_border_width="4dp"
+        app:civ_shadow="true"
+        app:civ_shadow_color="#3f51b5"
+        app:civ_shadow_radius="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:srcCompat="@drawable/ic_user" />
 </androidx.constraintlayout.widget.ConstraintLayout>

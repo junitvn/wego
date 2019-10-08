@@ -1,0 +1,2 @@
+17:48:52.876 [NamespaceSystem-akka.actor.default-dispatcher-2] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+17:48:53.119 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
