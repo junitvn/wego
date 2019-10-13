@@ -63,6 +63,7 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         intent.putExtra(EXTRA_LNG, lng);
         return intent;
     }
+
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, CreateTripActivity.class);
         return intent;
