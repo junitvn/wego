@@ -18,6 +18,7 @@ const createProfile = (userRecord, context) => {
     .doc(uid)
     .set({
       name: displayName,
+      is_first_time: true,
       uid,
       email,
       phone_number: phoneNumber,
@@ -46,7 +47,8 @@ const updateUser = (req, res) => {
     .update({
       name: user.name,
       photo_url: user.photo_url,
-      phone_number: user.phone_number
+      phone_number: user.phone_number,
+      is_first_time: false
     })
     .then(() => {
       console.log("Update user " + user.uid);

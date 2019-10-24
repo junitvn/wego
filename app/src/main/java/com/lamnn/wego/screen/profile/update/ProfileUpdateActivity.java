@@ -102,8 +102,8 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case TAKE_PHOTO_REQUEST_CODE:
-                    File file = new File(Environment.getExternalStorageDirectory(), "avatar.jpg");
-                    Uri uri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", file);
+                    File file = new File(getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "avatar.jpg");
+                    Uri uri = FileProvider.getUriForFile(getApplicationContext(), this.getApplicationContext().getPackageName() + ".provider", file);
                     mUser.setPhotoUri(uri.toString());
                     mImageAvatar.setImageURI(uri);
                     mButtonSave.setVisibility(View.VISIBLE);
@@ -154,7 +154,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
             }
         });
         mTextPhone = findViewById(R.id.text_id_trip);
-        mPresenter = new UpdateProfilePresenter(this, this);
+        mPresenter = new UpdateProfilePresenter(getApplicationContext(), this);
         showProfile(mUser);
     }
 
@@ -169,8 +169,9 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
     }
 
     public void showProfile(User user) {
-        mTextName.setText(user.getName());
-        mTextPhone.setText(user.getPhone());
+        if (user == null) return;
+        mTextName.setText(user.getName() == null ? "" : user.getName());
+        mTextPhone.setText(user.getPhone() == null ? "" : user.getPhone());
         if (user.getPhotoUri() != null) {
             GlideApp.with(this)
                     .load(user.getPhotoUri())

@@ -58,15 +58,15 @@ public class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         mUser = user;
 
         String status = "";
-        if (user.getStatus().equals("online")) {
-            status = "Now online";
-        } else {
-            MyTimeStamp myTimeStamp = user.getTimeStamp();
-            status = printDifference(new Date(Long.parseLong(myTimeStamp.getSeconds()) * 1000), new Date());
-        }
-        String address = getAddressByLatLng(user.getLocation()).equals("")
-                ? "Unknown place"
-                : getAddressByLatLng(user.getLocation());
+//        if (user.getStatus().equals("online")) {
+//            status = "Now online";
+//        } else {
+//            MyTimeStamp myTimeStamp = user.getTimeStamp();
+//            status = printDifference(new Date(Long.parseLong(myTimeStamp.getSeconds()) * 1000), new Date());
+//        }
+//        String address = getAddressByLatLng(user.getLocation()).equals("")
+//                ? "Unknown place"
+//                : getAddressByLatLng(user.getLocation());
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.item_info_window_linear, null);
         v.setClipToOutline(true);
@@ -75,7 +75,7 @@ public class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             textName.setText("Me");
         } else textName.setText(mUser.getName());
         TextView textAddress = v.findViewById(R.id.text_info_address);
-        textAddress.setText(address);
+//        textAddress.setText(address);
         TextView textStatus = v.findViewById(R.id.text_info_status);
         textStatus.setText(status);
         return v;

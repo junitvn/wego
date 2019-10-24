@@ -105,9 +105,9 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
         mImageCall = mToolbar.findViewById(R.id.image_call);
         mImageCall.setOnClickListener(this);
         mImageStatus = mToolbar.findViewById(R.id.image_status);
-        if (mUser != null && mUser.getStatus().equals("online")) {
-            mImageStatus.setImageResource(R.drawable.ic_online);
-        }
+//        if (mUser != null && mUser.getStatus().equals("online")) {
+//            mImageStatus.setImageResource(R.drawable.ic_online);
+//        }
     }
 
     private void receiveData() {

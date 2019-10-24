@@ -231,9 +231,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void updateMarkers(List<User> users) {
-        _updateMarkers(users);
-        mUsers = formatListUser(users);
-        mMemberCircleAdapter.notifyDataSetChanged();
+//        _updateMarkers(users);
+//        mUsers = formatListUser(users);
+//        mMemberCircleAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -244,6 +244,11 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void hideLoading() {
         mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void navigateToUpdateProfile(User user) {
+        startActivity(ProfileUpdateActivity.getIntent(this, user));
     }
 
     @Override
@@ -327,7 +332,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                 toggleDropdown();
                 break;
             case R.id.image_refresh:
-                mPresenter.getUserData(true);
+                mPresenter.getUserData();
                 mPresenter.getTrips();
                 break;
             case R.id.image_circle_all:
@@ -391,9 +396,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "new location " + newLocation + "");
                 com.lamnn.wego.data.model.Location location
                         = new com.lamnn.wego.data.model.Location(newLocation.getLatitude(), newLocation.getLongitude());
-                if (mUser != null) {
-                    mUser.setLocation(location);
-                }
+//                if (mUser != null) {
+//                    mUser.setLocation(location);
+//                }
                 if (mUser != null && mUser.getActiveTrip() != null) {
                     mUpdateLocationService = APIUtils.getUpdateLocationService();
                     mUpdateLocationService.updateLocation(mUser).enqueue(new Callback<List<User>>() {
@@ -427,8 +432,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void getData() {
-        mPresenter.getUserData(true);
-        mPresenter.getTrips();
+        mPresenter.getUserData();
+//        mPresenter.getTrips();
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -481,9 +486,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             mCurrentLocation = (Location) task.getResult();
-                            if (mUser != null) {
-                                mUser.setLocation(new com.lamnn.wego.data.model.Location(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
-                            }
+//                            if (mUser != null) {
+//                                mUser.setLocation(new com.lamnn.wego.data.model.Location(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
+//                            }
                             if (mCurrentLocation != null) {
 
                                 moveCamera(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()),
@@ -511,14 +516,14 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             if (members != null) {
                 for (User user : members) {
                     try {
-                        ClusterMarker clusterMarker = new ClusterMarker(
-                                new LatLng(user.getLocation().getLat(), user.getLocation().getLng()),
-                                user
-                        );
-                        clusterMarker.setUser(user);
-                        mClusterManager.addItem(clusterMarker);
-                        mClusterMarkers.add(clusterMarker);
-                        mClusterManagerRenderer.setUpdateMarker(clusterMarker);
+//                        ClusterMarker clusterMarker = new ClusterMarker(
+//                                new LatLng(user.getLocation().getLat(), user.getLocation().getLng()),
+//                                user
+//                        );
+//                        clusterMarker.setUser(user);
+//                        mClusterManager.addItem(clusterMarker);
+//                        mClusterMarkers.add(clusterMarker);
+//                        mClusterManagerRenderer.setUpdateMarker(clusterMarker);
                     } catch (Exception e) {
                         Log.d(TAG, "_addMarkers: Exception" + e.getMessage());
                     }
@@ -534,8 +539,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     for (User user : members) {
                         if (clusterMarker.getUser().getUid().equals(user.getUid())) {
-                            LatLng latLng = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
-                            clusterMarker.setPosition(latLng);
+//                            LatLng latLng = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
+//                            clusterMarker.setPosition(latLng);
                             clusterMarker.setUser(user);
                             mClusterManagerRenderer.setUpdateMarker(clusterMarker);
                         }
@@ -612,12 +617,12 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         if (users != null) {
             for (int i = 0; i < users.size(); i++) {
                 if (users.get(i).getUid().equals(FirebaseAuth.getInstance().getUid())) {
-                    if (users.get(i).getLocation() != null) {
-                        moveCamera(new LatLng(users.get(i).getLocation().getLat(),
-                                        users.get(i).getLocation().getLng()),
-                                15f);
-                        Collections.swap(users, i, 0);
-                    }
+//                    if (users.get(i).getLocation() != null) {
+//                        moveCamera(new LatLng(users.get(i).getLocation().getLat(),
+//                                        users.get(i).getLocation().getLng()),
+//                                15f);
+//                        Collections.swap(users, i, 0);
+//                    }
                 }
             }
         }
@@ -647,16 +652,16 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onUserItemClick(User user) {
-        if (user != null && user.getLocation() != null) {
-            LatLng latLng = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-            for (ClusterMarker clusterMarker : mClusterMarkers) {
-                Marker marker = mClusterManagerRenderer.getMarker(clusterMarker);
-                User tag = (User) marker.getTag();
-                if (user.getUid().equals(tag.getUid())) {
-                    marker.showInfoWindow();
-                }
-            }
-        }
+//        if (user != null && user.getLocation() != null) {
+//            LatLng latLng = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
+//            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//            for (ClusterMarker clusterMarker : mClusterMarkers) {
+//                Marker marker = mClusterManagerRenderer.getMarker(clusterMarker);
+//                User tag = (User) marker.getTag();
+//                if (user.getUid().equals(tag.getUid())) {
+//                    marker.showInfoWindow();
+//                }
+//            }
+//        }
     }
 }

@@ -14,9 +14,6 @@ public class User implements Parcelable {
     @SerializedName("active_trip")
     @Expose
     private String mActiveTrip;
-    @SerializedName("time_stamp")
-    @Expose
-    private MyTimeStamp mTimeStamp;
     @SerializedName("phone_number")
     @Expose
     private String mPhone;
@@ -26,17 +23,23 @@ public class User implements Parcelable {
     @SerializedName("uid")
     @Expose
     private String mUid;
-    @SerializedName("status")
+
+    @SerializedName("is_first_time")
     @Expose
-    private String mStatus;
-    @SerializedName("location")
-    @Expose
-    private Location mLocation;
+    private Boolean mIsFirstTime;
 
     public User() {
     }
 
     public User(String uid) {
+        mUid = uid;
+    }
+
+
+    public User(String name, String phone, String photoUri, String uid) {
+        mName = name;
+        mPhone = phone;
+        mPhotoUri = photoUri;
         mUid = uid;
     }
 
@@ -46,15 +49,8 @@ public class User implements Parcelable {
         mPhone = in.readString();
         mPhotoUri = in.readString();
         mUid = in.readString();
-        mStatus = in.readString();
-        mLocation = in.readParcelable(Location.class.getClassLoader());
-    }
-
-    public User(String name, String phone, String photoUri, String uid) {
-        mName = name;
-        mPhone = phone;
-        mPhotoUri = photoUri;
-        mUid = uid;
+        byte tmpMIsFirstTime = in.readByte();
+        mIsFirstTime = tmpMIsFirstTime == 0 ? null : tmpMIsFirstTime == 1;
     }
 
     @Override
@@ -64,8 +60,7 @@ public class User implements Parcelable {
         dest.writeString(mPhone);
         dest.writeString(mPhotoUri);
         dest.writeString(mUid);
-        dest.writeString(mStatus);
-        dest.writeParcelable(mLocation, flags);
+        dest.writeByte((byte) (mIsFirstTime == null ? 0 : mIsFirstTime ? 1 : 2));
     }
 
     @Override
@@ -101,14 +96,6 @@ public class User implements Parcelable {
         mActiveTrip = activeTrip;
     }
 
-    public MyTimeStamp getTimeStamp() {
-        return mTimeStamp;
-    }
-
-    public void setTimeStamp(MyTimeStamp timeStamp) {
-        mTimeStamp = timeStamp;
-    }
-
     public String getPhone() {
         return mPhone;
     }
@@ -133,19 +120,11 @@ public class User implements Parcelable {
         mUid = uid;
     }
 
-    public String getStatus() {
-        return mStatus;
+    public Boolean getFirstTime() {
+        return mIsFirstTime;
     }
 
-    public void setStatus(String status) {
-        mStatus = status;
-    }
-
-    public Location getLocation() {
-        return mLocation;
-    }
-
-    public void setLocation(Location location) {
-        mLocation = location;
+    public void setFirstTime(Boolean firstTime) {
+        mIsFirstTime = firstTime;
     }
 }
