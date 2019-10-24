@@ -118,7 +118,7 @@ public class MyLocationService extends Service {
         UserService mUserService;
         User user = new User();
         user.setUid(FirebaseAuth.getInstance().getUid());
-        user.setStatus("offline");
+//        user.setStatus("offline");
         mUserService = APIUtils.getUserService();
         mUserService.updateStatus(user).enqueue(new Callback<Boolean>() {
             @Override
@@ -141,7 +141,7 @@ public class MyLocationService extends Service {
         UserService mUserService;
         User user = new User();
         user.setUid(FirebaseAuth.getInstance().getUid());
-        user.setStatus("offline");
+//        user.setStatus("offline");
         mUserService = APIUtils.getUserService();
         mUserService.updateStatus(user).enqueue(new Callback<Boolean>() {
             @Override

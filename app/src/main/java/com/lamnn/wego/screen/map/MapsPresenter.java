@@ -1,16 +1,9 @@
 package com.lamnn.wego.screen.map;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -21,7 +14,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
-import com.lamnn.wego.data.model.route.MyTimeStamp;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.data.remote.UserService;
 import com.lamnn.wego.utils.APIUtils;
@@ -44,61 +36,63 @@ public class MapsPresenter implements MapsContract.Presenter {
     }
 
     @Override
-    public void getUserData(final Boolean isUpdateTrip) {
+    public void getUserData() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(auth.getUid());
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    try {
+//
+//                        Gson gson = new Gson();
+//                        JsonElement jsonElement = gson.toJsonTree(snapshot.getData());
+//                        mUser = gson.fromJson(jsonElement, User.class);
+//                        Timestamp timestamp = (Timestamp) snapshot.getData().get("time_stamp");
+//                        mUser.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
+//                        mView.showUserData(mUser);
+//                        if (mUser.getActiveTrip() != null) {
+//                            getActiveTrip(mUser.getActiveTrip());
+//                            getListMember(mUser.getActiveTrip(), false);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.d(TAG, "LOI TO VL" + e.toString());
+//                    }
+//                    Log.d(TAG, "Current data: " + snapshot.getData());
+//                } else {
+//                    Log.d(TAG, "Current data: null");
+//                }
+//            }
+//
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.d(TAG, "onFailure: " + e);
+//            }
+//        });
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    try {
-
-                        Gson gson = new Gson();
-                        JsonElement jsonElement = gson.toJsonTree(snapshot.getData());
-                        mUser = gson.fromJson(jsonElement, User.class);
-                        Timestamp timestamp = (Timestamp) snapshot.getData().get("time_stamp");
-                        mUser.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.d(TAG, "onEvent: " + e);
+                    return;
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    Gson gson = new Gson();
+                    JsonElement jsonElement = gson.toJsonTree(snapshot.getData());
+                    mUser = gson.fromJson(jsonElement, User.class);
+                    if (mUser.getFirstTime()) {
+                        mView.navigateToUpdateProfile(mUser);
+                    } else {
                         mView.showUserData(mUser);
-                        if (isUpdateTrip && mUser.getActiveTrip() != null) {
-                            getActiveTrip(mUser.getActiveTrip());
-                            getListMember(mUser.getActiveTrip(), false);
-                        }
-                    } catch (Exception e) {
-                        Log.d(TAG, "LOI TO VL" + e.toString());
                     }
                     Log.d(TAG, "Current data: " + snapshot.getData());
                 } else {
                     Log.d(TAG, "Current data: null");
                 }
             }
-
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: " + e);
-            }
         });
-//        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-//                if (e != null) {
-//                    Log.d(TAG, "onEvent: " + e);
-//                    return;
-//                }
-//                if (snapshot != null && snapshot.exists()) {
-//                    Gson gson = new Gson();
-//                    JsonElement jsonElement = gson.toJsonTree(snapshot.getData());
-//                    mUser = gson.fromJson(jsonElement, User.class);
-//                    Timestamp timestamp = (Timestamp) snapshot.getData().get("time_stamp");
-//                    mUser.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
-//                    mView.showUserData(mUser);
-//                    Log.d(TAG, "Current data: " + snapshot.getData());
-//                } else {
-//                    Log.d(TAG, "Current data: null");
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -168,7 +162,7 @@ public class MapsPresenter implements MapsContract.Presenter {
     public void updateStatus(String status) {
         User user = new User();
         user.setUid(FirebaseAuth.getInstance().getUid());
-        user.setStatus(status);
+//        user.setStatus(status);
         mUserService = APIUtils.getUserService();
         mUserService.updateStatus(user).enqueue(new Callback<Boolean>() {
             @Override
@@ -193,7 +187,7 @@ public class MapsPresenter implements MapsContract.Presenter {
         mTripService.switchTrip(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                getUserData(true);
+                getUserData();
                 getTrips();
             }
 

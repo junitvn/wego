@@ -150,10 +150,13 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        String mFileName = "JPEG_" + timeStamp + "_";
+//        String fileName = "JPEG_" + timeStamp + "_";
+        String fileName = "avatar.jpg";
         File storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File mFile = File.createTempFile(mFileName, ".jpg", storageDir);
-        return mFile;
+//        storageDir.mkdirs();
+//        File file = File.createTempFile(fileName, ".jpg", storageDir);
+        File file = new File(storageDir, fileName);
+        return file;
     }
 
     private void update(User user) {

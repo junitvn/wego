@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.create_event.CreateEventActivity"></activity>
+        <activity android:name=".screen.sign_up.SignUpActivity"></activity>
+        <activity android:name=".screen.create_event.CreateEventActivity" />
         <activity android:name=".screen.setting_trip.SettingTripActivity" />
         <activity android:name=".screen.info_user.InfoUserActivity" />
         <activity android:name=".screen.info_member.InfoMemberActivity" />
@@ -83,16 +84,16 @@
             android:exported="false" />
     </application>
     <uses-feature
-        android:name="android.hardware.camera.any"
-        android:required="true" />
-
-    <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

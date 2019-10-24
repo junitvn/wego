@@ -14,9 +14,11 @@ public class MapsContract {
         void updateMarkers(List<User> users);
         void showLoading();
         void hideLoading();
+
+        void navigateToUpdateProfile(User user);
     }
     public interface Presenter{
-        void getUserData(Boolean isUpdateTrip);
+        void getUserData();
         void getTrips();
         void getActiveTrip(String code);
         void getListMember(String code, Boolean isExistMarker);

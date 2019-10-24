@@ -106,7 +106,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         mEvent.setUser(mUser);
         mEvent.setUserId(mUser.getUid());
         mEvent.setTripId(mUser.getActiveTrip());
-        mEvent.setLocation(mUser.getLocation());
+//        mEvent.setLocation(mUser.getLocation());
         mEvent.setStatus("waiting");
         mEvent.setNote(mEditTextNote.getText().toString());
         mEvent.setTitle(mEditTextTitle.getText().toString());

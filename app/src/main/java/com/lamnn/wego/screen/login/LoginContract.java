@@ -22,5 +22,7 @@ public class LoginContract {
         void loginWithFacebook(Activity activity, LoginButton loginButton);
 
         void handleActivityResult(int requestCode, int resultCode, @Nullable Intent data);
+
+        void signIn(String email, String password);
     }
 }
