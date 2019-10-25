@@ -34,7 +34,6 @@ import static com.lamnn.wego.screen.join_trip.JoinTripActivity.EXTRA_USER;
 public class ProfileUpdateActivity extends AppCompatActivity implements UpdateProfileContract.View, View.OnClickListener {
     public static final int TAKE_PHOTO_REQUEST_CODE = 100;
     public static final int GALLERY_REQUEST_CODE = 200;
-    private Toolbar mToolbar;
     private ImageView mImageAvatar;
     private Button mButtonSave;
     private EditText mTextPhone;
@@ -55,7 +54,6 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                startActivity(MapsActivity.getIntent(this, mUser));
                 finish();
                 break;
         }
@@ -74,8 +72,8 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
 
     private void initDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose photo");
-        String[] ways = {"Choose a photo from gallery", "Take a photo"};
+        builder.setTitle(getString(R.string.text_choose_photo));
+        String[] ways = {getString(R.string.text_choose_from_gallery), getString(R.string.text_take_photo)};
         builder.setItems(ways, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -102,15 +100,20 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case TAKE_PHOTO_REQUEST_CODE:
-                    File file = new File(getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "avatar.jpg");
+                    File file = new File(getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), getString(R.string.file_name_image));
                     Uri uri = FileProvider.getUriForFile(getApplicationContext(), this.getApplicationContext().getPackageName() + ".provider", file);
                     mUser.setPhotoUri(uri.toString());
                     mImageAvatar.setImageURI(uri);
                     mButtonSave.setVisibility(View.VISIBLE);
                     break;
                 case GALLERY_REQUEST_CODE:
-                    Uri selectedImage = data.getData();
-                    mUser.setPhotoUri(selectedImage.toString());
+                    Uri selectedImage = null;
+                    if (data != null) {
+                        selectedImage = data.getData();
+                    }
+                    if (selectedImage != null) {
+                        mUser.setPhotoUri(selectedImage.toString());
+                    }
                     mImageAvatar.setImageURI(selectedImage);
                     mButtonSave.setVisibility(View.VISIBLE);
                     break;
@@ -120,14 +123,14 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
     }
 
     private void initToolbar() {
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("My account");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.text_my_account));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mToolbar.setNavigationIcon(R.drawable.ic_left_arrow);
-        mButtonSave = mToolbar.findViewById(R.id.btn_save_profile);
+        toolbar.setNavigationIcon(R.drawable.ic_left_arrow);
+        mButtonSave = toolbar.findViewById(R.id.btn_save_profile);
         mButtonSave.setOnClickListener(this);
     }
 
@@ -170,8 +173,8 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
 
     public void showProfile(User user) {
         if (user == null) return;
-        mTextName.setText(user.getName() == null ? "" : user.getName());
-        mTextPhone.setText(user.getPhone() == null ? "" : user.getPhone());
+        mTextName.setText(user.getName() == null ? getString(R.string.text_null) : user.getName());
+        mTextPhone.setText(user.getPhone() == null ? getString(R.string.text_null) : user.getPhone());
         if (user.getPhotoUri() != null) {
             GlideApp.with(this)
                     .load(user.getPhotoUri())

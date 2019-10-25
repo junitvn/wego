@@ -46,7 +46,7 @@
         android:layout_marginBottom="@dimen/margin_vertical_default"
         android:background="@drawable/text_login"
         android:ems="10"
-        android:hint="Username"
+        android:hint="@string/username"
         android:inputType="textPersonName"
         android:paddingHorizontal="@dimen/text_login_padding"
         app:layout_constraintBottom_toTopOf="@+id/text_password"
@@ -153,7 +153,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vertical_default"
-        android:text="or login with"
+        android:text="@string/or_login_with"
         app:layout_constraintBottom_toTopOf="@+id/image_facebook_login"
         app:layout_constraintEnd_toEndOf="@+id/image_facebook_login"
         app:layout_constraintStart_toStartOf="@+id/image_facebook_login" />

@@ -41,7 +41,7 @@ public class PhoneLoginActivity extends AppCompatActivity implements View.OnClic
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Sign in with phone number");
+        getSupportActionBar().setTitle(getString(R.string.text_sign_in_with_phone));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

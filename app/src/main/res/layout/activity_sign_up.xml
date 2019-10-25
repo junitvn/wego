@@ -37,7 +37,7 @@
         android:layout_marginBottom="@dimen/margin_vertical_default"
         android:background="@drawable/text_login"
         android:ems="10"
-        android:hint="Username"
+        android:hint="@string/username"
         android:inputType="textPersonName"
         android:paddingHorizontal="@dimen/text_login_padding"
         app:layout_constraintBottom_toTopOf="@+id/text_password"
