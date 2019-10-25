@@ -23,10 +23,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.screen.login.phone.VerifyLoginActivity;
 import com.lamnn.wego.screen.map.MapsActivity;
@@ -42,9 +44,6 @@ public class LoginPresenter implements LoginContract.Presenter {
     private CallbackManager mCallbackManager;
     private FirebaseAuth mAuth;
     private User mUser;
-
-    public LoginPresenter() {
-    }
 
     public LoginPresenter(LoginContract.View view) {
         this.mView = view;
@@ -114,14 +113,28 @@ public class LoginPresenter implements LoginContract.Presenter {
                         if (task.isSuccessful()) {
                             mView.onLoginSuccess("ok");
                         } else {
-                            mView.onLoginFailure("Login failed");
+                            try {
+                                throw task.getException();
+                            } catch (FirebaseAuthException e) {
+                                switch (e.getErrorCode()) {
+                                    case "ERROR_INVALID_EMAIL":
+                                        mView.onLoginFailure(mActivity.getString(R.string.text_invalid_email));
+                                        break;
+                                    case "ERROR_USER_NOT_FOUND":
+                                        mView.onLoginFailure(mActivity.getString(R.string.text_user_not_found));
+                                        break;
+                                    case "ERROR_WRONG_PASSWORD":
+                                        mView.onLoginFailure(mActivity.getString(R.string.text_wrong_password));
+                                        break;
+                                    default:
+                                        mView.onLoginFailure(mActivity.getString(R.string.text_login_fail));
+                                        break;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mView.onLoginFailure(mActivity.getString(R.string.text_login_fail));
+                            }
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mView.onLoginFailure("Login failed");
                     }
                 });
     }

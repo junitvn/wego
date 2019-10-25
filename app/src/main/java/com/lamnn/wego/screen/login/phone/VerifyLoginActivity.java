@@ -50,7 +50,7 @@ public class VerifyLoginActivity extends AppCompatActivity implements View.OnCli
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Verify");
+        getSupportActionBar().setTitle(getString(R.string.text_verify));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

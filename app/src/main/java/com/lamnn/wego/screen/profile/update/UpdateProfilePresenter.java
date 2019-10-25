@@ -21,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.lamnn.wego.BuildConfig;
+import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.remote.UserService;
 import com.lamnn.wego.utils.APIUtils;
@@ -43,9 +44,7 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
     private UpdateProfileContract.View mView;
     private User mUser;
     private UserService mUserService;
-    private String TAG = "UPDATE PROFILE";
     private Context mContext;
-    private File mPhotoFile;
 
     public UpdateProfilePresenter(Context context, UpdateProfileContract.View view) {
         mContext = context;
@@ -64,13 +63,11 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
     @Override
     public void takePhoto(Activity activity) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        activity.startActivityForResult(intent, TAKE_PHOTO_REQUEST_CODE);
         File photoFile = null;
         try {
             photoFile = createImageFile();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            // Error occurred while creating the File
         }
         if (photoFile != null) {
             Uri photoURI = FileProvider.getUriForFile(activity,
@@ -78,7 +75,6 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
                     photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             activity.startActivityForResult(takePictureIntent, TAKE_PHOTO_REQUEST_CODE);
-            Log.d(TAG, "takePhoto: " + mPhotoFile);
         }
     }
 
@@ -147,14 +143,9 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
 
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-//        String fileName = "JPEG_" + timeStamp + "_";
-        String fileName = "avatar.jpg";
+    private File createImageFile() {
+        String fileName = mContext.getString(R.string.file_name_image);
         File storageDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        storageDir.mkdirs();
-//        File file = File.createTempFile(fileName, ".jpg", storageDir);
         File file = new File(storageDir, fileName);
         return file;
     }

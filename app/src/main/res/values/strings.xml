@@ -1,26 +1,67 @@
 <resources>
-    <string name="facebook_app_id">489363285223363</string>
-    <string name="fb_login_protocol_scheme">fb489363285223363</string>
+    <string name="facebook_app_id" translatable="false">489363285223363</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb489363285223363</string>
     <string name="app_name">Wego</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="hint_phone">Nhập số điện thoại</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="action_sign_in_now">Đăng nhập ngay!</string>
     <string name="action_next">"Next"</string>
     <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_password">Password must be >6 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="login_with_phone">Đăng nhập với số điện thoại</string>
-    <string name="login_with_facebook">Đăng nhập với Facebook</string>
     <string name="text_sign_in">Sign in</string>
     <string name="text_forgot_password">Forgot password?</string>
     <string name="text_sign_up">Sign up</string>
     <string name="text_hint_password">Password</string>
-    <string name="title_activity_maps2">Map</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_navigation">Map</string>
-    <string name="place_api_key">AIzaSyBC8ugpOmCpMNUwUv7S82wuBYgzjSlOoxY</string>
+    <string name="title_activity_maps2" translatable="false">Map</string>
+    <string name="title_activity_maps" translatable="false">Map</string>
+    <string name="title_activity_navigation" translatable="false">Map</string>
+    <string name="place_api_key" translatable="false">AIzaSyBC8ugpOmCpMNUwUv7S82wuBYgzjSlOoxY</string>
+    <string name="action_sign_in_now">Login now</string>
+    <string name="hint_phone">Enter your phone number</string>
+    <string name="login_with_facebook">Login with Facebook</string>
+    <string name="login_with_phone">Login with phone</string>
+    <string name="text_choose_photo">Choose photo</string>
+    <string name="text_choose_from_gallery">Choose a photo from gallery</string>
+    <string name="text_take_photo">Take a photo</string>
+    <string name="file_name_image">avatar.jpg</string>
+    <string name="text_my_account">My account</string>
+    <string name="text_null" translatable="false" />
+    <string name="date_format" translatable="false">yyyyMMddHHmmss</string>
+    <string name="or_login_with">or login with</string>
+    <string name="username">Email</string>
+    <string name="text_invalid_email">Invalid email</string>
+    <string name="text_user_not_found">User does not exist</string>
+    <string name="text_wrong_password">Wrong password</string>
+    <string name="text_login_fail">Login fail, check your connection</string>
+    <string name="text_name">Name</string>
+    <string name="text_phone">Phone</string>
+    <string name="text_save_uc">SAVE</string>
+    <string name="text_join">JOIN</string>
+    <string name="text_create">Create</string>
+    <string name="text_all">All</string>
+    <string name="text_title">Title</string>
+    <string name="text_note">Note</string>
+    <string name="text_name_hint">Name...</string>
+    <string name="text_destination_hint">Destination...</string>
+    <string name="text_some_places">Some places</string>
+    <string name="text_done">Done</string>
+    <string name="text_enter_trip_code">Enter trip code</string>
+    <string name="text_i_m_out">I\'m out</string>
+    <string name="text_trip_id_to_invite_your_friends">Trip ID to invite your friends</string>
+    <string name="text_phone_number_verification">PHONE NUMBER VERIFICATION</string>
+    <string name="text_enter_code_here">Enter code here</string>
+    <string name="text_please_enter_the_verification_code_received_by_sms">Please enter the verification code received by SMS.</string>
+    <string name="text_if_you_did_not_receive_the_verification_code">If you did not receive the verification code</string>
+    <string name="text_resend_code">Resend code</string>
+    <string name="text_sign_in_with_phone">Sign in with phone number</string>
+    <string name="text_verify">Verify</string>
+    <string name="text_map">Map</string>
+    <string name="text_friends">Friends</string>
+    <string name="text_sign_out">Sign out</string>
+    <string name="text_message_password">Password should be at least 6 characters</string>
+    <string name="text_email_badly_formatted">The email address is badly formatted</string>
+    <string name="text_sign_up_fail">Sign up failure. Check your connection</string>
 </resources>
