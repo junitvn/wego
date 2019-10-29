@@ -41,7 +41,7 @@
     <string name="text_name_hint">Tên chuyến đi...</string>
     <string name="text_some_places">Mộ số địa điểm gợi ý</string>
     <string name="text_destination_hint">Chọn điểm đến...</string>
-    <string name="text_done">Kết thúc</string>
+    <string name="text_done">Xong</string>
     <string name="text_enter_trip_code">Nhập mã chuyến đi</string>
     <string name="text_i_m_out">Thoát khỏi chuyến đi</string>
     <string name="text_enter_code_here">Nhập mã xác nhận</string>
@@ -58,4 +58,11 @@
     <string name="text_email_badly_formatted">Email sai định dạng</string>
     <string name="text_message_password">Mật khẩu phải có ít nhất 6 kí tự</string>
     <string name="text_sign_up_fail">Đăng ký thất bại, kiểm tra lại kết nối</string>
+    <string name="text_something_went_wrong">Lỗi khi tải dữ liệu</string>
+    <string name="text_success">Thành công</string>
+    <string name="text_join_a_trip">Tham gia chuyến đi</string>
+    <string name="text_id_trip_error">Mã chuyến đi không tồn tại</string>
+    <string name="text_create_new_trip">Tạo chhuyến đi mới</string>
+    <string name="text_invite_friends">Mời bạn bè</string>
+    <string name="text_click_back_again">Bấm một lần nữa để đóng ứng dụng</string>
 </resources>

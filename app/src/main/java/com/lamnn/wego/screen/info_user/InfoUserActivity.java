@@ -22,10 +22,8 @@ import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,7 +35,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Event;
-import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 import com.lamnn.wego.data.remote.EventService;
 import com.lamnn.wego.screen.create_event.CreateEventActivity;
@@ -53,7 +51,7 @@ import retrofit2.Response;
 public class InfoUserActivity extends AppCompatActivity implements View.OnClickListener, UserEventAdapter.OnEventItemClickListener {
     public static final String EXTRA_USER = "EXTRA_USER";
     private Toolbar mToolbar;
-    private User mUser;
+    private UserLocation mUserLocation;
     private FloatingActionButton mMenuItemCar, mMenuItemGas, mMenuItemCustom;
     private FloatingActionMenu mMenu;
     private static final String TAG = "Info user event";
@@ -64,9 +62,9 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
     public static final String CHANNEL_ID = "lamnn";
     private ProgressBar mProgressBar;
 
-    public static Intent getIntent(Context context, User user) {
+    public static Intent getIntent(Context context, UserLocation userLocation) {
         Intent intent = new Intent(context, InfoUserActivity.class);
-        intent.putExtra(EXTRA_USER, user);
+        intent.putExtra(EXTRA_USER, userLocation);
         return intent;
     }
 
@@ -85,7 +83,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
     private void getEventData() {
         showLoading();
 //        EventService eventService = APIUtils.getEventService();
-//        eventService.getAllEvent(mUser).enqueue(new Callback<List<Event>>() {
+//        eventService.getAllEvent(mUserLocation).enqueue(new Callback<List<Event>>() {
 //            @Override
 //            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
 //                showEvents(response.body());
@@ -100,8 +98,8 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
-                .whereEqualTo("trip_id", mUser.getActiveTrip())
-                .whereEqualTo("user_id", mUser.getUid())
+                .whereEqualTo("trip_id", mUserLocation.getUser().getActiveTrip())
+                .whereEqualTo("user_id", mUserLocation.getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -167,7 +165,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        if (mUser != null) {
+        if (mUserLocation != null) {
             getSupportActionBar().setTitle("Me");
         }
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -179,8 +177,8 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void receiveData() {
-        mUser = new User();
-        mUser = getIntent().getExtras().getParcelable(EXTRA_USER);
+        mUserLocation = new UserLocation();
+        mUserLocation = getIntent().getExtras().getParcelable(EXTRA_USER);
     }
 
     @Override
@@ -195,7 +193,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
                 mMenu.close(false);
                 break;
             case R.id.menu_item_custom:
-                startActivity(CreateEventActivity.getIntent(this, mUser));
+                startActivity(CreateEventActivity.getIntent(this, mUserLocation.getUser()));
                 mMenu.close(false);
                 break;
             case R.id.image_refresh:
@@ -231,9 +229,9 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
     private void createEvent(String type) {
         showLoading();
         Event event = new Event();
-        event.setUser(mUser);
-        event.setUserId(mUser.getUid());
-        event.setTripId(mUser.getActiveTrip());
+        event.setUser(mUserLocation.getUser());
+        event.setUserId(mUserLocation.getUid());
+        event.setTripId(mUserLocation.getUser().getActiveTrip());
         event.setTitle(type);
         event.setStatus("waiting");
         EventService eventService = APIUtils.getEventService();

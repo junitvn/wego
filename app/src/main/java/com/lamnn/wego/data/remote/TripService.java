@@ -2,6 +2,7 @@ package com.lamnn.wego.data.remote;
 
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 
 import java.util.List;
 
@@ -30,5 +31,5 @@ public interface TripService {
     Call<User> switchTrip(@Body User user);
 
     @POST("getListMember")
-    Call<List<User>> getListMember(@Body User user);
+    Call<List<UserLocation>> getListMember(@Body User user);
 }

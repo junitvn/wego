@@ -7,14 +7,14 @@ public class ClusterMarker implements ClusterItem {
     private LatLng mPosition;
     private String mTitle;
     private String mSnippet;
-    private User mUser;
+    private UserLocation mUserLocation;
 
     public ClusterMarker() {
     }
 
-    public ClusterMarker(LatLng position,User user) {
+    public ClusterMarker(LatLng position, UserLocation userLocation) {
         mPosition = position;
-        mUser = user;
+        mUserLocation = userLocation;
     }
 
     @Override
@@ -44,11 +44,11 @@ public class ClusterMarker implements ClusterItem {
         mSnippet = snippet;
     }
 
-    public User getUser() {
-        return mUser;
+    public UserLocation getUserLocation() {
+        return mUserLocation;
     }
 
-    public void setUser(User user) {
-        mUser = user;
+    public void setUserLocation(UserLocation userLocation) {
+        mUserLocation = userLocation;
     }
 }

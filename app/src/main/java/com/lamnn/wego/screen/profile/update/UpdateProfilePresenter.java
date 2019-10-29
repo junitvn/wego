@@ -13,6 +13,7 @@ import androidx.core.content.FileProvider;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -136,6 +137,9 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
                                 mView.hideSaveButton();
                                 mView.hideLoading();
                                 update(mUser);
+                            } else {
+                                mView.showError();
+                                Log.d("UPDATE NAME", "onFailure: update name" + task.getException().getMessage());
                             }
                         }
                     });

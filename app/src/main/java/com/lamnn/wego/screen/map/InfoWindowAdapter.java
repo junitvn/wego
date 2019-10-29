@@ -4,28 +4,19 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Location;
-import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 
 import java.io.IOException;
@@ -35,7 +26,7 @@ import java.util.Locale;
 
 public class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private Context mContext;
-    private User mUser;
+    private UserLocation mUserLocation;
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
     private String TAG = "INFO WINDOW";
 
@@ -54,30 +45,31 @@ public class InfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View getInfoContents(Marker marker) {
-        User user = (User) marker.getTag();
-        mUser = user;
-
-        String status = "";
-//        if (user.getStatus().equals("online")) {
-//            status = "Now online";
-//        } else {
-//            MyTimeStamp myTimeStamp = user.getTimeStamp();
-//            status = printDifference(new Date(Long.parseLong(myTimeStamp.getSeconds()) * 1000), new Date());
-//        }
-//        String address = getAddressByLatLng(user.getLocation()).equals("")
-//                ? "Unknown place"
-//                : getAddressByLatLng(user.getLocation());
+        UserLocation userLocation = (UserLocation) marker.getTag();
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mUserLocation = userLocation;
         View v = inflater.inflate(R.layout.item_info_window_linear, null);
-        v.setClipToOutline(true);
-        TextView textName = v.findViewById(R.id.text_info_name);
-        if (mUser.getUid().equals(FirebaseAuth.getInstance().getUid())) {
-            textName.setText("Me");
-        } else textName.setText(mUser.getName());
-        TextView textAddress = v.findViewById(R.id.text_info_address);
-//        textAddress.setText(address);
-        TextView textStatus = v.findViewById(R.id.text_info_status);
-        textStatus.setText(status);
+        if (userLocation != null) {
+            String status = "";
+            if (userLocation.getStatus().equals("online")) {
+                status = "Now online";
+            } else {
+                MyTimeStamp myTimeStamp = userLocation.getTimeStamp();
+                status = printDifference(new Date(Long.parseLong(myTimeStamp.getSeconds()) * 1000), new Date());
+            }
+            String address = getAddressByLatLng(userLocation.getLocation()).equals("")
+                    ? "Unknown place"
+                    : getAddressByLatLng(userLocation.getLocation());
+            v.setClipToOutline(true);
+            TextView textName = v.findViewById(R.id.text_info_name);
+            if (mUserLocation.getUid().equals(FirebaseAuth.getInstance().getUid())) {
+                textName.setText("Me");
+            } else textName.setText(mUserLocation.getUser().getName());
+            TextView textAddress = v.findViewById(R.id.text_info_address);
+            textAddress.setText(address);
+            TextView textStatus = v.findViewById(R.id.text_info_status);
+            textStatus.setText(status);
+        }
         return v;
     }
 

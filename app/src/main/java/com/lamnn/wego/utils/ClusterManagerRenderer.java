@@ -61,7 +61,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     protected void onBeforeClusterItemRendered(final ClusterMarker item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
         mBitmap = mIconGenerator.makeIcon("lamnn");
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mBitmap)).title(item.getUser().getName());
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mBitmap));
     }
 
     @Override
@@ -71,31 +71,32 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
 
     @Override
     protected void onClusterItemRendered(final ClusterMarker clusterItem, final Marker marker) {
-        GlideApp.with(mContext)
-                .load(clusterItem.getUser().getPhotoUri())
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        //on load failed
-                        Log.d(TAG, "onLoadFailed: ");
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        //on load success
-                        mImageView.setImageDrawable(resource);
-                        mBitmap = mIconGenerator.makeIcon();
-                        if (marker != null) {
-                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(mBitmap));
+        if (clusterItem.getUserLocation().getUser() != null) {
+            GlideApp.with(mContext)
+                    .load(clusterItem.getUserLocation().getUser().getPhotoUri())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            //on load failed
+                            Log.d(TAG, "onLoadFailed: ");
+                            return false;
                         }
-                        Log.d(TAG, "onResourceReady: ");
-                        return false;
-                    }
-                })
-                .into(mImageView);
-        marker.setTag(clusterItem.getUser());
 
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            //on load success
+                            mImageView.setImageDrawable(resource);
+                            mBitmap = mIconGenerator.makeIcon();
+                            if (marker != null) {
+                                marker.setIcon(BitmapDescriptorFactory.fromBitmap(mBitmap));
+                            }
+                            Log.d(TAG, "onResourceReady: ");
+                            return false;
+                        }
+                    })
+                    .into(mImageView);
+            marker.setTag(clusterItem.getUserLocation());
+        }
     }
 
     @Override
@@ -107,7 +108,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         Marker marker = getMarker(updateMarker);
         if (marker != null) {
             marker.setPosition(updateMarker.getPosition());
-            marker.setTag(updateMarker.getUser());
+            marker.setTag(updateMarker.getUserLocation());
         }
     }
 

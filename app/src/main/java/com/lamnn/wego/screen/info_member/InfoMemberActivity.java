@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Event;
-import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 import com.lamnn.wego.screen.info_user.UserEventAdapter;
 
@@ -40,16 +39,16 @@ import java.util.List;
 public class InfoMemberActivity extends AppCompatActivity implements View.OnClickListener, UserEventAdapter.OnEventItemClickListener {
     public static final String EXTRA_USER = "EXTRA_USER";
     private Toolbar mToolbar;
-    private User mUser;
+    private UserLocation mUserLocation;
     private ImageView mImageCall, mImageStatus;
     private RecyclerView mRecyclerViewEvent;
     private UserEventAdapter mUserEventAdapter;
     private List<Event> mEvents;
     private ProgressBar mProgressBar;
 
-    public static Intent getIntent(Context context, User user) {
+    public static Intent getIntent(Context context, UserLocation userLocation) {
         Intent intent = new Intent(context, InfoMemberActivity.class);
-        intent.putExtra(EXTRA_USER, user);
+        intent.putExtra(EXTRA_USER, userLocation);
         return intent;
     }
 
@@ -68,7 +67,7 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.image_call:
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + mUser.getPhone()));
+                intent.setData(Uri.parse("tel:" + mUserLocation.getUser().getPhone()));
                 startActivity(intent);
                 break;
         }
@@ -95,8 +94,8 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        if (mUser != null) {
-            getSupportActionBar().setTitle(mUser.getName());
+        if (mUserLocation != null) {
+            getSupportActionBar().setTitle(mUserLocation.getUser().getName());
         }
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,20 +104,20 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
         mImageCall = mToolbar.findViewById(R.id.image_call);
         mImageCall.setOnClickListener(this);
         mImageStatus = mToolbar.findViewById(R.id.image_status);
-//        if (mUser != null && mUser.getStatus().equals("online")) {
-//            mImageStatus.setImageResource(R.drawable.ic_online);
-//        }
+        if (mUserLocation != null && mUserLocation.getStatus().equals("online")) {
+            mImageStatus.setImageResource(R.drawable.ic_online);
+        }
     }
 
     private void receiveData() {
-        mUser = new User();
-        mUser = getIntent().getExtras().getParcelable(EXTRA_USER);
+        mUserLocation = new UserLocation();
+        mUserLocation = getIntent().getExtras().getParcelable(EXTRA_USER);
     }
 
     private void getEventData() {
         showLoading();
 //        EventService eventService = APIUtils.getEventService();
-//        eventService.getAllEvent(mUser).enqueue(new Callback<List<Event>>() {
+//        eventService.getAllEvent(mUserLocation).enqueue(new Callback<List<Event>>() {
 //            @Override
 //            public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
 //                showEvents(response.body());
@@ -133,8 +132,8 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
-                .whereEqualTo("trip_id", mUser.getActiveTrip())
-                .whereEqualTo("user_id", mUser.getUid())
+                .whereEqualTo("trip_id", mUserLocation.getUser().getActiveTrip())
+                .whereEqualTo("user_id", mUserLocation.getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

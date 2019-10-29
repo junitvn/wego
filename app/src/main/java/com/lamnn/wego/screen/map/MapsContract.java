@@ -1,28 +1,52 @@
 package com.lamnn.wego.screen.map;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 
 import java.util.List;
 
 public class MapsContract {
-    public interface View{
+    public interface View {
         void showUserData(User user);
+
         void showTrips(List<Trip> trips);
+
         void showActiveTrip(Trip trip);
+
         void initMarkers(List<User> users);
+
         void updateMarkers(List<User> users);
+
         void showLoading();
+
         void hideLoading();
 
         void navigateToUpdateProfile(User user);
+
+        void showErrorMessage(String message);
+
+        void showListUserCircle(List<UserLocation> userLocations);
     }
-    public interface Presenter{
+
+    public interface Presenter {
         void getUserData();
+
         void getTrips();
+
         void getActiveTrip(String code);
+
         void getListMember(String code, Boolean isExistMarker);
+
         void updateStatus(String status);
+
         void switchTrip(String activeTrip);
+
+        void initMarker(List<UserLocation> userLocations, GoogleMap map);
+
+        void initUserLocation(UserLocation userLocation);
+
+        void showUserItemCircle(UserLocation userLocation);
     }
 }

@@ -12,6 +12,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.data.remote.UserService;
 import com.lamnn.wego.utils.APIUtils;
 
@@ -116,11 +117,11 @@ public class MyLocationService extends Service {
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
         UserService mUserService;
-        User user = new User();
-        user.setUid(FirebaseAuth.getInstance().getUid());
-//        user.setStatus("offline");
+        UserLocation userLocation = new UserLocation();
+        userLocation.setUid(FirebaseAuth.getInstance().getUid());
+        userLocation.setStatus("offline");
         mUserService = APIUtils.getUserService();
-        mUserService.updateStatus(user).enqueue(new Callback<Boolean>() {
+        mUserService.updateStatus(userLocation).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 Log.d(TAG, "onResponse: " + response.body());
@@ -139,11 +140,11 @@ public class MyLocationService extends Service {
         super.onDestroy();
         Log.e(TAG, "onDestroy");
         UserService mUserService;
-        User user = new User();
-        user.setUid(FirebaseAuth.getInstance().getUid());
-//        user.setStatus("offline");
+        UserLocation userLocation = new UserLocation();
+        userLocation.setUid(FirebaseAuth.getInstance().getUid());
+        userLocation.setStatus("offline");
         mUserService = APIUtils.getUserService();
-        mUserService.updateStatus(user).enqueue(new Callback<Boolean>() {
+        mUserService.updateStatus(userLocation).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 Log.d(TAG, "onResponse: " + response.body());

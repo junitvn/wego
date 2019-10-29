@@ -124,7 +124,7 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Create new trip");
+        getSupportActionBar().setTitle(getString(R.string.text_create_new_trip));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -160,7 +160,6 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mTrip.setCreatorId(auth.getUid());
 //        mTrip.setStartPoint(mStartPoint);
-        Gson gson = new Gson();
         mTrip.setName(mTextNameTrip.getText().toString());
         mTrip.setCreationTime(new Date().toString());
         User user = new User();

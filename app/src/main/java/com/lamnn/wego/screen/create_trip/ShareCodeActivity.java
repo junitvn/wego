@@ -71,7 +71,7 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Invite your friends");
+        getSupportActionBar().setTitle(getString(R.string.text_invite_friends));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

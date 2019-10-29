@@ -26,7 +26,7 @@
     <string name="text_choose_photo">Choose photo</string>
     <string name="text_choose_from_gallery">Choose a photo from gallery</string>
     <string name="text_take_photo">Take a photo</string>
-    <string name="file_name_image">avatar.jpg</string>
+    <string name="file_name_image" translatable="false">avatar.jpg</string>
     <string name="text_my_account">My account</string>
     <string name="text_null" translatable="false" />
     <string name="date_format" translatable="false">yyyyMMddHHmmss</string>
@@ -64,4 +64,11 @@
     <string name="text_message_password">Password should be at least 6 characters</string>
     <string name="text_email_badly_formatted">The email address is badly formatted</string>
     <string name="text_sign_up_fail">Sign up failure. Check your connection</string>
+    <string name="text_something_went_wrong">Something went wrong</string>
+    <string name="text_id_trip_error">ID trip invalid, try again</string>
+    <string name="text_success">Success</string>
+    <string name="text_join_a_trip">Join a trip</string>
+    <string name="text_create_new_trip">Create new trip</string>
+    <string name="text_invite_friends">Invite your friends</string>
+    <string name="text_click_back_again">Please click BACK again to exit</string>
 </resources>

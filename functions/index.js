@@ -28,7 +28,22 @@ const createProfile = (userRecord, context) => {
   const updatePhotoUrl = user.updateUser(userRecord.uid, {
     photo_url: photoURL
   });
-  return Promise.all([updatePhotoUrl, createUser])
+  const createUserLocationPromise = db
+    .collection("user_location")
+    .doc(uid)
+    .set({
+      uid,
+      time_stamp: admin.firestore.FieldValue.serverTimestamp(),
+      user: {},
+      status: "online"
+    })
+    .then(() => {
+      return;
+    })
+    .catch(e => {
+      console.log("Update user location error, ", e);
+    });
+  return Promise.all([updatePhotoUrl, createUser, createUserLocationPromise])
     .then(() => {
       console.log("Create user");
       return;
@@ -41,15 +56,28 @@ const createProfile = (userRecord, context) => {
 //update user
 const updateUser = (req, res) => {
   const user = req.body;
-  return db
+  const updateUserLocationPromise = db
+    .collection("user_location")
+    .doc(user.uid)
+    .update({
+      user
+    })
+    .then(() => {
+      return;
+    })
+    .catch(e => {
+      console.log("Update user location error, ", e);
+    });
+  const updateUserPromise = db
     .collection("users")
     .doc(user.uid)
     .update({
-      name: user.name,
-      photo_url: user.photo_url,
-      phone_number: user.phone_number,
+      name: user.name ? user.name : "",
+      photo_url: user.photo_url ? user.photo_url : "",
+      phone_number: user.phone_number ? user.phone_number : "",
       is_first_time: false
-    })
+    });
+  return Promise.all([updateUserPromise, updateUserLocationPromise])
     .then(() => {
       console.log("Update user " + user.uid);
       res.status(200).send(user);
@@ -61,11 +89,31 @@ const updateUser = (req, res) => {
     });
 };
 
+//init user location
+const initUserLocation = (req, res) => {
+  let user_location = req.body;
+  console.log("Body user location", user_location);
+  user_location.time_stamp = admin.firestore.FieldValue.serverTimestamp();
+  return db
+    .collection("user_location")
+    .doc(user_location.uid)
+    .set(user_location)
+    .then(() => {
+      res.status(200).send(user_location);
+      return;
+    })
+    .catch(e => {
+      res.status(400).send({});
+      console.log("Init location e: ", e);
+    });
+};
+
 const updateStatus = (req, res) => {
   const status = req.body.status;
   const uid = req.body.uid;
+  console.log("update status", req.body);
   return db
-    .collection("users")
+    .collection("user_location")
     .doc(uid) /*  */
     .update({
       status,
@@ -176,7 +224,7 @@ const getListMember = (req, res) => {
         const members = doc.data().members;
         members.forEach(uid => {
           const p = db
-            .collection("users")
+            .collection("user_location")
             .doc(uid)
             .get();
           promises.push(p);
@@ -378,8 +426,8 @@ const createEvent = (req, res) => {
 
 const outTrip = (req, res) => {
   let user = req.body;
-  let { uid, active_trip, status: thisTrip } = user;
-  if (active_trip === thisTrip) {
+  let { uid, active_trip, name: selectedTrip } = user;
+  if (active_trip === selectedTrip) {
     active_trip = "";
   }
   const removeMyTrip = db
@@ -387,7 +435,7 @@ const outTrip = (req, res) => {
     .doc(uid)
     .update({
       active_trip,
-      my_trips: admin.firestore.FieldValue.arrayRemove(thisTrip)
+      my_trips: admin.firestore.FieldValue.arrayRemove(selectedTrip)
     })
     .then(() => {
       console.log("Updated my trips");
@@ -399,7 +447,7 @@ const outTrip = (req, res) => {
 
   const updateThisTrip = db
     .collection("trips")
-    .doc(thisTrip)
+    .doc(selectedTrip)
     .update({
       members: admin.firestore.FieldValue.arrayRemove(uid)
     })
@@ -413,7 +461,7 @@ const outTrip = (req, res) => {
 
   return Promise.all([removeMyTrip, updateThisTrip])
     .then(() => {
-      console.log(uid, " out ", thisTrip);
+      console.log(uid, " out ", selectedTrip);
       res.status(200).send(true);
       return;
     })
@@ -472,6 +520,7 @@ module.exports = {
   authOnCreate: functions.auth.user().onCreate(createProfile),
   createTrip: functions.https.onRequest(createTrip),
   updateLocation: functions.https.onRequest(updateLocation),
+  initUserLocation: functions.https.onRequest(initUserLocation),
   joinTrip: functions.https.onRequest(joinTrip),
   getMyTrips: functions.https.onRequest(getMyTrips),
   getTrip: functions.https.onRequest(getTrip),

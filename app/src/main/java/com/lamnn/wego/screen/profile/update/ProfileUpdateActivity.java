@@ -176,7 +176,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
         mTextName.setText(user.getName() == null ? getString(R.string.text_null) : user.getName());
         mTextPhone.setText(user.getPhone() == null ? getString(R.string.text_null) : user.getPhone());
         if (user.getPhotoUri() != null) {
-            GlideApp.with(this)
+            GlideApp.with(getApplicationContext())
                     .load(user.getPhotoUri())
                     .apply(RequestOptions.circleCropTransform())
                     .into(mImageAvatar);

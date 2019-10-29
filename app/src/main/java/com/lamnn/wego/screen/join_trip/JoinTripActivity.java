@@ -93,10 +93,10 @@ public class JoinTripActivity extends AppCompatActivity implements View.OnClickL
                 Log.d(TAG, "onResponse: " + response);
                 if (response.body() == null || response.body() == false) {
                     hideLoading();
-                    Toast.makeText(JoinTripActivity.this, "ID trip invalid, try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JoinTripActivity.this, getString(R.string.text_id_trip_error), Toast.LENGTH_SHORT).show();
                 } else {
                     hideLoading();
-                    Toast.makeText(JoinTripActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JoinTripActivity.this, getString(R.string.text_success), Toast.LENGTH_SHORT).show();
                     startActivity(MapsActivity.getIntent(getApplicationContext()));
                 }
             }
@@ -116,7 +116,7 @@ public class JoinTripActivity extends AppCompatActivity implements View.OnClickL
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Join a trip");
+        getSupportActionBar().setTitle(getString(R.string.text_join_a_trip));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

@@ -80,8 +80,8 @@ public class SettingTripActivity extends AppCompatActivity implements View.OnCli
 
     private void outTrip() {
         showLoading();
-//        Use status as code of selected trip to send request
-//        mUser.setStatus(mTrip.getCode());
+//        Use "name" as code of selected trip to send request
+        mUser.setName(mTrip.getCode());
         mTripService.outTrip(mUser).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
