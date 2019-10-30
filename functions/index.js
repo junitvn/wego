@@ -278,14 +278,15 @@ const getTrip = (req, res) => {
 ///* Update location */
 const updateLocation = (req, res) => {
   let data = req.body;
+  console.log("data in update location, ", data);
   let promises = [];
   /* active_trip: 'as',
   location: { lat: 20.963739341813092, lng: 105.76690766775546 },
   photo_url: 'https://graph.facebook.com/1991011394332580/picture?height=200',
   uid: 'GbrbYtIHWcN9fyszrFUkj45qvEz2' */
-  let usersRef = db.collection("users").doc(data.uid);
-  let tripsRef = db.collection("trips").doc(data.active_trip);
-  return usersRef
+  let userLocationRef = db.collection("user_location").doc(data.user.uid);
+  let tripsRef = db.collection("trips").doc(data.user.active_trip);
+  return userLocationRef
     .update({
       location: data.location
     })
@@ -297,7 +298,7 @@ const updateLocation = (req, res) => {
             const members = doc.data().members;
             members.forEach(uid => {
               const p = db
-                .collection("users")
+                .collection("user_location")
                 .doc(uid)
                 .get();
               promises.push(p);
