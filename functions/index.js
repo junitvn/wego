@@ -388,11 +388,14 @@ const onWriteEvent = (change, context) => {
   console.log(context.params);
   console.log(change.after.data());
   const dataChanged = change.after.data();
-  let topic = "car";
+  const active_trip = dataChanged.user.active_trip;
+  let topic = active_trip;
   let payload = {
     data: {
       name: dataChanged.user.name,
-      type: dataChanged.type
+      type: dataChanged.type,
+      user: JSON.stringify(dataChanged.user),
+      creator_id: dataChanged.user_id
     }
   };
   return admin
