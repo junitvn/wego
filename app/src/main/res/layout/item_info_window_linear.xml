@@ -38,15 +38,32 @@
             app:layout_constraintVertical_bias="1.0" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/text_info_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginVertical="4dp"
+        android:text="Me"
+        android:textColor="#5E5D5D"
+        android:textSize="19dp" />
+
+    <TextView
+        android:id="@+id/text_info_event_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/text_info_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:maxEms="12"
-        android:layout_gravity="center"
         android:singleLine="false"
         android:text="Address:"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,13 +71,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_info_status" />
 
-    <TextView
-        android:id="@+id/text_info_name"
-        android:text="Me"
-        android:textSize="19dp"
-        android:layout_gravity="center"
-        android:textColor="#5E5D5D"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
 </LinearLayout>

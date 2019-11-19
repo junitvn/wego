@@ -5,23 +5,31 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.ClusterMarker;
+import com.lamnn.wego.data.model.Event;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
+import com.lamnn.wego.data.model.route.MyTimeStamp;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.data.remote.UserService;
 import com.lamnn.wego.utils.APIUtils;
@@ -57,42 +65,12 @@ public class MapsPresenter implements MapsContract.Presenter {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(auth.getUid());
-//        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot snapshot) {
-//                if (snapshot.exists()) {
-//                    try {
-//
-//                        Gson gson = new Gson();
-//                        JsonElement jsonElement = gson.toJsonTree(snapshot.getData());
-//                        mUser = gson.fromJson(jsonElement, User.class);
-//                        Timestamp timestamp = (Timestamp) snapshot.getData().get("time_stamp");
-//                        mUser.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
-//                        mView.showUserData(mUser);
-//                        if (mUser.getActiveTrip() != null) {
-//                            getActiveTrip(mUser.getActiveTrip());
-//                            getListMember(mUser.getActiveTrip(), false);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.d(TAG, "LOI TO VL" + e.toString());
-//                    }
-//                    Log.d(TAG, "Current data: " + snapshot.getData());
-//                } else {
-//                    Log.d(TAG, "Current data: null");
-//                }
-//            }
-//
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.d(TAG, "onFailure: " + e);
-//            }
-//        });
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
+                    Log.d(TAG, "onEvent: snapshot user data");
                     return;
                 }
                 if (snapshot != null && snapshot.exists()) {
@@ -110,6 +88,7 @@ public class MapsPresenter implements MapsContract.Presenter {
                     }
                 } else {
                     mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
+                    Log.d(TAG, "onEvent: get user data");
                 }
             }
         });
@@ -130,7 +109,7 @@ public class MapsPresenter implements MapsContract.Presenter {
 
             @Override
             public void onFailure(Call<List<Trip>> call, Throwable t) {
-                Log.d(TAG, "onFailure: ");
+                Log.d(TAG, "onFailure: get trips");
             }
         });
     }
@@ -167,7 +146,6 @@ public class MapsPresenter implements MapsContract.Presenter {
             @Override
             public void onResponse(Call<List<UserLocation>> call, Response<List<UserLocation>> response) {
                 Log.d(TAG, "onResponse: ");
-//                updateMarkers(response.body());
                 initMarkers(response.body());
             }
 
@@ -213,7 +191,8 @@ public class MapsPresenter implements MapsContract.Presenter {
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
+//                mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
+                Log.d(TAG, "onFailure: update status");
             }
         });
     }
@@ -235,6 +214,7 @@ public class MapsPresenter implements MapsContract.Presenter {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
+                Log.d(TAG, "onFailure: switch trip");
                 mView.hideLoading();
             }
         });
@@ -242,6 +222,9 @@ public class MapsPresenter implements MapsContract.Presenter {
 
 
     public void initMarkers(List<UserLocation> userLocations) {
+        if (mMap != null) {
+            mMap.clear();
+        }
         mClusterMarkers = new ArrayList<>();
         mClusterManager = new ClusterManager<>(mContext, mMap);
         mClusterManagerRenderer = new ClusterManagerRenderer(mContext, mMap, mClusterManager);
@@ -325,6 +308,25 @@ public class MapsPresenter implements MapsContract.Presenter {
             if (userLocation.getUid().equals(tag.getUid())) {
                 marker.showInfoWindow();
             }
+        }
+    }
+
+    @Override
+    public void updateMarker(List<UserLocation> userLocations) {
+        updateMarkers(userLocations);
+    }
+
+    @Override
+    public void showAllMember() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        if (mClusterMarkers != null) {
+            for (ClusterItem item : mClusterMarkers) {
+                builder.include(item.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            int padding = 300;
+            // use animateCamera if animation is required
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         }
     }
 }

@@ -64,7 +64,7 @@
                 android:background="#fff"
                 android:orientation="vertical"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+                app:layout_constraintEnd_toEndOf="@+id/layout_user_status"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
                 <androidx.recyclerview.widget.RecyclerView
@@ -96,7 +96,7 @@
 
             <LinearLayout
                 android:layout_marginBottom="17dp"
-                android:id="@+id/linearLayout"
+                android:id="@+id/layout_user_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -158,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+                app:layout_constraintBottom_toBottomOf="@+id/layout_user_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/map"
                 app:layout_constraintTop_toTopOf="@+id/map" />

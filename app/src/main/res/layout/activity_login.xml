@@ -79,7 +79,7 @@
         app:layout_constraintVertical_bias="0.607" />
 
     <ImageView
-        android:id="@+id/image_phone_login"
+        android:id="@+id/image_event_remove_photo"
         android:layout_width="@dimen/icon_login_width"
         android:layout_height="@dimen/icon_login_width"
         android:layout_marginStart="@dimen/margin_horizontal_icon"

@@ -13,6 +13,9 @@ public interface EventService {
     @POST("createEvent")
     Call<Event> createEvent(@Body Event event);
 
+    @POST("updateEvent")
+    Call<Event> updateEvent(@Body Event event);
+
     @POST("getAllEvent")
     Call<List<Event>> getAllEvent(@Body User user);
 

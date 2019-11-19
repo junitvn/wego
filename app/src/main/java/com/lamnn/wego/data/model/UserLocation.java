@@ -7,6 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 
+import java.util.List;
+
 public class UserLocation implements Parcelable {
     @SerializedName("uid")
     @Expose
@@ -23,16 +25,15 @@ public class UserLocation implements Parcelable {
     @SerializedName("user")
     @Expose
     private User mUser;
+    @SerializedName("event_statuses")
+    @Expose
+    private List<EventStatus> mEventStatuses;
+    @SerializedName("events")
+    @Expose
+    private List<Event> mEvents;
+
 
     public UserLocation() {
-    }
-
-    public UserLocation(String uid, String status, MyTimeStamp timeStamp, Location location, User user) {
-        mUid = uid;
-        mStatus = status;
-        mTimeStamp = timeStamp;
-        mLocation = location;
-        mUser = user;
     }
 
     protected UserLocation(Parcel in) {
@@ -40,6 +41,8 @@ public class UserLocation implements Parcelable {
         mStatus = in.readString();
         mLocation = in.readParcelable(Location.class.getClassLoader());
         mUser = in.readParcelable(User.class.getClassLoader());
+        mEventStatuses = in.createTypedArrayList(EventStatus.CREATOR);
+        mEvents = in.createTypedArrayList(Event.CREATOR);
     }
 
     @Override
@@ -48,6 +51,8 @@ public class UserLocation implements Parcelable {
         dest.writeString(mStatus);
         dest.writeParcelable(mLocation, flags);
         dest.writeParcelable(mUser, flags);
+        dest.writeTypedList(mEventStatuses);
+        dest.writeTypedList(mEvents);
     }
 
     @Override
@@ -105,5 +110,21 @@ public class UserLocation implements Parcelable {
 
     public void setUser(User user) {
         mUser = user;
+    }
+
+    public List<EventStatus> getEventStatuses() {
+        return mEventStatuses;
+    }
+
+    public void setEventStatuses(List<EventStatus> eventStatuses) {
+        mEventStatuses = eventStatuses;
+    }
+
+    public List<Event> getEvents() {
+        return mEvents;
+    }
+
+    public void setEvents(List<Event> events) {
+        mEvents = events;
     }
 }

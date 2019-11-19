@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".screen.create_trip.CreateTripActivity">
+    tools:context=".screen.trip.create_trip.CreateTripActivity">
 
     <EditText
         android:id="@+id/text_name_trip"

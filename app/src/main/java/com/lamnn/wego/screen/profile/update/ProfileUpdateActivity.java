@@ -29,7 +29,7 @@ import com.lamnn.wego.utils.GlideApp;
 
 import java.io.File;
 
-import static com.lamnn.wego.screen.join_trip.JoinTripActivity.EXTRA_USER;
+import static com.lamnn.wego.screen.trip.join_trip.JoinTripActivity.EXTRA_USER;
 
 public class ProfileUpdateActivity extends AppCompatActivity implements UpdateProfileContract.View, View.OnClickListener {
     public static final int TAKE_PHOTO_REQUEST_CODE = 100;

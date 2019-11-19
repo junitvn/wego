@@ -15,10 +15,6 @@ public class MapsContract {
 
         void showActiveTrip(Trip trip);
 
-        void initMarkers(List<User> users);
-
-        void updateMarkers(List<User> users);
-
         void showLoading();
 
         void hideLoading();
@@ -48,5 +44,9 @@ public class MapsContract {
         void initUserLocation(UserLocation userLocation);
 
         void showUserItemCircle(UserLocation userLocation);
+
+        void updateMarker(List<UserLocation> userLocations);
+
+        void showAllMember();
     }
 }

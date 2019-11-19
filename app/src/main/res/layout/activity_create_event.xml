@@ -4,35 +4,133 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.create_event.CreateEventActivity">
+    tools:context=".screen.event.create_event.CreateEventActivity">
 
     <EditText
         android:id="@+id/text_event_type"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="75dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:backgroundTint="@color/colorPrimary"
+        android:paddingRight="16dp"
         android:textColor="#000"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/text_label_title"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_label_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_label_title" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="7.5"
+        app:layout_constraintStart_toEndOf="@+id/text_label_title" />
+
+    <TextView
+        android:id="@+id/text_label_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/text_title"
+        android:textSize="21dp"
+        app:layout_constraintEnd_toStartOf="@+id/text_event_type"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="2.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
         android:id="@+id/text_event_note"
-        android:layout_width="match_parent"
-        android:layout_height="49dp"
-        android:layout_marginLeft="75dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
         android:backgroundTint="@color/colorPrimary"
         android:textColor="#000"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_medium"
-        app:layout_constraintBottom_toBottomOf="@+id/text_label_note"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_label_note"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_label_note" />
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintHorizontal_weight="7.5"
+        app:layout_constraintStart_toEndOf="@+id/text_label_note" />
+
+    <TextView
+        android:id="@+id/text_label_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/text_note"
+        android:textSize="21dp"
+        app:layout_constraintEnd_toStartOf="@+id/text_event_note"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="2.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_label_title" />
+
+
+    <LinearLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="7.5"
+        app:layout_constraintStart_toEndOf="@+id/text_label_photo"
+        app:layout_constraintTop_toTopOf="@+id/text_label_photo">
+
+        <LinearLayout
+            android:id="@+id/linear_add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp">
+
+            <ImageView
+                android:id="@+id/image_add_photo"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:srcCompat="@drawable/ic_photo"
+                tools:layout_editor_absoluteX="91dp"
+                tools:layout_editor_absoluteY="222dp" />
+
+            <TextView
+                android:id="@+id/text_add_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_add_a_photo"
+                android:textSize="17dp"
+                tools:layout_editor_absoluteX="130dp"
+                tools:layout_editor_absoluteY="224dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:paddingRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_photo_event"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                 />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_label_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="10dp"
+        android:text="@string/text_photos"
+        android:textSize="21dp"
+        app:layout_constraintEnd_toStartOf="@+id/frame_layout"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="2.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_label_note" />
 
     <ProgressBar
         android:id="@+id/progress_bar_loading"
@@ -45,32 +143,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <TextView
-        android:id="@+id/text_label_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="36dp"
-        android:text="@string/text_title"
-        android:textSize="21dp"
-        app:layout_constraintEnd_toStartOf="@+id/text_name_trip"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-
-    <TextView
-        android:id="@+id/text_label_note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/text_note"
-        android:textSize="21dp"
-        app:layout_constraintEnd_toStartOf="@+id/text_name_trip"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_label_title" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

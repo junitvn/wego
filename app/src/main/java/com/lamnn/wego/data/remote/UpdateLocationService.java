@@ -1,6 +1,7 @@
 package com.lamnn.wego.data.remote;
 
 import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
 
 import java.util.List;
 
@@ -10,5 +11,5 @@ import retrofit2.http.POST;
 
 public interface UpdateLocationService {
     @POST("updateLocation")
-    Call<List<User>> updateLocation(@Body User user);
+    Call<List<UserLocation>> updateLocation(@Body UserLocation userLocation);
 }

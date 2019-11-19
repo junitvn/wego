@@ -19,7 +19,7 @@ public interface TripService {
     Call<Trip> updateTrip(@Body Trip trip);
 
     @POST("outTrip")
-    Call<Boolean> outTrip(@Body User user);
+    Call<Boolean> outTrip(@Body UserLocation userLocation);
 
     @POST("getMyTrips")
     Call<List<Trip>> getMyTrips(@Body User user);

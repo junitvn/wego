@@ -14,6 +14,9 @@ public interface UserService {
     @POST("updateStatus")
     Call<Boolean> updateStatus(@Body UserLocation userLocation);
 
+    @POST("addEventToUserLocation")
+    Call<Boolean> addEventToUserLocation(@Body UserLocation userLocation);
+
     @POST("initUserLocation")
     Call<UserLocation> initUserLocation(@Body UserLocation userLocation);
 }

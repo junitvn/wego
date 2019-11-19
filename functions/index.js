@@ -35,7 +35,8 @@ const createProfile = (userRecord, context) => {
       uid,
       time_stamp: admin.firestore.FieldValue.serverTimestamp(),
       user: {},
-      status: "online"
+      status: "online",
+      event_status: "going"
     })
     .then(() => {
       return;
@@ -97,7 +98,7 @@ const initUserLocation = (req, res) => {
   return db
     .collection("user_location")
     .doc(user_location.uid)
-    .set(user_location)
+    .update(user_location)
     .then(() => {
       res.status(200).send(user_location);
       return;
@@ -367,12 +368,19 @@ const switchTrip = (req, res) => {
   const user = req.body;
   const active_trip = user.active_trip;
   const uid = user.uid;
-  return db
+  const switchInUserLocation = db
+    .collection("user_location")
+    .doc(uid)
+    .update({
+      "user.active_trip": active_trip
+    });
+  const switchInUser = db
     .collection("users")
     .doc(uid)
     .update({
       active_trip
-    })
+    });
+  return Promise.all([switchInUser, switchInUserLocation])
     .then(() => {
       console.log("Switch to " + active_trip);
       res.status(200).send(user);
@@ -384,6 +392,43 @@ const switchTrip = (req, res) => {
     });
 };
 
+const addEventToUserLocation = (req, res) => {
+  const userLocation = req.body;
+  let new_event_statuses = [];
+  const { uid, event_statuses } = userLocation;
+  const eventStatus = event_statuses[0];
+  const userLocationRef = db.collection("user_location").doc(uid);
+  return userLocationRef.get().then(doc => {
+    if (doc.event_statuses && doc.event_statuses.length > 0) {
+      new_event_statuses = doc.event_statuses;
+      let isExisted = false;
+      new_event_statuses.forEach(e => {
+        if (e.trip_id === eventStatus.trip_id) {
+          e.status = eventStatus.status;
+          isExisted = true;
+        }
+      });
+      if (isExisted === false) {
+        new_event_statuses.push(eventStatus);
+      }
+    } else {
+      new_event_statuses.push(eventStatus);
+    }
+    return userLocationRef
+      .update({
+        event_statuses: new_event_statuses
+      })
+      .then(() => {
+        res.status(200).send(true);
+        return;
+      })
+      .catch(e => {
+        console.log("add coming event to user error ", e);
+        res.status(404).send(false);
+      });
+  });
+};
+
 const onWriteEvent = (change, context) => {
   console.log(context.params);
   console.log(change.after.data());
@@ -392,10 +437,8 @@ const onWriteEvent = (change, context) => {
   let topic = active_trip;
   let payload = {
     data: {
-      name: dataChanged.user.name,
-      type: dataChanged.type,
       user: JSON.stringify(dataChanged.user),
-      creator_id: dataChanged.user_id
+      event: JSON.stringify(dataChanged)
     }
   };
   return admin
@@ -415,10 +458,10 @@ const createEvent = (req, res) => {
   event.time_stamp = admin.firestore.FieldValue.serverTimestamp();
   return db
     .collection("events")
-    .doc()
-    .set(event)
-    .then(() => {
-      console.log("Created event ", event.type);
+    .add(event)
+    .then(docRef => {
+      console.log("Created event ", docRef.id);
+      event.event_id = docRef.id;
       res.status(200).send(event);
       return;
     })
@@ -428,12 +471,45 @@ const createEvent = (req, res) => {
     });
 };
 
+const updateEvent = (req, res) => {
+  const event = req.body;
+  return db
+    .collection("events")
+    .doc(event.event_id)
+    .update(event)
+    .then(() => {
+      console.log("Updated events");
+      res.status(200).send(event);
+      return;
+    })
+    .catch(e => {
+      console.log("Update event error: ", e);
+      res.status(404).send({});
+    });
+};
+
 const outTrip = (req, res) => {
-  let user = req.body;
+  let userLocation = req.body;
+  let user = userLocation.user;
   let { uid, active_trip, name: selectedTrip } = user;
   if (active_trip === selectedTrip) {
     active_trip = "";
   }
+  let eventPromise;
+  if (userLocation.event_statuses && userLocation.event_statuses.length > 0) {
+    userLocation.event_statuses.forEach(e => {
+      if (e.trip_id === selectedTrip) {
+        eventPromise = db
+          .collection("events")
+          .doc(e.event.event_id)
+          .update({
+            coming_users: admin.firestore.FieldValue.arrayRemove(uid),
+            waiting_users: admin.firestore.FieldValue.arrayRemove(uid)
+          });
+      }
+    });
+  }
+
   const removeMyTrip = db
     .collection("users")
     .doc(uid)
@@ -447,6 +523,46 @@ const outTrip = (req, res) => {
     })
     .catch(e => {
       console.log("Remove my trips", e);
+    });
+
+  let new_event_statuses = [];
+  const updateUserLocationPromise = db
+    .collection("user_location")
+    .doc(uid)
+    .get()
+    .then(doc => {
+      if (doc.event_statuses) {
+        new_event_statuses = doc.event_statuses;
+        if (new_event_statuses.length > 0) {
+          let isExisted = false;
+          let removeIndex = 0;
+          for (let index = 0; index < new_event_statuses.length; index++) {
+            const e = event_statuses[index];
+            if (e.trip_id === selectedTrip) {
+              isExisted = true;
+              removeIndex = index;
+            }
+          }
+          if (isExisted === true) {
+            new_event_statuses.splice(removeIndex, 1);
+          }
+        }
+      }
+      return db
+        .collection("user_location")
+        .doc(uid)
+        .update({
+          event_statuses: new_event_statuses,
+          user: {
+            active_trip
+          }
+        })
+        .then(() => {
+          return;
+        })
+        .catch(e => {
+          console.log("add coming event to user error ", e);
+        });
     });
 
   const updateThisTrip = db
@@ -463,7 +579,12 @@ const outTrip = (req, res) => {
       console.log("update this trip err", e);
     });
 
-  return Promise.all([removeMyTrip, updateThisTrip])
+  return Promise.all([
+    removeMyTrip,
+    updateThisTrip,
+    updateUserLocationPromise,
+    eventPromise
+  ])
     .then(() => {
       console.log(uid, " out ", selectedTrip);
       res.status(200).send(true);
@@ -534,6 +655,8 @@ module.exports = {
   switchTrip: functions.https.onRequest(switchTrip),
   createEvent: functions.https.onRequest(createEvent),
   updateTrip: functions.https.onRequest(updateTrip),
+  updateEvent: functions.https.onRequest(updateEvent),
+  addEventToUserLocation: functions.https.onRequest(addEventToUserLocation),
   outTrip: functions.https.onRequest(outTrip),
   getAllEvent: functions.https.onRequest(getAllEvent),
   onWriteEvent: functions.firestore
