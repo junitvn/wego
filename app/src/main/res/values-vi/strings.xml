@@ -106,4 +106,6 @@
     <string name="message_alert">Bạn đang tham gia một sự kiện khác, bạn có muốn thay đổi?</string>
     <string name="text_ok">Đồng ý</string>
     <string name="title_alert">Xác nhận</string>
+    <string name="people_who_coming">Những người đang đến</string>
+    <string name="people_who_waiting">Những người đang đợi</string>
 </resources>

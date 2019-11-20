@@ -48,5 +48,7 @@ public class MapsContract {
         void updateMarker(List<UserLocation> userLocations);
 
         void showAllMember();
+
+        void showUserLocation(UserLocation userLocation);
     }
 }

@@ -6,10 +6,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -26,14 +30,16 @@ import com.lamnn.wego.data.model.Event;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.screen.details.info_member.InfoMemberActivity;
+import com.lamnn.wego.screen.details.info_member.PopupMemberAdapter;
 import com.lamnn.wego.screen.event.create_event.CreateEventActivity;
+import com.lamnn.wego.screen.map.MapsActivity;
 
 import java.util.List;
 
 import static com.lamnn.wego.screen.event.create_event.CreateEventActivity.EXTRA_EVENT;
 
 public class InfoUserActivity extends AppCompatActivity implements View.OnClickListener,
-        UserEventAdapter.OnEventItemClickListener, InfoUserContract.View {
+        UserEventAdapter.OnEventItemClickListener, InfoUserContract.View, PopupMemberAdapter.OnMemberItemClickListener {
     public static final String EXTRA_USER = "EXTRA_USER";
     public static final String EXTRA_USER_LOCATION = "EXTRA_USER_LOCATION";
     private Toolbar mToolbar;
@@ -51,6 +57,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
     public static final String CHANNEL_ID = "lamnn";
     private ProgressBar mProgressBar;
     private InfoUserPresenter mPresenter;
+    private Dialog mDialog;
 
     public static Intent getIntent(Context context, UserLocation userLocation) {
         Intent intent = new Intent(context, InfoUserActivity.class);
@@ -75,6 +82,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
         createNotificationChannel();
         mPresenter = new InfoUserPresenter(this, this);
         mPresenter.getUserLocationData(mUserLocation);
+        mDialog = new Dialog(this);
     }
 
 
@@ -103,6 +111,29 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
         } else {
             mRecyclerViewEvent.setPadding(0, 0, 0, mToolbar.getHeight());
         }
+    }
+
+    @Override
+    public void showMemberPopup(List<UserLocation> userLocations, String type) {
+        mDialog.setContentView(R.layout.member_popup);
+        RecyclerView recyclerViewPopupMember = mDialog.findViewById(R.id.recycler_popup_member);
+        recyclerViewPopupMember.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewPopupMember.setHasFixedSize(true);
+        TextView textViewPopupTitle;
+        ImageView imageViewClosePopup;
+        textViewPopupTitle = mDialog.findViewById(R.id.text_title_popup);
+        if (type.equals("coming")) {
+            textViewPopupTitle.setText(getString(R.string.people_who_coming));
+        } else {
+            textViewPopupTitle.setText(getString(R.string.people_who_waiting));
+        }
+        imageViewClosePopup = mDialog.findViewById(R.id.image_close_popup);
+        imageViewClosePopup.setOnClickListener(this);
+        PopupMemberAdapter popupMemberAdapter = new PopupMemberAdapter(this, userLocations, this);
+        recyclerViewPopupMember.setAdapter(popupMemberAdapter);
+        popupMemberAdapter.notifyDataSetChanged();
+        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mDialog.show();
     }
 
     @Override
@@ -184,6 +215,9 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
                 userLocation.setUid(mEventFromStatus.getUserId());
                 startActivity(InfoMemberActivity.getIntent(this, userLocation));
                 break;
+            case R.id.image_close_popup:
+                mDialog.dismiss();
+                break;
         }
     }
 
@@ -220,12 +254,12 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onEventTextWhoComingClick(Event event) {
-
+        mPresenter.getListMember(event.getComingUsers(), "coming");
     }
 
     @Override
     public void onEventTextWhoWaitingClick(Event event) {
-
+        mPresenter.getListMember(event.getWaitingUsers(), "waiting");
     }
 
     @Override
@@ -245,5 +279,26 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
         } else {
             mPresenter.updateStatus(event, "done");
         }
+    }
+
+    @Override
+    public void onMemberNameClick(UserLocation userLocation) {
+        if (userLocation.getUid().equals(mUserLocation.getUid())) {
+            mDialog.dismiss();
+        } else {
+            startActivity(InfoMemberActivity.getIntent(this, userLocation));
+        }
+    }
+
+    @Override
+    public void onGoToLocationClick(UserLocation userLocation) {
+        startActivity(MapsActivity.getIntent(this, userLocation));
+    }
+
+    @Override
+    public void onCallClick(UserLocation userLocation) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + userLocation.getUser().getPhone()));
+        startActivity(intent);
     }
 }

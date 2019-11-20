@@ -15,34 +15,6 @@ import com.google.gson.JsonElement;
 import com.lamnn.wego.data.model.User;
 
 public class AppUtils {
-    private static User sUser = null;
-    private static String TAG = "APP_UTILS_TAG";
-
-//    public static User getCurrentUser() {
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        FirebaseAuth auth = FirebaseAuth.getInstance();
-//        DocumentReference docRef = db.collection("users").document(auth.getUid());
-//        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//
-//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-//
-//                        Gson gson = new Gson();
-//                        JsonElement jsonElement = gson.toJsonTree(document.getData());
-//                        sUser = gson.fromJson(jsonElement, User.class);
-//                    } else {
-//                        Log.d(TAG, "No such document");
-//                    }
-//                } else {
-//                    Log.d(TAG, "get failed with ", task.getException());
-//                }
-//            }
-//        });
-//        return sUser;
-//    }
-
+    public static String CAR_ICON_URI = "https://firebasestorage.googleapis.com/v0/b/wego-af401.appspot.com/o/event_photo%2Fbreakdown.png?alt=media&token=338e6f81-5f4e-4a02-8263-1bca031cdf81";
+    public static String GAS_ICON_URI = "https://firebasestorage.googleapis.com/v0/b/wego-af401.appspot.com/o/event_photo%2Frefuel.png?alt=media&token=da1ebd4c-01bd-4db2-909a-ec926841f2e2";
 }

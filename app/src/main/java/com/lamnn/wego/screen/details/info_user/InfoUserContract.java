@@ -14,6 +14,8 @@ public interface InfoUserContract {
         void showEvents(List<Event> events);
 
         void showUserStatus(UserLocation userLocation, String status, String type, Event event);
+
+        void showMemberPopup(List<UserLocation> userLocations, String type);
     }
 
     interface Presenter {
@@ -22,5 +24,7 @@ public interface InfoUserContract {
         void createQuickEvent(UserLocation userLocation, String type);
 
         void getEventData(UserLocation userLocation);
+
+        void getListMember(List<String> waitingUsers, String type);
     }
 }

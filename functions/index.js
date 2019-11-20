@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-
+const _ = require("lodash");
 admin.initializeApp(functions.config().firebase);
 
 const db = admin.firestore();
@@ -431,14 +431,47 @@ const addEventToUserLocation = (req, res) => {
 
 const onWriteEvent = (change, context) => {
   console.log(context.params);
-  console.log(change.after.data());
+  console.log("before ", change.before.data());
+  console.log("new ", change.after.data());
+  let diffComing, diffComingReverse, diffWaiting, diffWaitingReverse;
+  let difference = "";
+  if (change.before.data()) {
+    diffComing = _.differenceBy(
+      change.before.data().coming_users,
+      change.after.data().coming_users
+    );
+    diffComingReverse = _.differenceBy(
+      change.after.data().coming_users,
+      change.before.data().coming_users
+    );
+
+    diffWaiting = _.differenceBy(
+      change.before.data().waiting_users,
+      change.after.data().waiting_users
+    );
+    diffWaitingReverse = _.differenceBy(
+      change.after.data().waiting_users,
+      change.before.data().waiting_users
+    );
+    const diff = getDiff(
+      diffComing,
+      diffComingReverse,
+      diffWaiting,
+      diffWaitingReverse
+    );
+    if (diff.length !== 0) {
+      difference = diff[0];
+    }
+  }
+
   const dataChanged = change.after.data();
   const active_trip = dataChanged.user.active_trip;
   let topic = active_trip;
   let payload = {
     data: {
       user: JSON.stringify(dataChanged.user),
-      event: JSON.stringify(dataChanged)
+      event: JSON.stringify(dataChanged),
+      difference
     }
   };
   return admin
@@ -451,6 +484,26 @@ const onWriteEvent = (change, context) => {
     .catch(e => {
       console.log(e);
     });
+};
+const getDiff = (dif1, dif2, dif3, dif4) => {
+  let diff = [];
+  if (dif1.length !== 0) {
+    diff = dif1;
+    return diff;
+  }
+  if (dif2.length !== 0) {
+    diff = dif2;
+    return diff;
+  }
+  if (dif3.length !== 0) {
+    diff = dif3;
+    return diff;
+  }
+  if (dif4.length !== 0) {
+    diff = dif4;
+    return diff;
+  }
+  return diff;
 };
 
 const createEvent = (req, res) => {

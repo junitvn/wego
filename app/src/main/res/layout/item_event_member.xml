@@ -17,6 +17,7 @@
         android:layout_gravity="start"
         android:layout_marginLeft="2dp"
         android:padding="6dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/text_event_time"
         app:layout_constraintStart_toEndOf="@+id/text_event_time"
         app:srcCompat="@drawable/ic_offline" />
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
         android:text="So 1 o cho dua"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/image_dot"
         app:layout_constraintStart_toEndOf="@+id/image_dot" />
 

@@ -17,6 +17,8 @@ public class InfoMemberContract {
         void showLoading();
 
         void showUserStatus(UserLocation userLocation, String status, String type, Event event);
+
+        void showMemberPopup(List<UserLocation> userLocations, String type);
     }
 
     interface Presenter {
@@ -26,5 +28,7 @@ public class InfoMemberContract {
         void addComingMember(String myUserId, Event event);
 
         void addWaitingMember(String myUserId, Event event);
+
+        void getListMember(List<String> users, String type);
     }
 }

@@ -13,4 +13,5 @@
     <dimen name="margin_horizontal_icon">32dp</dimen>
     <dimen name="margin_horizontal_verify">16dp</dimen>
     <dimen name="circle_avatar">50dp</dimen>
+    <dimen name="icon_member_list_size">30dp</dimen>
 </resources>

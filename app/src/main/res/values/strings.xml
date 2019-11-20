@@ -112,4 +112,6 @@
     <string name="title_alert">Confirm</string>
     <string name="message_alert">You are attending another event, do you want to change?</string>
     <string name="text_ok">Yes</string>
+    <string name="people_who_coming">People who coming</string>
+    <string name="people_who_waiting">People who waiting</string>
 </resources>

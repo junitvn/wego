@@ -100,7 +100,6 @@ public class MemberEventAdapter extends RecyclerView.Adapter<MemberEventAdapter.
             mRecyclerViewEventPhoto = itemView.findViewById(R.id.recycler_event_photo_item);
             mRecyclerViewEventPhoto.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             mRecyclerViewEventPhoto.setHasFixedSize(true);
-
         }
 
         private void onBindData(Event event) {

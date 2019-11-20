@@ -90,6 +90,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.lamnn.wego.screen.details.info_user.InfoUserActivity.EXTRA_USER_LOCATION;
+
 public class MapsActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener, MapsContract.View, OnMapReadyCallback,
         TripAdapter.OnTripItemClickListener, GoogleMap.OnInfoWindowClickListener, MemberCircleAdapter.OnUserItemClickListener {
@@ -121,11 +123,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private LocationService mLocationService;
     private User mUser;
     private UserLocation mUserLocation;
+    private UserLocation mUserLocationParam;
     private List<UserLocation> mUserLocations;
     private UpdateLocationService mUpdateLocationService;
-    private ClusterManager mClusterManager;
-    private ClusterManagerRenderer mClusterManagerRenderer;
-    private List<ClusterMarker> mClusterMarkers;
     boolean doubleBackToExitPressedOnce = false;
     private BroadcastReceiver locationUpdateReceiver;
     private Trip mTrip;
@@ -133,6 +133,12 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
 
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, MapsActivity.class);
+        return intent;
+    }
+
+    public static Intent getIntent(Context context, UserLocation userLocation) {
+        Intent intent = new Intent(context, MapsActivity.class);
+        intent.putExtra(EXTRA_USER_LOCATION, userLocation);
         return intent;
     }
 
@@ -154,6 +160,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
             startActivity(intent);
         }
+        receiveData();
     }
 
 
@@ -378,6 +385,16 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
+    private void receiveData() {
+        UserLocation userLocation;
+        if (getIntent().getExtras() != null) {
+            userLocation = getIntent().getExtras().getParcelable(EXTRA_USER_LOCATION);
+            if (userLocation != null) {
+                mUserLocationParam = userLocation;
+                mPresenter.showUserLocation(userLocation);
+            }
+        }
+    }
 
     private void initBroadcastReceiver() {
         locationUpdateReceiver = new BroadcastReceiver() {
@@ -607,7 +624,6 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             LatLng latLng = new LatLng(userLocation.getLocation().getLat(), userLocation.getLocation().getLng());
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             mPresenter.showUserItemCircle(userLocation);
-
         }
     }
 }

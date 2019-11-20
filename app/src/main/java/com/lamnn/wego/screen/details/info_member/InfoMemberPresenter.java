@@ -233,6 +233,29 @@ public class InfoMemberPresenter implements InfoMemberContract.Presenter {
 
     }
 
+    @Override
+    public void getListMember(final List<String> users, final String type) {
+        final List<UserLocation> userLocations = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            mFirestore.collection("user_location")
+                    .document(users.get(i))
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot doc, @Nullable FirebaseFirestoreException e) {
+                            Gson gson = new Gson();
+                            JsonElement jsonElement = gson.toJsonTree(doc.getData());
+                            UserLocation userLocation = gson.fromJson(jsonElement, UserLocation.class);
+                            Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                            userLocation.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
+                            userLocations.add(userLocation);
+                            if(userLocations.size() == users.size()){
+                                mView.showMemberPopup(userLocations, type);
+                            }
+                        }
+                    });
+        }
+    }
+
     private void addEventToUser(String myUserId, Event event, String eventStatusValue) {
         UserLocation userLocation = new UserLocation();
         userLocation.setUid(myUserId);

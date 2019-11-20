@@ -48,6 +48,7 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     private final ImageView mImageView;
     private final IconGenerator mIconGenerator;
     private final Context mContext;
+    private UserLocation mUserLocation;
     private static final String TAG = "RENDERER";
     Bitmap mBitmap;
 
@@ -101,6 +102,9 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
                     })
                     .into(mImageView);
             marker.setTag(clusterItem.getUserLocation());
+        }
+        if (mUserLocation != null && mUserLocation.getUid().equals(clusterItem.getUserLocation().getUid())) {
+            marker.showInfoWindow();
         }
     }
 
@@ -178,6 +182,10 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         Canvas canvas = new Canvas(bitmap);
         marker.draw(canvas);
         return bitmap;
+    }
+
+    public void showUserInfoWindow(UserLocation userLocation) {
+        mUserLocation = userLocation;
     }
 }
 

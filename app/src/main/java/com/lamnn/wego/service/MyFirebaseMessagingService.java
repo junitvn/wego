@@ -28,8 +28,6 @@ import static com.lamnn.wego.screen.details.info_user.InfoUserActivity.CHANNEL_I
 import static com.lamnn.wego.screen.details.info_user.InfoUserActivity.EXTRA_USER;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private String ACTION_NOTIFICATION_BUTTON_CLICK = "ACTION_NOTIFICATION_BUTTON_CLICK";
-    private String EXTRA_BUTTON_CLICKED = "EXTRA_BUTTON_CLICKED";
     private String EXTRA_BUTTON_DIRECTION = "EXTRA_BUTTON_DIRECTION";
     private String EXTRA_BUTTON_CALL = "EXTRA_BUTTON_CALL";
     private String EXTRA_ACTION = "EXTRA_ACTION";
@@ -46,7 +44,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             mUser = gson.fromJson(remoteMessage.getData().get("user"), User.class);
             mEvent = gson.fromJson(remoteMessage.getData().get("event"), Event.class);
             Log.d("OK", "onMessageReceived: ok");
-            if (!FirebaseAuth.getInstance().getUid().equals(mEvent.getUserId())) {
+            String diff = remoteMessage.getData().get("difference");
+            if (!FirebaseAuth.getInstance().getUid().equals(mEvent.getUserId())
+                    && diff.equals("")) {
                 showNotification();
             }
             if (FirebaseAuth.getInstance().getUid().equals(mEvent.getUserId())
@@ -59,12 +59,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
 
         }
-    }
-
-    private PendingIntent onButtonNotificationClick(@IdRes int id) {
-        Intent intent = new Intent(ACTION_NOTIFICATION_BUTTON_CLICK);
-        intent.putExtra(EXTRA_BUTTON_CLICKED, id);
-        return PendingIntent.getBroadcast(this, id, intent, 0);
     }
 
     private void showComingNotification() {
