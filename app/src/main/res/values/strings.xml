@@ -26,7 +26,7 @@
     <string name="text_choose_photo">Choose photo</string>
     <string name="text_choose_from_gallery">Choose a photo from gallery</string>
     <string name="text_take_photo">Take a photo</string>
-    <string name="file_name_image">avatar.jpg</string>
+    <string name="file_name_image" translatable="false">avatar.jpg</string>
     <string name="text_my_account">My account</string>
     <string name="text_null" translatable="false" />
     <string name="date_format" translatable="false">yyyyMMddHHmmss</string>
@@ -64,4 +64,54 @@
     <string name="text_message_password">Password should be at least 6 characters</string>
     <string name="text_email_badly_formatted">The email address is badly formatted</string>
     <string name="text_sign_up_fail">Sign up failure. Check your connection</string>
+    <string name="text_something_went_wrong">Something went wrong</string>
+    <string name="text_id_trip_error">ID trip invalid, try again</string>
+    <string name="text_success">Success</string>
+    <string name="text_join_a_trip">Join a trip</string>
+    <string name="text_create_new_trip">Create new trip</string>
+    <string name="text_invite_friends">Invite your friends</string>
+    <string name="text_click_back_again">Please click BACK again to exit</string>
+    <string name="action_direction">Direction</string>
+    <string name="action_call">Call</string>
+    <string name="text_create_new_event">Create new event</string>
+    <string name="text_add_a_photo">Add a photo</string>
+    <string name="text_photos">Photos</string>
+    <string name="text_noti_need_help">needs help!</string>
+    <string name="text_other_event">Other</string>
+    <string name="text_out_of_gas">Out of gas</string>
+    <string name="text_car_broken">Car broken</string>
+    <string name="text_add_an_event">Add an event</string>
+    <string name="text_edit">Edit</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_waiting">Waiting</string>
+    <string name="text_days">days,</string>
+    <string name="text_hours">hours,</string>
+    <string name="text_minutes">minutes ago</string>
+    <string name="text_me">Me</string>
+    <string name="text_undone">Undone</string>
+    <string name="text_expand_to_show">Expand to show!</string>
+    <string name="text_noti_done">DONE!</string>
+    <string name="text_noti_cancel">CANCEL</string>
+    <string name="text_i_m_waiting">I\'m waiting</string>
+    <string name="text_i_m_coming">I\'m coming</string>
+    <string name="text_friends_coming">friends are coming</string>
+    <string name="event_has_finished">This event has finished</string>
+    <string name="you_are_coming">You are coming</string>
+    <string name="you_and">You and</string>
+    <string name="members_are_coming">members are coming</string>
+    <string name="you_are_waiting">You are waiting</string>
+    <string name="member_are_waiting">members are waiting</string>
+    <string name="unknown_place">Unknown place</string>
+    <string name="now_online">Now online</string>
+    <string name="going_to">Going to</string>
+    <string name="s_place">\'s place</string>
+    <string name="waiting_for">"Waiting for "</string>
+    <string name="and">and</string>
+    <string name="other_event">other event</string>
+    <string name="no_event_yet">No event yet!</string>
+    <string name="title_alert">Confirm</string>
+    <string name="message_alert">You are attending another event, do you want to change?</string>
+    <string name="text_ok">Yes</string>
+    <string name="people_who_coming">People who coming</string>
+    <string name="people_who_waiting">People who waiting</string>
 </resources>

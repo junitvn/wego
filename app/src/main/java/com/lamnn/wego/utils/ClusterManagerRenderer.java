@@ -1,6 +1,5 @@
 package com.lamnn.wego.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,36 +11,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.ClusterMarker;
+import com.lamnn.wego.data.model.Event;
+import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.data.model.UserLocation;
+import com.lamnn.wego.data.model.route.MyTimeStamp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
     private final ImageView mImageView;
     private final IconGenerator mIconGenerator;
     private final Context mContext;
-    private ClusterManager mClusterManager;
+    private UserLocation mUserLocation;
     private static final String TAG = "RENDERER";
     Bitmap mBitmap;
 
@@ -50,18 +57,16 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         super(context, map, clusterManager);
         mContext = context;
         mIconGenerator = new IconGenerator(context);
-        mClusterManager = clusterManager;
-        mImageView = new ImageView(context);
-        mImageView.setLayoutParams(new ViewGroup.LayoutParams(150, 150));
-        mImageView.setPadding(2, 2, 2, 2);
-        mIconGenerator.setContentView(mImageView);
+        View marker = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.marker_custom, null);
+        mImageView = marker.findViewById(R.id.user_dp);
+        mIconGenerator.setContentView(marker);
     }
 
     @Override
     protected void onBeforeClusterItemRendered(final ClusterMarker item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
-        mBitmap = mIconGenerator.makeIcon("lamnn");
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mBitmap)).title(item.getUser().getName());
+        mBitmap = createCustomMarker(mContext, item.getUserLocation().getUser().getPhotoUri());
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mBitmap));
     }
 
     @Override
@@ -71,31 +76,36 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
 
     @Override
     protected void onClusterItemRendered(final ClusterMarker clusterItem, final Marker marker) {
-        GlideApp.with(mContext)
-                .load(clusterItem.getUser().getPhotoUri())
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        //on load failed
-                        Log.d(TAG, "onLoadFailed: ");
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        //on load success
-                        mImageView.setImageDrawable(resource);
-                        mBitmap = mIconGenerator.makeIcon();
-                        if (marker != null) {
-                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(mBitmap));
+        if (clusterItem.getUserLocation().getUser() != null) {
+            GlideApp.with(mContext)
+                    .load(clusterItem.getUserLocation().getUser().getPhotoUri())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(0.1f)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            //on load failed
+                            Log.d(TAG, "onLoadFailed: on rendered");
+                            return false;
                         }
-                        Log.d(TAG, "onResourceReady: ");
-                        return false;
-                    }
-                })
-                .into(mImageView);
-        marker.setTag(clusterItem.getUser());
 
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            //on load success
+                            mImageView.setImageDrawable(resource);
+                            if (marker != null) {
+                                marker.setIcon(BitmapDescriptorFactory.fromBitmap(mBitmap));
+                            }
+                            Log.d(TAG, "onResourceReady: cluster item rendered");
+                            return false;
+                        }
+                    })
+                    .into(mImageView);
+            marker.setTag(clusterItem.getUserLocation());
+        }
+        if (mUserLocation != null && mUserLocation.getUid().equals(clusterItem.getUserLocation().getUid())) {
+            marker.showInfoWindow();
+        }
     }
 
     @Override
@@ -103,11 +113,38 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         super.onClusterRendered(cluster, marker);
     }
 
-    public void setUpdateMarker(ClusterMarker updateMarker) {
-        Marker marker = getMarker(updateMarker);
+    public void setUpdateMarker(final ClusterMarker updateMarker) {
+        final Marker marker = getMarker(updateMarker);
         if (marker != null) {
-            marker.setPosition(updateMarker.getPosition());
-            marker.setTag(updateMarker.getUser());
+            final UserLocation userLocation = updateMarker.getUserLocation();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events")
+                    .whereEqualTo("trip_id", userLocation.getUser().getActiveTrip())
+                    .whereEqualTo("user_id", userLocation.getUser().getUid())
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                return;
+                            }
+                            List<Event> events = new ArrayList<>();
+                            Event event;
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                Gson gson = new Gson();
+                                JsonElement jsonElement = gson.toJsonTree(doc.getData());
+                                event = gson.fromJson(jsonElement, Event.class);
+                                Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                                event.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
+                                event.setEventId(doc.getId());
+                                if (event.getStatus().equals("waiting")) {
+                                    events.add(event);
+                                }
+                            }
+                            userLocation.setEvents(events);
+                            marker.setPosition(updateMarker.getPosition());
+                            marker.setTag(userLocation);
+                        }
+                    });
         }
     }
 
@@ -116,23 +153,21 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         final ImageView markerImage = marker.findViewById(R.id.user_dp);
         GlideApp.with(context)
                 .load(photoUrl)
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.ic_user_wait)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.ic_sort_up)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         //on load failed
-                        Log.d(TAG, "onLoadFailed: ");
+                        Log.d(TAG, "onLoadFailed: on create bitmap");
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        //on load success
-                        mImageView.setImageDrawable(resource);
-                        markerImage.setImageDrawable(resource);
-                        mClusterManager.cluster();
-                        Log.d(TAG, "onResourceReady: ");
+//                        mClusterManager.cluster();
+                        Log.d(TAG, "onResourceReady: con create bitmap");
                         return false;
                     }
                 })
@@ -147,6 +182,10 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         Canvas canvas = new Canvas(bitmap);
         marker.draw(canvas);
         return bitmap;
+    }
+
+    public void showUserInfoWindow(UserLocation userLocation) {
+        mUserLocation = userLocation;
     }
 }
 

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="#FFF"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+
+    <ImageView
+        android:id="@+id/image_dot"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="start"
+        android:layout_marginLeft="2dp"
+        android:padding="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_event_time"
+        app:layout_constraintStart_toEndOf="@+id/text_event_time"
+        app:srcCompat="@drawable/ic_offline" />
+
+    <TextView
+        android:id="@+id/text_event_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Car"
+        android:textColor="#000"
+        android:textSize="21dp"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/text_event_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_event_type" />
+
+    <TextView
+        android:id="@+id/text_event_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:text="So 1 o cho dua"
+        app:layout_constraintBottom_toBottomOf="@+id/image_dot"
+        app:layout_constraintStart_toEndOf="@+id/image_dot" />
+
+
+    <TextView
+        android:id="@+id/text_event_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Note"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_event_time" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toEndOf="@+id/text_event_type"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_event_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:text="Status"
+            app:layout_constraintEnd_toStartOf="@+id/image_event_status"
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/image_event_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:padding="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_offline" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_event_photo_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_event_note" />
+
+    <TextView
+        android:id="@+id/text_event_who_coming"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="6dp"
+        android:paddingVertical="5dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/text_event_who_waiting"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_event_photo_item" />
+
+
+    <TextView
+        android:id="@+id/text_event_who_waiting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="6dp"
+        android:paddingVertical="5dp"
+        android:gravity="end"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/text_event_who_coming"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_event_photo_item" />
+
+    <Button
+
+        android:id="@+id/button_event_done"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_event"
+        android:text="@string/text_done"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toStartOf="@+id/button_event_im_waiting"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/button_event_im_waiting" />
+
+    <Button
+        android:id="@+id/button_event_im_waiting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_event"
+        android:text="@string/text_edit"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toStartOf="@+id/button_event_im_coming"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_event_done"
+        app:layout_constraintTop_toTopOf="@+id/button_event_im_coming" />
+
+    <Button
+        android:id="@+id/button_event_im_coming"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/button_event"
+        android:text="@string/text_delete"
+        android:textAllCaps="false"
+        android:textColor="#F44336"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_event_im_waiting"
+        app:layout_constraintTop_toBottomOf="@+id/text_event_who_waiting" />
+
+    <ImageView
+        android:id="@+id/image_im_coming3"
+        android:layout_width="10dp"
+        android:layout_height="35dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_event_im_coming"
+        app:layout_constraintEnd_toEndOf="@+id/button_event_im_coming"
+        app:layout_constraintStart_toEndOf="@+id/button_event_done"
+        app:layout_constraintTop_toTopOf="@+id/button_event_im_coming"
+        app:srcCompat="@drawable/ic_vertical_line" />
+
+    <ImageView
+        android:id="@+id/image_im_coming2"
+        android:layout_width="10dp"
+        android:layout_height="35dp"
+        app:layout_constraintBottom_toBottomOf="@+id/button_event_im_coming"
+        app:layout_constraintEnd_toEndOf="@+id/button_event_im_waiting"
+        app:layout_constraintStart_toStartOf="@+id/button_event_done"
+        app:layout_constraintTop_toTopOf="@+id/button_event_im_coming"
+        app:srcCompat="@drawable/ic_vertical_line" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

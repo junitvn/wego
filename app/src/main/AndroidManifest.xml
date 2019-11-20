@@ -2,6 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lamnn.wego">
 
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,17 +21,17 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.sign_up.SignUpActivity"></activity>
-        <activity android:name=".screen.create_event.CreateEventActivity" />
-        <activity android:name=".screen.setting_trip.SettingTripActivity" />
-        <activity android:name=".screen.info_user.InfoUserActivity" />
-        <activity android:name=".screen.info_member.InfoMemberActivity" />
-        <activity android:name=".screen.join_trip.JoinTripActivity" />
-        <activity android:name=".screen.create_trip.ShareCodeActivity" />
+        <activity android:name=".screen.sign_up.SignUpActivity" />
+        <activity android:name=".screen.event.create_event.CreateEventActivity" />
+        <activity android:name=".screen.trip.setting_trip.SettingTripActivity" />
+        <activity android:name=".screen.details.info_user.InfoUserActivity" />
+        <activity android:name=".screen.details.info_member.InfoMemberActivity" />
+        <activity android:name=".screen.trip.join_trip.JoinTripActivity" />
+        <activity android:name=".screen.trip.create_trip.ShareCodeActivity" />
         <activity
-            android:name=".screen.create_trip.NavigationActivity"
+            android:name=".screen.trip.create_trip.NavigationActivity"
             android:label="@string/title_activity_navigation" />
-        <activity android:name=".screen.create_trip.CreateTripActivity" />
+        <activity android:name=".screen.trip.create_trip.CreateTripActivity" />
         <activity android:name=".screen.profile.detail.ProfileDetailActivity" />
         <activity android:name=".screen.profile.update.ProfileUpdateActivity" />
         <activity android:name=".screen.login.phone.SelectAreaActivity" />
@@ -81,19 +93,10 @@
         <service
             android:name=".service.MyLocationService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="false" />
+
+        <receiver android:name=".broadcast.NotificationReceiver" />
     </application>
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
-
-    <uses-feature
-        android:name="android.hardware.camera.any"
-        android:required="true" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

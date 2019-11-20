@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void initView() {
         mImagePhoneLogin = findViewById(R.id.image_facebook_login);
         mImagePhoneLogin.setOnClickListener(this);
-        mImageFacebookLogin = findViewById(R.id.image_phone_login);
+        mImageFacebookLogin = findViewById(R.id.image_event_remove_photo);
         mImageFacebookLogin.setOnClickListener(this);
         mPresenter = new LoginPresenter(this);
         mLoginButton = findViewById(R.id.login_button);
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 mPresenter.signIn(mEditTextUserName.getText().toString().trim(),
                         mEditTextPassword.getText().toString());
                 break;
-            case R.id.image_phone_login:
+            case R.id.image_event_remove_photo:
                 startActivity(PhoneLoginActivity.getIntent(this));
                 break;
 

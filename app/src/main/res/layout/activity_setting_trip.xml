@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.setting_trip.SettingTripActivity">
+    tools:context=".screen.trip.setting_trip.SettingTripActivity">
 
     <EditText
         android:id="@+id/text_name_trip"

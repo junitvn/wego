@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-
+const _ = require("lodash");
 admin.initializeApp(functions.config().firebase);
 
 const db = admin.firestore();
@@ -28,7 +28,23 @@ const createProfile = (userRecord, context) => {
   const updatePhotoUrl = user.updateUser(userRecord.uid, {
     photo_url: photoURL
   });
-  return Promise.all([updatePhotoUrl, createUser])
+  const createUserLocationPromise = db
+    .collection("user_location")
+    .doc(uid)
+    .set({
+      uid,
+      time_stamp: admin.firestore.FieldValue.serverTimestamp(),
+      user: {},
+      status: "online",
+      event_status: "going"
+    })
+    .then(() => {
+      return;
+    })
+    .catch(e => {
+      console.log("Update user location error, ", e);
+    });
+  return Promise.all([updatePhotoUrl, createUser, createUserLocationPromise])
     .then(() => {
       console.log("Create user");
       return;
@@ -41,15 +57,28 @@ const createProfile = (userRecord, context) => {
 //update user
 const updateUser = (req, res) => {
   const user = req.body;
-  return db
+  const updateUserLocationPromise = db
+    .collection("user_location")
+    .doc(user.uid)
+    .update({
+      user
+    })
+    .then(() => {
+      return;
+    })
+    .catch(e => {
+      console.log("Update user location error, ", e);
+    });
+  const updateUserPromise = db
     .collection("users")
     .doc(user.uid)
     .update({
-      name: user.name,
-      photo_url: user.photo_url,
-      phone_number: user.phone_number,
+      name: user.name ? user.name : "",
+      photo_url: user.photo_url ? user.photo_url : "",
+      phone_number: user.phone_number ? user.phone_number : "",
       is_first_time: false
-    })
+    });
+  return Promise.all([updateUserPromise, updateUserLocationPromise])
     .then(() => {
       console.log("Update user " + user.uid);
       res.status(200).send(user);
@@ -61,11 +90,31 @@ const updateUser = (req, res) => {
     });
 };
 
+//init user location
+const initUserLocation = (req, res) => {
+  let user_location = req.body;
+  console.log("Body user location", user_location);
+  user_location.time_stamp = admin.firestore.FieldValue.serverTimestamp();
+  return db
+    .collection("user_location")
+    .doc(user_location.uid)
+    .update(user_location)
+    .then(() => {
+      res.status(200).send(user_location);
+      return;
+    })
+    .catch(e => {
+      res.status(400).send({});
+      console.log("Init location e: ", e);
+    });
+};
+
 const updateStatus = (req, res) => {
   const status = req.body.status;
   const uid = req.body.uid;
+  console.log("update status", req.body);
   return db
-    .collection("users")
+    .collection("user_location")
     .doc(uid) /*  */
     .update({
       status,
@@ -176,7 +225,7 @@ const getListMember = (req, res) => {
         const members = doc.data().members;
         members.forEach(uid => {
           const p = db
-            .collection("users")
+            .collection("user_location")
             .doc(uid)
             .get();
           promises.push(p);
@@ -230,14 +279,15 @@ const getTrip = (req, res) => {
 ///* Update location */
 const updateLocation = (req, res) => {
   let data = req.body;
+  console.log("data in update location, ", data);
   let promises = [];
   /* active_trip: 'as',
   location: { lat: 20.963739341813092, lng: 105.76690766775546 },
   photo_url: 'https://graph.facebook.com/1991011394332580/picture?height=200',
   uid: 'GbrbYtIHWcN9fyszrFUkj45qvEz2' */
-  let usersRef = db.collection("users").doc(data.uid);
-  let tripsRef = db.collection("trips").doc(data.active_trip);
-  return usersRef
+  let userLocationRef = db.collection("user_location").doc(data.user.uid);
+  let tripsRef = db.collection("trips").doc(data.user.active_trip);
+  return userLocationRef
     .update({
       location: data.location
     })
@@ -249,7 +299,7 @@ const updateLocation = (req, res) => {
             const members = doc.data().members;
             members.forEach(uid => {
               const p = db
-                .collection("users")
+                .collection("user_location")
                 .doc(uid)
                 .get();
               promises.push(p);
@@ -318,12 +368,19 @@ const switchTrip = (req, res) => {
   const user = req.body;
   const active_trip = user.active_trip;
   const uid = user.uid;
-  return db
+  const switchInUserLocation = db
+    .collection("user_location")
+    .doc(uid)
+    .update({
+      "user.active_trip": active_trip
+    });
+  const switchInUser = db
     .collection("users")
     .doc(uid)
     .update({
       active_trip
-    })
+    });
+  return Promise.all([switchInUser, switchInUserLocation])
     .then(() => {
       console.log("Switch to " + active_trip);
       res.status(200).send(user);
@@ -335,15 +392,86 @@ const switchTrip = (req, res) => {
     });
 };
 
+const addEventToUserLocation = (req, res) => {
+  const userLocation = req.body;
+  let new_event_statuses = [];
+  const { uid, event_statuses } = userLocation;
+  const eventStatus = event_statuses[0];
+  const userLocationRef = db.collection("user_location").doc(uid);
+  return userLocationRef.get().then(doc => {
+    if (doc.event_statuses && doc.event_statuses.length > 0) {
+      new_event_statuses = doc.event_statuses;
+      let isExisted = false;
+      new_event_statuses.forEach(e => {
+        if (e.trip_id === eventStatus.trip_id) {
+          e.status = eventStatus.status;
+          isExisted = true;
+        }
+      });
+      if (isExisted === false) {
+        new_event_statuses.push(eventStatus);
+      }
+    } else {
+      new_event_statuses.push(eventStatus);
+    }
+    return userLocationRef
+      .update({
+        event_statuses: new_event_statuses
+      })
+      .then(() => {
+        res.status(200).send(true);
+        return;
+      })
+      .catch(e => {
+        console.log("add coming event to user error ", e);
+        res.status(404).send(false);
+      });
+  });
+};
+
 const onWriteEvent = (change, context) => {
   console.log(context.params);
-  console.log(change.after.data());
+  console.log("before ", change.before.data());
+  console.log("new ", change.after.data());
+  let diffComing, diffComingReverse, diffWaiting, diffWaitingReverse;
+  let difference = "";
+  if (change.before.data()) {
+    diffComing = _.differenceBy(
+      change.before.data().coming_users,
+      change.after.data().coming_users
+    );
+    diffComingReverse = _.differenceBy(
+      change.after.data().coming_users,
+      change.before.data().coming_users
+    );
+
+    diffWaiting = _.differenceBy(
+      change.before.data().waiting_users,
+      change.after.data().waiting_users
+    );
+    diffWaitingReverse = _.differenceBy(
+      change.after.data().waiting_users,
+      change.before.data().waiting_users
+    );
+    const diff = getDiff(
+      diffComing,
+      diffComingReverse,
+      diffWaiting,
+      diffWaitingReverse
+    );
+    if (diff.length !== 0) {
+      difference = diff[0];
+    }
+  }
+
   const dataChanged = change.after.data();
-  let topic = "car";
+  const active_trip = dataChanged.user.active_trip;
+  let topic = active_trip;
   let payload = {
     data: {
-      name: dataChanged.user.name,
-      type: dataChanged.type
+      user: JSON.stringify(dataChanged.user),
+      event: JSON.stringify(dataChanged),
+      difference
     }
   };
   return admin
@@ -357,16 +485,36 @@ const onWriteEvent = (change, context) => {
       console.log(e);
     });
 };
+const getDiff = (dif1, dif2, dif3, dif4) => {
+  let diff = [];
+  if (dif1.length !== 0) {
+    diff = dif1;
+    return diff;
+  }
+  if (dif2.length !== 0) {
+    diff = dif2;
+    return diff;
+  }
+  if (dif3.length !== 0) {
+    diff = dif3;
+    return diff;
+  }
+  if (dif4.length !== 0) {
+    diff = dif4;
+    return diff;
+  }
+  return diff;
+};
 
 const createEvent = (req, res) => {
   let event = req.body;
   event.time_stamp = admin.firestore.FieldValue.serverTimestamp();
   return db
     .collection("events")
-    .doc()
-    .set(event)
-    .then(() => {
-      console.log("Created event ", event.type);
+    .add(event)
+    .then(docRef => {
+      console.log("Created event ", docRef.id);
+      event.event_id = docRef.id;
       res.status(200).send(event);
       return;
     })
@@ -376,18 +524,51 @@ const createEvent = (req, res) => {
     });
 };
 
+const updateEvent = (req, res) => {
+  const event = req.body;
+  return db
+    .collection("events")
+    .doc(event.event_id)
+    .update(event)
+    .then(() => {
+      console.log("Updated events");
+      res.status(200).send(event);
+      return;
+    })
+    .catch(e => {
+      console.log("Update event error: ", e);
+      res.status(404).send({});
+    });
+};
+
 const outTrip = (req, res) => {
-  let user = req.body;
-  let { uid, active_trip, status: thisTrip } = user;
-  if (active_trip === thisTrip) {
+  let userLocation = req.body;
+  let user = userLocation.user;
+  let { uid, active_trip, name: selectedTrip } = user;
+  if (active_trip === selectedTrip) {
     active_trip = "";
   }
+  let eventPromise;
+  if (userLocation.event_statuses && userLocation.event_statuses.length > 0) {
+    userLocation.event_statuses.forEach(e => {
+      if (e.trip_id === selectedTrip) {
+        eventPromise = db
+          .collection("events")
+          .doc(e.event.event_id)
+          .update({
+            coming_users: admin.firestore.FieldValue.arrayRemove(uid),
+            waiting_users: admin.firestore.FieldValue.arrayRemove(uid)
+          });
+      }
+    });
+  }
+
   const removeMyTrip = db
     .collection("users")
     .doc(uid)
     .update({
       active_trip,
-      my_trips: admin.firestore.FieldValue.arrayRemove(thisTrip)
+      my_trips: admin.firestore.FieldValue.arrayRemove(selectedTrip)
     })
     .then(() => {
       console.log("Updated my trips");
@@ -397,9 +578,49 @@ const outTrip = (req, res) => {
       console.log("Remove my trips", e);
     });
 
+  let new_event_statuses = [];
+  const updateUserLocationPromise = db
+    .collection("user_location")
+    .doc(uid)
+    .get()
+    .then(doc => {
+      if (doc.event_statuses) {
+        new_event_statuses = doc.event_statuses;
+        if (new_event_statuses.length > 0) {
+          let isExisted = false;
+          let removeIndex = 0;
+          for (let index = 0; index < new_event_statuses.length; index++) {
+            const e = event_statuses[index];
+            if (e.trip_id === selectedTrip) {
+              isExisted = true;
+              removeIndex = index;
+            }
+          }
+          if (isExisted === true) {
+            new_event_statuses.splice(removeIndex, 1);
+          }
+        }
+      }
+      return db
+        .collection("user_location")
+        .doc(uid)
+        .update({
+          event_statuses: new_event_statuses,
+          user: {
+            active_trip
+          }
+        })
+        .then(() => {
+          return;
+        })
+        .catch(e => {
+          console.log("add coming event to user error ", e);
+        });
+    });
+
   const updateThisTrip = db
     .collection("trips")
-    .doc(thisTrip)
+    .doc(selectedTrip)
     .update({
       members: admin.firestore.FieldValue.arrayRemove(uid)
     })
@@ -411,9 +632,14 @@ const outTrip = (req, res) => {
       console.log("update this trip err", e);
     });
 
-  return Promise.all([removeMyTrip, updateThisTrip])
+  return Promise.all([
+    removeMyTrip,
+    updateThisTrip,
+    updateUserLocationPromise,
+    eventPromise
+  ])
     .then(() => {
-      console.log(uid, " out ", thisTrip);
+      console.log(uid, " out ", selectedTrip);
       res.status(200).send(true);
       return;
     })
@@ -472,6 +698,7 @@ module.exports = {
   authOnCreate: functions.auth.user().onCreate(createProfile),
   createTrip: functions.https.onRequest(createTrip),
   updateLocation: functions.https.onRequest(updateLocation),
+  initUserLocation: functions.https.onRequest(initUserLocation),
   joinTrip: functions.https.onRequest(joinTrip),
   getMyTrips: functions.https.onRequest(getMyTrips),
   getTrip: functions.https.onRequest(getTrip),
@@ -481,6 +708,8 @@ module.exports = {
   switchTrip: functions.https.onRequest(switchTrip),
   createEvent: functions.https.onRequest(createEvent),
   updateTrip: functions.https.onRequest(updateTrip),
+  updateEvent: functions.https.onRequest(updateEvent),
+  addEventToUserLocation: functions.https.onRequest(addEventToUserLocation),
   outTrip: functions.https.onRequest(outTrip),
   getAllEvent: functions.https.onRequest(getAllEvent),
   onWriteEvent: functions.firestore

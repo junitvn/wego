@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".screen.create_trip.CreateTripActivity">
+    tools:context=".screen.trip.create_trip.CreateTripActivity">
 
     <EditText
         android:id="@+id/text_name_trip"
@@ -66,7 +66,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
             android:background="@drawable/button_save"
-            android:text="Next"
+            android:text="@string/action_next"
             android:textColor="#fff"
             android:textSize="20dp"
             android:visibility="visible" />
