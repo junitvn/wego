@@ -8,37 +8,60 @@
     android:focusableInTouchMode="true"
     tools:context=".screen.trip.create_trip.CreateTripActivity">
 
-    <EditText
-        android:id="@+id/text_name_trip"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:hint="@string/text_name_hint"
-        android:textSize="@dimen/text_size_medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        android:text="@string/trip_name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <EditText
+    <TextView
         android:id="@+id/text_search_end_place"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:hint="@string/text_destination_hint"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/underline"
+        android:paddingTop="16dp"
+        android:textColor="#000"
         android:textSize="@dimen/text_size_medium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_name_trip" />
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_destination"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_name_user"
+        app:layout_constraintTop_toBottomOf="@+id/text_name_user" />
+
+    <EditText
+        android:id="@+id/text_name_user"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:textSize="@dimen/text_size_medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
         android:id="@+id/textView3"
@@ -47,8 +70,48 @@
         android:layout_marginLeft="12dp"
         android:layout_marginTop="12dp"
         android:text="@string/text_some_places"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_search_end_place" />
+
+    <ImageView
+        android:id="@+id/image_copy"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_search_end_place"
+        app:layout_constraintEnd_toEndOf="@+id/text_search_end_place"
+        app:layout_constraintTop_toTopOf="@+id/text_search_end_place"
+        app:layout_constraintVertical_bias="0.944"
+        app:srcCompat="@drawable/ic_search_gray_24dp" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/route"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_search_end_place"
+        app:layout_constraintTop_toBottomOf="@+id/text_search_end_place" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_point"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_add_waypoint" />
+
+    <TextView
+        android:id="@+id/text_add_waypoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/add_waypoint"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/textView10"
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -79,6 +142,7 @@
         android:layout_marginLeft="12dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="12dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />

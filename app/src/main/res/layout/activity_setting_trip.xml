@@ -6,45 +6,125 @@
     android:layout_height="match_parent"
     tools:context=".screen.trip.setting_trip.SettingTripActivity">
 
-    <EditText
-        android:id="@+id/text_name_trip"
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/route"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_time_to_repeat"
+        app:layout_constraintTop_toBottomOf="@+id/text_time_to_repeat" />
+
+    <TextView
+        android:id="@+id/text_edit_route"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_edit"
+        android:textSize="@dimen/h2"
+        app:layout_constraintBottom_toBottomOf="@+id/textView12"
+        app:layout_constraintEnd_toEndOf="@+id/edit_time_to_repeat"
+        app:layout_constraintTop_toTopOf="@+id/textView12" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_point"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:hint="@string/text_name_hint"
-        android:textAlignment="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_out_trip"
+        app:layout_constraintTop_toBottomOf="@+id/textView12"
+        app:layout_constraintVertical_bias="0"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/text_time_to_repeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/time_to_repeat_minutes"
         android:textColor="#000"
-        android:textCursorDrawable="@null"
-        android:textSize="@dimen/text_size_medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_min_distance"
+        app:layout_constraintTop_toBottomOf="@+id/text_min_distance" />
+
+    <EditText
+        android:id="@+id/edit_time_to_repeat"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:inputType="number"
+        android:textAlignment="textEnd"
+        android:textSize="@dimen/h2"
+        app:layout_constraintBottom_toBottomOf="@+id/text_time_to_repeat"
+        app:layout_constraintEnd_toEndOf="@+id/edit_min_distance"
+        app:layout_constraintTop_toTopOf="@+id/text_time_to_repeat" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/trip_name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_name_user"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
-        android:inputType="none"
-        android:id="@+id/text_id_trip"
-        android:layout_width="match_parent"
+        android:id="@+id/text_name_user"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:textAlignment="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:textColor="#000"
         android:textCursorDrawable="@null"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/h1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.547"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_name_trip" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/invite_code"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_phone_number"
+        app:layout_constraintTop_toBottomOf="@+id/text_name_user" />
+
+    <EditText
+        android:id="@+id/text_phone_number"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="#000"
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/h1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/settings"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_phone_number"
+        app:layout_constraintTop_toBottomOf="@+id/text_phone_number" />
+
     <ProgressBar
         android:id="@+id/progress_bar_loading"
         android:layout_width="wrap_content"
@@ -55,20 +135,76 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
     <Button
         android:id="@+id/button_out_trip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/button_caution"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/button_out_trip"
         android:paddingHorizontal="80dp"
         android:text="@string/text_i_m_out"
         android:textAllCaps="false"
-        android:textColor="#FFF"
+        android:textColor="#F44336"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/notification_for_min_distance"
+        android:textColor="#000"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <ImageView
+        android:id="@+id/image_copy"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/text_phone_number"
+        app:layout_constraintEnd_toEndOf="@+id/text_phone_number"
+        app:layout_constraintTop_toTopOf="@+id/text_phone_number"
+        app:layout_constraintVertical_bias="0.346"
+        app:srcCompat="@drawable/ic_content_copy_black_24dp" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_receive_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="@+id/text_phone_number"
+        app:layout_constraintTop_toTopOf="@+id/textView7"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/text_min_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/min_distance"
+        android:textColor="#000"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <EditText
+        android:id="@+id/edit_min_distance"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:inputType="number"
+        android:textAlignment="textEnd"
+        android:textSize="@dimen/h2"
+        app:layout_constraintBottom_toBottomOf="@+id/text_min_distance"
+        app:layout_constraintEnd_toEndOf="@+id/switch_receive_notification"
+        app:layout_constraintTop_toTopOf="@+id/text_min_distance" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

@@ -44,17 +44,11 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_code);
-        initView();
         receiveData();
+        initView();
         initToolbar();
-        generateCode();
     }
 
-    private void generateCode() {
-        String code = generateRandomIntIntRange();
-        mTextCode.setText(code);
-        mTrip.setCode(code);
-    }
 
     private void receiveData() {
         mTrip = new Trip();
@@ -64,6 +58,7 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
 
     private void initView() {
         mTextCode = findViewById(R.id.text_code);
+        mTextCode.setText(mTrip.getCode());
         mProgressBar = findViewById(R.id.progress_bar_loading);
     }
 
@@ -113,7 +108,6 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
         mTripService.createTrip(mTrip).enqueue(new Callback<Trip>() {
             @Override
             public void onResponse(Call<Trip> call, Response<Trip> response) {
-                Log.d("Created trip!", response + " ");
                 hideLoading();
                 startActivity(MapsActivity.getIntent(getApplicationContext()));
             }
@@ -125,11 +119,4 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
-    public static String generateRandomIntIntRange() {
-        Random r = new Random();
-        int min = 100000;
-        int max = 999999;
-        int res = r.nextInt((max - min) + 1) + min;
-        return res + "";
-    }
 }

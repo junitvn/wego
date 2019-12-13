@@ -7,7 +7,7 @@ import android.net.Uri;
 
 import com.lamnn.wego.data.model.Event;
 import com.lamnn.wego.data.model.UserLocation;
-import com.lamnn.wego.screen.details.info_member.InfoMemberActivity;
+import com.lamnn.wego.screen.info.info_member.InfoMemberActivity;
 
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String EXTRA_BUTTON_DIRECTION = "EXTRA_BUTTON_DIRECTION";

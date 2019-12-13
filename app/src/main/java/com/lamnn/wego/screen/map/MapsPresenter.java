@@ -1,37 +1,43 @@
 package com.lamnn.wego.screen.map;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.firebase.Timestamp;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.ClusterMarker;
-import com.lamnn.wego.data.model.Event;
+import com.lamnn.wego.data.model.Point;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
-import com.lamnn.wego.data.model.route.MyTimeStamp;
+import com.lamnn.wego.data.model.route.RouteResponse;
+import com.lamnn.wego.data.remote.DirectionService;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.data.remote.UserService;
+import com.lamnn.wego.screen.trip.create_trip.RouteActivity;
 import com.lamnn.wego.utils.APIUtils;
 import com.lamnn.wego.utils.ClusterManagerRenderer;
 
@@ -41,6 +47,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.lamnn.wego.utils.Utils.getMarkerIconFromDrawable;
 
 public class MapsPresenter implements MapsContract.Presenter {
     private Context mContext;
@@ -54,6 +62,8 @@ public class MapsPresenter implements MapsContract.Presenter {
     private ClusterManager<ClusterMarker> mClusterManager;
     private ClusterManagerRenderer mClusterManagerRenderer;
     private UserLocation mUserLocation;
+    private Trip mTrip;
+    private RouteResponse mRouteResponse;
 
     public MapsPresenter(Context context, MapsContract.View view) {
         mContext = context;
@@ -80,6 +90,7 @@ public class MapsPresenter implements MapsContract.Presenter {
                         mView.navigateToUpdateProfile(mUser);
                     } else {
                         mView.showUserData(mUser);
+                        subscribeToChannel(mUser);
                         getTrips();
                         if (mUser.getActiveTrip() != null && !mUser.getActiveTrip().equals("")) {
                             getActiveTrip(mUser.getActiveTrip());
@@ -120,6 +131,7 @@ public class MapsPresenter implements MapsContract.Presenter {
             @Override
             public void onResponse(Call<Trip> call, Response<Trip> response) {
                 Trip trip = response.body();
+                mTrip = trip;
                 mView.showActiveTrip(trip);
                 if (!trip.getCode().equals("")) {
                     getListMember(response.body().getCode(), true);
@@ -184,6 +196,12 @@ public class MapsPresenter implements MapsContract.Presenter {
     public void initMarkers(List<UserLocation> userLocations) {
         if (mMap != null) {
             mMap.clear();
+            if (mTrip != null) {
+                initSpecialMarker(mTrip);
+            }
+            if (mRouteResponse != null && mRouteResponse.getStatus().equals("OK")) {
+                mView.drawPoly(mRouteResponse);
+            }
         }
         mClusterMarkers = new ArrayList<>();
         mClusterManager = new ClusterManager<>(mContext, mMap);
@@ -199,7 +217,7 @@ public class MapsPresenter implements MapsContract.Presenter {
                     clusterMarker.setUserLocation(userLocation);
                     mClusterManager.addItem(clusterMarker);
                     mClusterMarkers.add(clusterMarker);
-                    if(mUserLocation != null && mUserLocation.getUid().equals(userLocation.getUid())) {
+                    if (mUserLocation != null && mUserLocation.getUid().equals(userLocation.getUid())) {
                         mClusterManagerRenderer.showUserInfoWindow(userLocation);
                     }
                     mClusterManagerRenderer.setUpdateMarker(clusterMarker);
@@ -212,8 +230,6 @@ public class MapsPresenter implements MapsContract.Presenter {
     }
 
     private void updateMarkers(List<UserLocation> userLocations) {
-//        if()
-        Log.d(TAG, "updateMarkers: " + mClusterMarkers.size());
         if (mClusterMarkers != null) {
             for (final ClusterMarker clusterMarker : mClusterMarkers) {
                 try {
@@ -333,6 +349,60 @@ public class MapsPresenter implements MapsContract.Presenter {
     public void showUserLocation(UserLocation userLocation) {
         if (userLocation != null) {
             mUserLocation = userLocation;
+        }
+    }
+
+    @Override
+    public void getDirection(Trip trip) {
+        String origin = trip.getStartPoint().getLocation().getLat() + "," + trip.getStartPoint().getLocation().getLng();
+        String destination = trip.getEndPoint().getLocation().getLat() + "," + trip.getEndPoint().getLocation().getLng();
+        DirectionService directionService = APIUtils.getDirectionService();
+        directionService.getRoute(origin, destination, "AIzaSyBkrblFbEPs0h9HmkIC2CHcy7HSurPAVKk")
+                .enqueue(new Callback<RouteResponse>() {
+                    @Override
+                    public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
+                        RouteResponse routeResponse = response.body();
+                        if (routeResponse.getStatus().equals("REQUEST_DENIED")) {
+                            Toast.makeText(mContext, "Error from Maps API", Toast.LENGTH_SHORT).show();
+                        } else {
+                            mView.drawPoly(routeResponse);
+                            mRouteResponse = routeResponse;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RouteResponse> call, Throwable t) {
+                    }
+                });
+    }
+
+    @Override
+    public void initSpecialMarker(Trip trip) {
+        Marker markerEnd = mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .position(new LatLng(trip.getEndPoint().getLocation().getLat(), trip.getEndPoint().getLocation().getLng()))
+                .title(trip.getEndPoint().getName()));
+        markerEnd.setTag(trip.getEndPoint());
+        if (trip.getSpecialPoints() != null) {
+            for (Point point : trip.getSpecialPoints()) {
+                Marker marker = mMap.addMarker(new MarkerOptions().title(point.getName())
+                        .position(new LatLng(point.getLocation().getLat(), point.getLocation().getLng())));
+                marker.setTag(point);
+                if (point.getType().equals("waypoint")) {
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+                } else {
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                }
+            }
+        }
+    }
+
+    private void subscribeToChannel(User user) {
+        String topicDistance = "DI" + user.getActiveTrip();
+        FirebaseMessaging.getInstance().subscribeToTopic(topicDistance);
+        for (String id : user.getMyTrips()) {
+            String topicGroupMessage = "GM" + id;
+            FirebaseMessaging.getInstance().subscribeToTopic(topicGroupMessage);
         }
     }
 }

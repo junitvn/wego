@@ -7,25 +7,42 @@ import com.google.gson.annotations.SerializedName;
 
 public class Route {
 
-    @SerializedName("summary")
+    @SerializedName("bounds")
     @Expose
-    private String summary;
+    private Bounds bounds;
+    @SerializedName("copyrights")
+    @Expose
+    private String copyrights;
     @SerializedName("legs")
     @Expose
     private List<Leg> legs = null;
-    @SerializedName("start_address")
+    @SerializedName("overview_polyline")
     @Expose
-    private String startAddress;
-    @SerializedName("end_address")
+    private OverviewPolyline overviewPolyline;
+    @SerializedName("summary")
     @Expose
-    private String endAddress;
+    private String summary;
+    @SerializedName("warnings")
+    @Expose
+    private List<Object> warnings = null;
+    @SerializedName("waypoint_order")
+    @Expose
+    private List<Object> waypointOrder = null;
 
-    public String getSummary() {
-        return summary;
+    public Bounds getBounds() {
+        return bounds;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds;
+    }
+
+    public String getCopyrights() {
+        return copyrights;
+    }
+
+    public void setCopyrights(String copyrights) {
+        this.copyrights = copyrights;
     }
 
     public List<Leg> getLegs() {
@@ -36,20 +53,36 @@ public class Route {
         this.legs = legs;
     }
 
-    public String getStartAddress() {
-        return startAddress;
+    public OverviewPolyline getOverviewPolyline() {
+        return overviewPolyline;
     }
 
-    public void setStartAddress(String startAddress) {
-        this.startAddress = startAddress;
+    public void setOverviewPolyline(OverviewPolyline overviewPolyline) {
+        this.overviewPolyline = overviewPolyline;
     }
 
-    public String getEndAddress() {
-        return endAddress;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setEndAddress(String endAddress) {
-        this.endAddress = endAddress;
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public List<Object> getWarnings() {
+        return warnings;
+    }
+
+    public void setWarnings(List<Object> warnings) {
+        this.warnings = warnings;
+    }
+
+    public List<Object> getWaypointOrder() {
+        return waypointOrder;
+    }
+
+    public void setWaypointOrder(List<Object> waypointOrder) {
+        this.waypointOrder = waypointOrder;
     }
 
 }

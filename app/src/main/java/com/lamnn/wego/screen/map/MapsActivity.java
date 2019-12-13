@@ -1,7 +1,6 @@
 package com.lamnn.wego.screen.map;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -14,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -48,30 +49,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.PolyUtil;
 import com.lamnn.wego.R;
-import com.lamnn.wego.data.model.ClusterMarker;
-import com.lamnn.wego.data.model.Event;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
-import com.lamnn.wego.data.model.route.MyTimeStamp;
+import com.lamnn.wego.data.model.route.RouteResponse;
+import com.lamnn.wego.data.model.route.Step;
 import com.lamnn.wego.data.remote.UpdateLocationService;
+import com.lamnn.wego.screen.chat.ChatActivity;
 import com.lamnn.wego.screen.trip.create_trip.CreateTripActivity;
-import com.lamnn.wego.screen.details.info_member.InfoMemberActivity;
-import com.lamnn.wego.screen.details.info_user.InfoUserActivity;
+import com.lamnn.wego.screen.info.info_member.InfoMemberActivity;
+import com.lamnn.wego.screen.info.info_user.InfoUserActivity;
 import com.lamnn.wego.screen.trip.join_trip.JoinTripActivity;
 import com.lamnn.wego.screen.login.LoginActivity;
 import com.lamnn.wego.screen.profile.update.ProfileUpdateActivity;
@@ -79,7 +73,6 @@ import com.lamnn.wego.screen.trip.setting_trip.SettingTripActivity;
 import com.lamnn.wego.service.LocationService;
 import com.lamnn.wego.service.MyLocationService;
 import com.lamnn.wego.utils.APIUtils;
-import com.lamnn.wego.utils.ClusterManagerRenderer;
 import com.lamnn.wego.utils.GlideApp;
 
 import java.util.ArrayList;
@@ -90,12 +83,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.lamnn.wego.screen.details.info_user.InfoUserActivity.EXTRA_USER_LOCATION;
+import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.CHANNEL_ID;
+import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.EXTRA_USER_LOCATION;
 
 public class MapsActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener, MapsContract.View, OnMapReadyCallback,
         TripAdapter.OnTripItemClickListener, GoogleMap.OnInfoWindowClickListener, MemberCircleAdapter.OnUserItemClickListener {
     public static final String EXTRA_LOCATION = "EXTRA_LOCATION";
+    public static final String DISTANCE_CHANNEL_ID = "DISTANCE_CHANNEL_ID";
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -151,6 +146,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         getData();
         initMaps();
         getLocationPermission();
+        createNotificationChannel();
+        createDistanceNotificationChannel();
         final Intent locationService = new Intent(this.getApplication(), MyLocationService.class);
         this.getApplication().startService(locationService);
         this.getApplication().bindService(locationService, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -233,6 +230,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             mTextTripName.setText(getString(R.string.app_name));
         }
+        mPresenter.getDirection(trip);
+        mPresenter.initSpecialMarker(trip);
     }
 
     @Override
@@ -261,6 +260,16 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         mUserLocations = userLocations;
         mRecyclerListMember.setAdapter(mMemberCircleAdapter);
         mMemberCircleAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void drawPoly(RouteResponse routeResponse) {
+        PolylineOptions polygonOptions = new PolylineOptions();
+        polygonOptions.width(15).color(getResources().getColor(R.color.colorPrimary));
+        for (Step step : routeResponse.getRoutes().get(0).getLegs().get(0).getSteps()) {
+            polygonOptions.addAll(PolyUtil.decode(step.getPolyline().getPoints()));
+        }
+        mMap.addPolyline(polygonOptions);
     }
 
     @Override
@@ -339,7 +348,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_create:
                 startActivity(CreateTripActivity
-                        .getIntent(this));
+                        .getIntent(this, mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
                 toggleDropdown();
                 break;
             case R.id.image_refresh:
@@ -374,7 +383,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                 mNavigationView.setCheckedItem(R.id.nav_map);
                 break;
             case R.id.nav_people:
-
+                startActivity(ChatActivity.getIntent(this, mUser));
                 break;
             case R.id.nav_sign_out:
                 LoginManager.getInstance().logOut();
@@ -624,6 +633,30 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             LatLng latLng = new LatLng(userLocation.getLocation().getLat(), userLocation.getLocation().getLng());
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             mPresenter.showUserItemCircle(userLocation);
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "lamnn";
+            String description = "description chanel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void createDistanceNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "lamnn";
+            String description = "description chanel";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(DISTANCE_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

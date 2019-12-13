@@ -6,66 +6,53 @@ import com.google.gson.annotations.SerializedName;
 
 public class Step {
 
-    @SerializedName("travel_mode")
+    @SerializedName("distance")
     @Expose
-    private String travelMode;
-    @SerializedName("start_location")
-    @Expose
-    private StartLocation startLocation;
-    @SerializedName("end_location")
-    @Expose
-    private EndLocation endLocation;
-    @SerializedName("polyline")
-    @Expose
-    private Polyline polyline;
+    private Distance_ distance;
     @SerializedName("duration")
     @Expose
-    private Duration duration;
+    private Duration_ duration;
+    @SerializedName("end_location")
+    @Expose
+    private EndLocation_ endLocation;
     @SerializedName("html_instructions")
     @Expose
     private String htmlInstructions;
-    @SerializedName("distance")
+    @SerializedName("polyline")
     @Expose
-    private Distance distance;
+    private Polyline polyline;
+    @SerializedName("start_location")
+    @Expose
+    private StartLocation_ startLocation;
+    @SerializedName("travel_mode")
+    @Expose
+    private String travelMode;
+    @SerializedName("maneuver")
+    @Expose
+    private String maneuver;
 
-    public String getTravelMode() {
-        return travelMode;
+    public Distance_ getDistance() {
+        return distance;
     }
 
-    public void setTravelMode(String travelMode) {
-        this.travelMode = travelMode;
+    public void setDistance(Distance_ distance) {
+        this.distance = distance;
     }
 
-    public StartLocation getStartLocation() {
-        return startLocation;
-    }
-
-    public void setStartLocation(StartLocation startLocation) {
-        this.startLocation = startLocation;
-    }
-
-    public EndLocation getEndLocation() {
-        return endLocation;
-    }
-
-    public void setEndLocation(EndLocation endLocation) {
-        this.endLocation = endLocation;
-    }
-
-    public Polyline getPolyline() {
-        return polyline;
-    }
-
-    public void setPolyline(Polyline polyline) {
-        this.polyline = polyline;
-    }
-
-    public Duration getDuration() {
+    public Duration_ getDuration() {
         return duration;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(Duration_ duration) {
         this.duration = duration;
+    }
+
+    public EndLocation_ getEndLocation() {
+        return endLocation;
+    }
+
+    public void setEndLocation(EndLocation_ endLocation) {
+        this.endLocation = endLocation;
     }
 
     public String getHtmlInstructions() {
@@ -76,12 +63,36 @@ public class Step {
         this.htmlInstructions = htmlInstructions;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public Polyline getPolyline() {
+        return polyline;
     }
 
-    public void setDistance(Distance distance) {
-        this.distance = distance;
+    public void setPolyline(Polyline polyline) {
+        this.polyline = polyline;
+    }
+
+    public StartLocation_ getStartLocation() {
+        return startLocation;
+    }
+
+    public void setStartLocation(StartLocation_ startLocation) {
+        this.startLocation = startLocation;
+    }
+
+    public String getTravelMode() {
+        return travelMode;
+    }
+
+    public void setTravelMode(String travelMode) {
+        this.travelMode = travelMode;
+    }
+
+    public String getManeuver() {
+        return maneuver;
+    }
+
+    public void setManeuver(String maneuver) {
+        this.maneuver = maneuver;
     }
 
 }

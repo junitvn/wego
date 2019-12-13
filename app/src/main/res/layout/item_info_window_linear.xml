@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="320dp"
     android:layout_height="250dp"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
-
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/image_message"
+            android:id="@+id/image_clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="2dp"
@@ -30,11 +30,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="234h 234 ago"
-            app:layout_constraintBottom_toBottomOf="@+id/image_message"
+            app:layout_constraintBottom_toBottomOf="@+id/image_clock"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.135"
-            app:layout_constraintStart_toEndOf="@+id/image_message"
-            app:layout_constraintTop_toTopOf="@+id/image_message"
+            app:layout_constraintStart_toEndOf="@+id/image_clock"
+            app:layout_constraintTop_toTopOf="@+id/image_clock"
             app:layout_constraintVertical_bias="1.0" />
     </LinearLayout>
 
@@ -53,8 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:textSize="18dp" />
+        android:textSize="18dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/text_info_address"
@@ -63,7 +63,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
-        android:maxEms="12"
+        android:maxEms="15"
         android:singleLine="false"
         android:text="Address:"
         app:layout_constraintEnd_toEndOf="parent"

@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -25,36 +26,35 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Location;
-import com.lamnn.wego.data.model.PlaceResponse;
 import com.lamnn.wego.data.model.Point;
-import com.lamnn.wego.data.model.Result;
 import com.lamnn.wego.data.model.Trip;
+import com.lamnn.wego.data.model.TripSetting;
 import com.lamnn.wego.data.model.User;
-import com.lamnn.wego.data.remote.PlaceService;
-import com.lamnn.wego.utils.APIUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import static com.lamnn.wego.screen.trip.create_trip.RouteActivity.EXTRA_POINTS;
 
-public class CreateTripActivity extends AppCompatActivity implements View.OnClickListener, PlaceAdapter.OnPlaceClickListener {
+public class CreateTripActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EXTRA_LAT = "EXTRA_LAT";
     public static final String EXTRA_LNG = "EXTRA_LNG";
+    public static final int REQUEST_WAYPOINTS = 101;
+
     private Toolbar mToolbar;
     private Button mButtonNext;
-    private EditText mTextNameTrip, mTextEndPlace;
-    private RecyclerView mRecyclerPlaces;
-    private PlaceService mPlaceService;
-    private PlaceAdapter mPlaceAdapter;
+    private EditText mTextNameTrip;
+    private TextView mTextEndPlace, mTextViewAddWaypoint;
     private Point mStartPoint;
     private Point mEndPoint;
     private Trip mTrip;
+    private ArrayList<Point> mPoints;
     private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerViewPoint;
+    private SpecialPointAdapter mPointAdapter;
 
     public static Intent getIntent(Context context, double lat, double lng) {
         Intent intent = new Intent(context, CreateTripActivity.class);
@@ -72,53 +72,82 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_trip);
-        mPlaceService = APIUtils.getPlaceService();
         mTrip = new Trip();
         initView();
         initToolbar();
-//        receiveData();
-        loadPlaces();
+        receiveData();
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), getString(R.string.place_api_key));
+            Places.initialize(getApplicationContext(), "AIzaSyAGVGhyzB1hQcXpFmg9QCP6JMI8Qp-768Y");
         }
     }
 
-    private void receiveData() {
-        mStartPoint = new Point();
-        Intent intent = getIntent();
-        double lat = intent.getDoubleExtra(EXTRA_LAT, 0);
-        double lng = intent.getDoubleExtra(EXTRA_LNG, 0);
-        mStartPoint.setLocation(new Location(lat, lng));
-        mStartPoint.setName("Start point");
-    }
 
-
-    private void loadPlaces() {
-        mPlaceService.getPlaces(getString(R.string.place_api_key)).enqueue(new Callback<PlaceResponse>() {
-            @Override
-            public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
-                if (response.isSuccessful()) {
-                    showPlace(response.body().getResults());
-                    Log.d("GET_OK", response.body() + "");
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_create_next:
+                goToSeeDestination();
+                break;
+            case R.id.text_search_end_place:
+                if (!mTextEndPlace.getText().toString().equals("")) break;
+                else startAutoCompleteActivity();
+                break;
+            case R.id.text_add_waypoint:
+                if (mEndPoint != null) {
+                    startActivityForResult(RouteActivity.getIntent(this, mTrip), REQUEST_WAYPOINTS);
                 } else {
-                    int statusCode = response.code();
+                    Toast.makeText(this, getString(R.string.choose_the_destination_first), Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<PlaceResponse> call, Throwable t) {
-                Log.d("MainActivity", "error loading from API" + t);
-            }
-
-        });
+                break;
+        }
     }
 
-    private void showPlace(List<Result> results) {
-        mPlaceAdapter = new PlaceAdapter(this, results, this);
-        mRecyclerPlaces.setAdapter(mPlaceAdapter);
-        mPlaceAdapter.notifyDataSetChanged();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        switch (requestCode) {
+            case REQUEST_WAYPOINTS:
+                mPoints = intent.getParcelableArrayListExtra(EXTRA_POINTS);
+                if (mPoints != null) {
+                    mPointAdapter = new SpecialPointAdapter(this, mPoints);
+                    mRecyclerViewPoint.setAdapter(mPointAdapter);
+                    mPointAdapter.notifyDataSetChanged();
+                    mTrip.setSpecialPoints(mPoints);
+                }
+                break;
+            default:
+                if (resultCode == AutocompleteActivity.RESULT_OK) {
+                    Place place = Autocomplete.getPlaceFromIntent(intent);
+                    onPlaceClick(place);
+                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                    Status status = Autocomplete.getStatusFromIntent(intent);
+                } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
+                    // The user canceled the operation.
+                }
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onPlaceClick(Place place) {
+        mTextEndPlace.setText(place.getName());
+        mTextNameTrip.setText(place.getName());
+        mEndPoint = new Point();
+        mEndPoint.setType("end");
+        mEndPoint.setLocation(new Location(place.getLatLng().latitude, place.getLatLng().longitude));
+        mEndPoint.setName(place.getName());
+        mTrip.setEndPoint(mEndPoint);
+    }
 
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
@@ -134,31 +163,34 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
 
     private void initView() {
         mProgressBar = findViewById(R.id.progress_bar_loading);
-        mTextNameTrip = findViewById(R.id.text_name_trip);
+        mTextNameTrip = findViewById(R.id.text_name_user);
         mTextEndPlace = findViewById(R.id.text_search_end_place);
         mTextEndPlace.setOnClickListener(this);
-        mRecyclerPlaces = findViewById(R.id.recycler_place_hint);
-        mRecyclerPlaces.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerPlaces.setHasFixedSize(true);
+        mTextViewAddWaypoint = findViewById(R.id.text_add_waypoint);
+        mTextViewAddWaypoint.setOnClickListener(this);
+        mRecyclerViewPoint = findViewById(R.id.recycler_point);
+        mRecyclerViewPoint.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerViewPoint.setHasFixedSize(false);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_create_next:
-                goToSeeDestination();
-                break;
-            case R.id.text_search_end_place:
-                if (!mTextEndPlace.getText().toString().equals("")) break;
-                else startAutoCompleteActivity();
-                break;
-        }
+    private void receiveData() {
+        double lat = getIntent().getExtras().getDouble(EXTRA_LAT);
+        double lng = getIntent().getExtras().getDouble(EXTRA_LNG);
+        initStartPoint(lat, lng);
+    }
+
+    private void initStartPoint(double lat, double lng) {
+        mStartPoint = new Point();
+        mStartPoint.setLocation(new Location(lat, lng));
+        mStartPoint.setType("start");
+        mTrip.setStartPoint(mStartPoint);
     }
 
     private void goToSeeDestination() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
+        mTrip.setCode(generateRandomIntIntRange());
         mTrip.setCreatorId(auth.getUid());
-//        mTrip.setStartPoint(mStartPoint);
+        mTrip.setStartPoint(mStartPoint);
         mTrip.setName(mTextNameTrip.getText().toString());
         mTrip.setCreationTime(new Date().toString());
         User user = new User();
@@ -166,55 +198,26 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         List<String> users = new ArrayList<>();
         users.add(user.getUid());
         mTrip.setMembers(users);
-        List<Point> points = new ArrayList<>();
-        points.add(mEndPoint);
-        mTrip.setSpecialPoints(points);
+        TripSetting tripSetting = new TripSetting();
+        tripSetting.setDefaultValue();
+        mTrip.setTripSetting(tripSetting);
         startActivity(ShareCodeActivity.getIntent(this, mTrip));
     }
 
     private void startAutoCompleteActivity() {
         int AUTOCOMPLETE_REQUEST_CODE = 1;
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
         Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields).setCountry("vi")
+                AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(this);
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
-        if (resultCode == AutocompleteActivity.RESULT_OK) {
-            Place place = Autocomplete.getPlaceFromIntent(intent);
-//                 place.getName();
-//                 place.getAddress();
-        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            Status status = Autocomplete.getStatusFromIntent(intent);
-        } else if (resultCode == AutocompleteActivity.RESULT_CANCELED) {
-            // The user canceled the operation.
-        }
-        super.onActivityResult(requestCode, resultCode, intent);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPlaceClick(Result result) {
-        mTextEndPlace.setText(result.getName());
-        mEndPoint = new Point();
-        Location location = new Location(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng());
-        mEndPoint.setLocation(location);
-        mEndPoint.setName(result.getName());
-        mTrip.setEndPoint(mEndPoint);
-        if (!mTextEndPlace.getText().toString().equals("")) {
-            mButtonNext.setVisibility(View.VISIBLE);
-        }
+    public static String generateRandomIntIntRange() {
+        Random r = new Random();
+        int min = 100000;
+        int max = 999999;
+        int res = r.nextInt((max - min) + 1) + min;
+        return res + "";
     }
 }
