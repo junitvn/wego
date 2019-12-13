@@ -4,6 +4,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
+import com.lamnn.wego.data.model.route.RouteResponse;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class MapsContract {
         void showErrorMessage(String message);
 
         void showListUserCircle(List<UserLocation> userLocations);
+
+        void drawPoly(RouteResponse routeResponse);
     }
 
     public interface Presenter {
@@ -50,5 +53,9 @@ public class MapsContract {
         void showAllMember();
 
         void showUserLocation(UserLocation userLocation);
+
+        void getDirection(Trip trip);
+
+        void initSpecialMarker(Trip trip);
     }
 }

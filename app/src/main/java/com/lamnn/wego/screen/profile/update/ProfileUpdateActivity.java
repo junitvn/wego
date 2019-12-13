@@ -139,7 +139,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
         mImageAvatar = findViewById(R.id.image_avatar);
         mImageAvatar.setOnClickListener(this);
         mProgressBar = findViewById(R.id.progress_bar_loading);
-        mTextName = findViewById(R.id.text_name_trip);
+        mTextName = findViewById(R.id.text_name_user);
         mTextName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -156,7 +156,7 @@ public class ProfileUpdateActivity extends AppCompatActivity implements UpdatePr
                 mButtonSave.setVisibility(View.VISIBLE);
             }
         });
-        mTextPhone = findViewById(R.id.text_id_trip);
+        mTextPhone = findViewById(R.id.text_phone_number);
         mPresenter = new UpdateProfilePresenter(getApplicationContext(), this);
         showProfile(mUser);
     }

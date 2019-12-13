@@ -7,6 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 
+import java.util.List;
+
 public class User implements Parcelable {
     @SerializedName("name")
     @Expose
@@ -23,10 +25,15 @@ public class User implements Parcelable {
     @SerializedName("uid")
     @Expose
     private String mUid;
-
     @SerializedName("is_first_time")
     @Expose
     private Boolean mIsFirstTime;
+    @SerializedName("my_trips")
+    @Expose
+    private List<String> mMyTrips;
+    @SerializedName("friends")
+    @Expose
+    private List<String> mFriends;
 
     public User() {
     }
@@ -51,6 +58,8 @@ public class User implements Parcelable {
         mUid = in.readString();
         byte tmpMIsFirstTime = in.readByte();
         mIsFirstTime = tmpMIsFirstTime == 0 ? null : tmpMIsFirstTime == 1;
+        mMyTrips = in.createStringArrayList();
+        mFriends = in.createStringArrayList();
     }
 
     @Override
@@ -61,6 +70,8 @@ public class User implements Parcelable {
         dest.writeString(mPhotoUri);
         dest.writeString(mUid);
         dest.writeByte((byte) (mIsFirstTime == null ? 0 : mIsFirstTime ? 1 : 2));
+        dest.writeStringList(mMyTrips);
+        dest.writeStringList(mFriends);
     }
 
     @Override
@@ -126,5 +137,21 @@ public class User implements Parcelable {
 
     public void setFirstTime(Boolean firstTime) {
         mIsFirstTime = firstTime;
+    }
+
+    public List<String> getMyTrips() {
+        return mMyTrips;
+    }
+
+    public void setMyTrips(List<String> myTrips) {
+        mMyTrips = myTrips;
+    }
+
+    public List<String> getFriends() {
+        return mFriends;
+    }
+
+    public void setFriends(List<String> friends) {
+        mFriends = friends;
     }
 }

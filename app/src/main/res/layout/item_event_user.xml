@@ -18,6 +18,7 @@
         android:layout_height="16dp"
         android:layout_gravity="start"
         android:layout_marginLeft="2dp"
+        android:visibility="gone"
         android:padding="6dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_event_time"
         app:layout_constraintStart_toEndOf="@+id/text_event_time"
@@ -51,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
-        android:text="So 1 o cho dua"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/image_dot"
         app:layout_constraintStart_toEndOf="@+id/image_dot" />
 

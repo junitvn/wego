@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.lamnn.wego.R;
 import com.lamnn.wego.screen.login.phone.PhoneLoginActivity;
 import com.lamnn.wego.screen.map.MapsActivity;
-import com.lamnn.wego.screen.sign_up.SignUpActivity;
+import com.lamnn.wego.screen.register.RegisterActivity;
 
 import java.util.Arrays;
 
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 mLoginButton.performClick();
                 break;
             case R.id.text_sign_up:
-                startActivity(SignUpActivity.getIntent(this));
+                startActivity(RegisterActivity.getIntent(this));
                 break;
         }
     }

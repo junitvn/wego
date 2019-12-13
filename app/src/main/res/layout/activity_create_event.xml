@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.event.create_event.CreateEventActivity">
+    tools:context=".screen.event.CreateEventActivity">
 
     <EditText
         android:id="@+id/text_event_type"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
-        android:backgroundTint="@color/colorPrimary"
         android:paddingRight="16dp"
         android:textColor="#000"
         android:textCursorDrawable="@null"
@@ -42,7 +41,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="16dp"
-        android:backgroundTint="@color/colorPrimary"
         android:textColor="#000"
         android:textCursorDrawable="@null"
         android:textSize="@dimen/text_size_medium"

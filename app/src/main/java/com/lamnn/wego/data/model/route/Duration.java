@@ -6,20 +6,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class Duration {
 
-    @SerializedName("value")
-    @Expose
-    private Integer value;
     @SerializedName("text")
     @Expose
     private String text;
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public void setValue(Integer value) {
-        this.value = value;
-    }
+    @SerializedName("value")
+    @Expose
+    private Integer value;
 
     public String getText() {
         return text;
@@ -27,6 +19,14 @@ public class Duration {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
 }

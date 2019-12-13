@@ -37,11 +37,13 @@ public class Trip implements Parcelable {
     @SerializedName("points")
     @Expose
     private List<Point> mSpecialPoints = null;
+    @SerializedName("trip_setting")
+    @Expose
+    private TripSetting mTripSetting;
     private Boolean isActive;
 
     public Trip() {
     }
-
 
     protected Trip(Parcel in) {
         mId = in.readString();
@@ -53,6 +55,7 @@ public class Trip implements Parcelable {
         mCreationTime = in.readString();
         mMembers = in.createStringArrayList();
         mSpecialPoints = in.createTypedArrayList(Point.CREATOR);
+        mTripSetting = in.readParcelable(TripSetting.class.getClassLoader());
         byte tmpIsActive = in.readByte();
         isActive = tmpIsActive == 0 ? null : tmpIsActive == 1;
     }
@@ -68,6 +71,7 @@ public class Trip implements Parcelable {
         dest.writeString(mCreationTime);
         dest.writeStringList(mMembers);
         dest.writeTypedList(mSpecialPoints);
+        dest.writeParcelable(mTripSetting, flags);
         dest.writeByte((byte) (isActive == null ? 0 : isActive ? 1 : 2));
     }
 
@@ -158,6 +162,14 @@ public class Trip implements Parcelable {
 
     public void setSpecialPoints(List<Point> specialPoints) {
         mSpecialPoints = specialPoints;
+    }
+
+    public TripSetting getTripSetting() {
+        return mTripSetting;
+    }
+
+    public void setTripSetting(TripSetting tripSetting) {
+        mTripSetting = tripSetting;
     }
 
     public Boolean getActive() {

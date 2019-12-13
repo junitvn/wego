@@ -2,8 +2,18 @@
 <resources>
     <color name="colorPrimary">#00A6FF</color>
     <color name="colorPrimaryDark">#83b9ff</color>
-    <color name="colorAccent">#f9a825</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="colorCaution">#f9a825</color>
     <color name="colorButtonDisable">#BEBEBC</color>
     <color name="colorButtonEnable">#474747</color>
     <color name="colorRed">#F51D08</color>
+    <color name="colorTextBlack">#000</color>
+    <color name="colorTextHint">#E6E6E6</color>
+    <color name="colorTextInfo">#9E9E9E</color>
+    <!--Trip setting-->
+    <color name="colorEditTextDisable">#8F8F8F</color>
+    <color name="colorEditTextEnable">#000000</color>
+    <color name="colorCheckInLocation">#FF5722</color>
+    <color name="colorWaypointLocation">#2196F3</color>
+    <color name="colorEndtLocation">#F44336</color>
 </resources>

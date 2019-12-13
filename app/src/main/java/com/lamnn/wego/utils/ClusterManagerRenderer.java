@@ -65,8 +65,10 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
     @Override
     protected void onBeforeClusterItemRendered(final ClusterMarker item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
-        mBitmap = createCustomMarker(mContext, item.getUserLocation().getUser().getPhotoUri());
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mBitmap));
+        if (item.getUserLocation().getUser() != null) {
+            mBitmap = createCustomMarker(mContext, item.getUserLocation().getUser().getPhotoUri());
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(mBitmap));
+        }
     }
 
     @Override
@@ -118,33 +120,35 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
         if (marker != null) {
             final UserLocation userLocation = updateMarker.getUserLocation();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events")
-                    .whereEqualTo("trip_id", userLocation.getUser().getActiveTrip())
-                    .whereEqualTo("user_id", userLocation.getUser().getUid())
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                return;
-                            }
-                            List<Event> events = new ArrayList<>();
-                            Event event;
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                Gson gson = new Gson();
-                                JsonElement jsonElement = gson.toJsonTree(doc.getData());
-                                event = gson.fromJson(jsonElement, Event.class);
-                                Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
-                                event.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
-                                event.setEventId(doc.getId());
-                                if (event.getStatus().equals("waiting")) {
-                                    events.add(event);
+            if (userLocation.getUser() != null) {
+                db.collection("events")
+                        .whereEqualTo("trip_id", userLocation.getUser().getActiveTrip())
+                        .whereEqualTo("user_id", userLocation.getUser().getUid())
+                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                if (e != null) {
+                                    return;
                                 }
+                                List<Event> events = new ArrayList<>();
+                                Event event;
+                                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                    Gson gson = new Gson();
+                                    JsonElement jsonElement = gson.toJsonTree(doc.getData());
+                                    event = gson.fromJson(jsonElement, Event.class);
+                                    Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                                    event.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
+                                    event.setEventId(doc.getId());
+                                    if (event.getStatus().equals("waiting")) {
+                                        events.add(event);
+                                    }
+                                }
+                                userLocation.setEvents(events);
+                                marker.setPosition(updateMarker.getPosition());
+                                marker.setTag(userLocation);
                             }
-                            userLocation.setEvents(events);
-                            marker.setPosition(updateMarker.getPosition());
-                            marker.setTag(userLocation);
-                        }
-                    });
+                        });
+            }
         }
     }
 

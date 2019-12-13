@@ -158,7 +158,15 @@ const createTrip = (req, res) => {
     .catch(err => {
       console.log("err", err);
     });
-  return Promise.all([addTrip, addActiveTrip])
+  const addGroupChat = db
+    .collection("groups")
+    .doc(code)
+    .set({
+      trip_id: code,
+      members: data.members,
+      name: data.name
+    });
+  return Promise.all([addTrip, addActiveTrip, addGroupChat])
     .then(() => {
       console.log("Created trip with code: ", data.code);
       res.status(200).send(data);
@@ -279,12 +287,8 @@ const getTrip = (req, res) => {
 ///* Update location */
 const updateLocation = (req, res) => {
   let data = req.body;
-  console.log("data in update location, ", data);
   let promises = [];
-  /* active_trip: 'as',
-  location: { lat: 20.963739341813092, lng: 105.76690766775546 },
-  photo_url: 'https://graph.facebook.com/1991011394332580/picture?height=200',
-  uid: 'GbrbYtIHWcN9fyszrFUkj45qvEz2' */
+  let trip = {};
   let userLocationRef = db.collection("user_location").doc(data.user.uid);
   let tripsRef = db.collection("trips").doc(data.user.active_trip);
   return userLocationRef
@@ -296,7 +300,8 @@ const updateLocation = (req, res) => {
         .get()
         .then(doc => {
           if (doc.exists) {
-            const members = doc.data().members;
+            trip = doc.data();
+            const members = trip.members;
             members.forEach(uid => {
               const p = db
                 .collection("user_location")
@@ -318,6 +323,9 @@ const updateLocation = (req, res) => {
               console.log("No such document!");
             }
           });
+          if (results.length > 1) {
+            calculateDistance(trip, results);
+          }
           res.status(200).send(results);
           return;
         })
@@ -329,6 +337,84 @@ const updateLocation = (req, res) => {
     .catch(err => {
       console.log("err", err);
     });
+};
+
+const calculateDistance = (trip, userLocations) => {
+  const { start_point, trip_setting, code, last_time_send_notification } = trip;
+  let results = [];
+  userLocations.forEach(userLocation => {
+    userLocation.distance = getDistance(
+      start_point.location,
+      userLocation.location
+    );
+    results.push(userLocation);
+  });
+  results.sort((a, b) => {
+    return a.distance - b.distance;
+  });
+  const minDistance = results[1].distance - results[0].distance;
+  const lastMember = results[0];
+  const topic = "DI" + code;
+  const payload = {
+    data: {
+      last_member: JSON.stringify(lastMember)
+    }
+  };
+
+  let time_stamp = new Date().getTime();
+  const timeToRepeat = trip_setting.time_to_repeat * 60000;
+  const isTimeOver = last_time_send_notification
+    ? time_stamp - last_time_send_notification > timeToRepeat
+    : true;
+  if (
+    minDistance > trip_setting.min_distance &&
+    trip_setting.receive_notification &&
+    isTimeOver
+  ) {
+    const updateLastTimeSendNotification = db
+      .collection("trips")
+      .doc(code)
+      .update({
+        last_time_send_notification: time_stamp
+      });
+    const sendNotification = admin
+      .messaging()
+      .sendToTopic(topic, payload)
+      .then(response => {
+        console.log("Send message to ", topic);
+        return;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    return Promise.all([sendNotification, updateLastTimeSendNotification])
+      .then(() => {
+        console.log("Send noti and update time");
+        return;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  } else return;
+};
+
+const rad = x => {
+  return (x * Math.PI) / 180;
+};
+
+const getDistance = (p1, p2) => {
+  let R = 6378137; // Earth’s mean radius in meter
+  let dLat = rad(p2.lat - p1.lat);
+  let dLong = rad(p2.lng - p1.lng);
+  let a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(p1.lat)) *
+      Math.cos(rad(p2.lat)) *
+      Math.sin(dLong / 2) *
+      Math.sin(dLong / 2);
+  let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  let d = R * c;
+  return d; // returns the distance in meter
 };
 
 // /* Join trip */
@@ -694,6 +780,220 @@ const getAllEvent = (req, res) => {
     });
 };
 
+const getGroupByUser = (req, res) => {
+  const user = req.body;
+  const { my_trips } = user;
+  let promises = [];
+  my_trips.forEach(tripId => {
+    const p = db
+      .collection("groups")
+      .doc(tripId)
+      .get();
+    promises.push(p);
+  });
+  return Promise.all(promises)
+    .then(groupSnaphots => {
+      let results = [];
+      groupSnaphots.forEach(groupSnap => {
+        if (groupSnap.exists) {
+          results.push(groupSnap.data());
+        } else {
+          console.log("No such document!");
+          res.status(404).send([]);
+        }
+      });
+      res.status(200).send(results);
+      return;
+    })
+    .catch(e => {
+      console.log("Get groups fail ", e);
+    });
+};
+
+const sendGroupMessage = (req, res) => {
+  let message = req.body;
+  message.time_stamp = admin.firestore.FieldValue.serverTimestamp();
+  const changeLastMessage = db
+    .collection("groups")
+    .doc(message.group_id)
+    .update({
+      last_message: message
+    });
+
+  const addGroupMessage = db.collection("group_message").add(message);
+
+  const topic = "GM" + message.group_id;
+  const payload = {
+    data: {
+      message: JSON.stringify(message)
+    }
+  };
+  const sendNotification = admin
+    .messaging()
+    .sendToTopic(topic, payload)
+    .then(response => {
+      console.log("Send message to ", topic);
+      return;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+
+  return Promise.all([changeLastMessage, addGroupMessage, sendNotification])
+    .then(() => {
+      res.status(200).send(true);
+      return;
+    })
+    .catch(e => {
+      console.log("Send group message fail: ", e);
+    });
+};
+
+const sendUserMessage = (req, res) => {
+  let message = req.body;
+  message.time_stamp = admin.firestore.FieldValue.serverTimestamp();
+  const changeLastMessage = db
+    .collection("user_channel")
+    .doc(message.channel_id)
+    .update({
+      last_message: message
+    });
+
+  const addGroupMessage = db.collection("user_message").add(message);
+
+  const topic = "UM" + message.channel_id;
+
+  const payload = {
+    data: {
+      message: JSON.stringify(message)
+    }
+  };
+
+  const sendNotification = admin
+    .messaging()
+    .sendToTopic(topic, payload)
+    .then(response => {
+      console.log("Send message to ", topic);
+      return;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+
+  return Promise.all([changeLastMessage, addGroupMessage, sendNotification])
+    .then(() => {
+      res.status(200).send(true);
+      return;
+    })
+    .catch(e => {
+      console.log("Send user message fail: ", e);
+    });
+};
+
+const createUserChannel = (req, res) => {
+  let requestChannel = req.body;
+  const { member_uid, members, user_id } = requestChannel;
+  let other_id;
+  if (member_uid[0] === user_id) {
+    other_id = member_uid[1];
+  } else {
+    other_id = member_uid[0];
+  }
+  return db
+    .collection("user_channel")
+    .where("member_uid", "array-contains", user_id)
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log("No matching documents.");
+        //Create and return new
+        db.collection("user_channel")
+          .add(requestChannel)
+          .then(ref => {
+            requestChannel.channel_id = ref.id;
+            res.status(200).send(requestChannel);
+            return;
+          })
+          .catch(e => {
+            console.log("Create channel FAIL, ", e);
+          });
+        return;
+      }
+      let isExistedChannel = false;
+      let existedChannel = {};
+      snapshot.forEach(doc => {
+        console.log(doc.id, "=>", doc.data());
+        if (_.indexOf(member_uid, other_id) !== -1) {
+          isExistedChannel = true;
+          existedChannel = doc.data();
+          existedChannel.channel_id = doc.id;
+        }
+      });
+      if (isExistedChannel) {
+        res.status(200).send(existedChannel);
+        return;
+      } else {
+        db.collection("user_channel")
+          .add(requestChannel)
+          .then(ref => {
+            requestChannel.channel_id = ref.id;
+            res.status(200).send(requestChannel);
+            return;
+          })
+          .catch(e => {
+            console.log("Create channel FAIL, ", e);
+          });
+      }
+      return;
+    })
+    .catch(err => {
+      res.status(404).send({});
+      console.log("Error getting documents", err);
+    });
+};
+
+const searchUserByName = (req, res) => {
+  const query = _.trim(req.body.name);
+  const id = req.body.uid;
+  let results = [];
+  return db
+    .collection("users")
+    .get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log("No matching documents.");
+        return;
+      }
+      snapshot.forEach(doc => {
+        console.log(doc.id, "=>", doc.data());
+        const user = doc.data();
+        const userName = _.toLower(user.name);
+        if (
+          _.includes(convertString(userName), convertString(query)) &&
+          user.uid !== id
+        ) {
+          results.push(user);
+        }
+      });
+      res.status(200).send(results);
+      return;
+    })
+    .catch(err => {
+      console.log("Error getting documents", err);
+    });
+};
+
+function convertString(str) {
+  str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+  str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+  str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+  str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+  str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+  str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+  str = str.replace(/đ/g, "d");
+  return str;
+}
+
 module.exports = {
   authOnCreate: functions.auth.user().onCreate(createProfile),
   createTrip: functions.https.onRequest(createTrip),
@@ -711,6 +1011,11 @@ module.exports = {
   updateEvent: functions.https.onRequest(updateEvent),
   addEventToUserLocation: functions.https.onRequest(addEventToUserLocation),
   outTrip: functions.https.onRequest(outTrip),
+  getGroupByUser: functions.https.onRequest(getGroupByUser),
+  sendGroupMessage: functions.https.onRequest(sendGroupMessage),
+  sendUserMessage: functions.https.onRequest(sendUserMessage),
+  createUserChannel: functions.https.onRequest(createUserChannel),
+  searchUserByName: functions.https.onRequest(searchUserByName),
   getAllEvent: functions.https.onRequest(getAllEvent),
   onWriteEvent: functions.firestore
     .document("events/{eventId}")

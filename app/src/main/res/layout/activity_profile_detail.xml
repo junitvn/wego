@@ -6,4 +6,112 @@
     android:layout_height="match_parent"
     tools:context=".screen.profile.detail.ProfileDetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="#FFF">
+
+        <Button
+            android:id="@+id/btn_save_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/button_save"
+            android:text="@string/text_save_uc"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:visibility="invisible" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/image_avatar"
+        android:layout_width="145dp"
+        android:layout_height="145dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/text_name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_name_user"
+        app:layout_constraintTop_toBottomOf="@+id/image_avatar" />
+
+    <TextView
+        android:id="@+id/text_name_user"
+        android:layout_width="342dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="#000"
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/h1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_phone"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/h2"
+        app:layout_constraintStart_toStartOf="@+id/text_phone_number"
+        app:layout_constraintTop_toBottomOf="@+id/text_name_user" />
+
+    <TextView
+        android:id="@+id/text_phone_number"
+        android:layout_width="342dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:textColor="#000"
+        android:textCursorDrawable="@null"
+        android:textSize="@dimen/h1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <Button
+        android:id="@+id/button_add_friend"
+        android:layout_width="@dimen/text_login_width"
+        android:layout_height="@dimen/text_login_height"
+        android:layout_marginStart="@dimen/margin_vertical_default"
+        android:layout_marginLeft="@dimen/margin_vertical_default"
+        android:layout_marginTop="@dimen/margin_vertical_default"
+        android:layout_marginEnd="@dimen/margin_vertical_default"
+        android:layout_marginRight="@dimen/margin_vertical_default"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/button_primary"
+        android:text="@string/add_friend"
+        android:textAllCaps="false"
+        android:textColor="#FFF"
+        android:textSize="@dimen/h1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_password"
+        app:layout_constraintVertical_bias="0.155" />
 </androidx.constraintlayout.widget.ConstraintLayout>

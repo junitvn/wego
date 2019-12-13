@@ -21,15 +21,25 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.sign_up.SignUpActivity" />
-        <activity android:name=".screen.event.create_event.CreateEventActivity" />
+        <activity android:name=".screen.profile.search_user.SearchUserActivity"></activity>
+        <activity android:name=".screen.conversation.ConversationActivity" />
+        <activity android:name=".screen.chat.ChatActivity" />
+        <activity android:name=".screen.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".screen.register.RegisterActivity" />
+        <activity android:name=".screen.event.CreateEventActivity" />
         <activity android:name=".screen.trip.setting_trip.SettingTripActivity" />
-        <activity android:name=".screen.details.info_user.InfoUserActivity" />
-        <activity android:name=".screen.details.info_member.InfoMemberActivity" />
+        <activity android:name=".screen.info.info_user.InfoUserActivity" />
+        <activity android:name=".screen.info.info_member.InfoMemberActivity" />
         <activity android:name=".screen.trip.join_trip.JoinTripActivity" />
         <activity android:name=".screen.trip.create_trip.ShareCodeActivity" />
         <activity
-            android:name=".screen.trip.create_trip.NavigationActivity"
+            android:name=".screen.trip.create_trip.RouteActivity"
             android:label="@string/title_activity_navigation" />
         <activity android:name=".screen.trip.create_trip.CreateTripActivity" />
         <activity android:name=".screen.profile.detail.ProfileDetailActivity" />
@@ -38,13 +48,7 @@
         <activity android:name=".screen.map.MapsActivity" />
         <activity android:name=".screen.login.phone.VerifyLoginActivity" />
         <activity android:name=".screen.login.phone.PhoneLoginActivity" />
-        <activity android:name=".screen.login.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".screen.login.LoginActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -68,6 +72,9 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -97,6 +104,10 @@
             android:stopWithTask="false" />
 
         <receiver android:name=".broadcast.NotificationReceiver" />
+        <receiver
+            android:name=".broadcast.MessageBroadcastReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

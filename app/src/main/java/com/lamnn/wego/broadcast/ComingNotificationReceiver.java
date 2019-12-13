@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.lamnn.wego.data.model.Event;
 import com.lamnn.wego.data.model.UserLocation;
-import com.lamnn.wego.screen.details.info_user.InfoUserActivity;
+import com.lamnn.wego.screen.info.info_user.InfoUserActivity;
 
 public class ComingNotificationReceiver extends BroadcastReceiver {
     private static final String EXTRA_EVENT = "EXTRA_EVENT";

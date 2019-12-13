@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#E9EDED"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingLeft="@dimen/space10"
+        android:paddingTop="@dimen/space5"
+        android:paddingRight="@dimen/space5"
+        android:paddingBottom="@dimen/space5">
+
+        <ImageView
+            android:id="@+id/image_send_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="start"
+            android:layout_marginRight="4dp"
+            android:padding="14dp"
+            android:stateListAnimator="@null"
+            app:srcCompat="@drawable/ic_send_black_24dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/image_send_message"
+            android:background="@drawable/bg_white_rounded">
+
+            <EditText
+                android:id="@+id/text_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:inputType="textCapSentences"
+                android:maxLines="3"
+                android:padding="@dimen/space15"
+                android:textColor="@color/colorTextBlack"
+                android:textColorHint="@color/colorTextHint"
+                android:textSize="@dimen/h3" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_conversation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/rl_bottom"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:overScrollMode="never" />
+</RelativeLayout>
