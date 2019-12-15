@@ -37,9 +37,9 @@
         <activity android:name=".screen.info.info_user.InfoUserActivity" />
         <activity android:name=".screen.info.info_member.InfoMemberActivity" />
         <activity android:name=".screen.trip.join_trip.JoinTripActivity" />
-        <activity android:name=".screen.trip.create_trip.ShareCodeActivity" />
+        <activity android:name=".screen.trip.create_trip.share_code.ShareCodeActivity" />
         <activity
-            android:name=".screen.trip.create_trip.RouteActivity"
+            android:name=".screen.trip.create_trip.route.RouteActivity"
             android:label="@string/title_activity_navigation" />
         <activity android:name=".screen.trip.create_trip.CreateTripActivity" />
         <activity android:name=".screen.profile.detail.ProfileDetailActivity" />

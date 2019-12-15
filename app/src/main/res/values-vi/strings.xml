@@ -150,4 +150,10 @@
     <string name="end_point">Điểm đích</string>
     <string name="message_alert_save_changes">Bạn có muốn lưu lại những thay đổi không?</string>
     <string name="message_alert_delete_location">Bạn có muốn xóa địa điểm này không?</string>
+    <string name="invite_friends">Mời bạn bè</string>
+    <string name="invite">Mời</string>
+    <string name="joined">Đã tham gia</string>
+    <string name="action_deny">TỪ CHỐI</string>
+    <string name="action_join">THAM GIA</string>
+    <string name="text_intvite_you_to_join">" đã mời bạn tham gia chuyến đi "</string>
 </resources>

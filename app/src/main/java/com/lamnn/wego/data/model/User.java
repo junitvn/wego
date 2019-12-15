@@ -34,6 +34,7 @@ public class User implements Parcelable {
     @SerializedName("friends")
     @Expose
     private List<String> mFriends;
+    private Invitation mInvitation;
 
     public User() {
     }
@@ -153,5 +154,13 @@ public class User implements Parcelable {
 
     public void setFriends(List<String> friends) {
         mFriends = friends;
+    }
+
+    public Invitation getInvitation() {
+        return mInvitation;
+    }
+
+    public void setInvitation(Invitation invitation) {
+        mInvitation = invitation;
     }
 }

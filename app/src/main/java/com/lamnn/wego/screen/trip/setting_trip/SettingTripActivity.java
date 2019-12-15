@@ -7,12 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,31 +20,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Point;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.TripSetting;
 import com.lamnn.wego.data.model.UserLocation;
-import com.lamnn.wego.data.remote.TripService;
-import com.lamnn.wego.screen.trip.create_trip.RouteActivity;
-import com.lamnn.wego.screen.trip.create_trip.ShareCodeActivity;
-import com.lamnn.wego.screen.map.MapsActivity;
+import com.lamnn.wego.screen.trip.create_trip.route.RouteActivity;
+import com.lamnn.wego.screen.trip.create_trip.share_code.ShareCodeActivity;
 import com.lamnn.wego.screen.trip.create_trip.SpecialPointAdapter;
-import com.lamnn.wego.utils.APIUtils;
 
 import java.util.ArrayList;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.EXTRA_USER_LOCATION;
 import static com.lamnn.wego.screen.trip.create_trip.CreateTripActivity.REQUEST_WAYPOINTS;
-import static com.lamnn.wego.screen.trip.create_trip.RouteActivity.EXTRA_POINTS;
+import static com.lamnn.wego.screen.trip.create_trip.route.RouteActivity.EXTRA_POINTS;
 
 public class SettingTripActivity extends AppCompatActivity implements View.OnClickListener, SettingTripContract.View, CompoundButton.OnCheckedChangeListener {
 

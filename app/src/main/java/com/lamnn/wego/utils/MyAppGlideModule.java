@@ -24,7 +24,6 @@ public class MyAppGlideModule extends AppGlideModule {
     public void registerComponents(@NonNull Context context,
                                    @NonNull Glide glide,
                                    @NonNull Registry registry) {
-        // Register FirebaseImageLoader to handle StorageReference
         registry.append(StorageReference.class, InputStream.class,
                 new FirebaseImageLoader.Factory());
     }

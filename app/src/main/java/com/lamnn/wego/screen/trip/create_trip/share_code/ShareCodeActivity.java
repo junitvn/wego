@@ -1,7 +1,9 @@
-package com.lamnn.wego.screen.trip.create_trip;
+package com.lamnn.wego.screen.trip.create_trip.share_code;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,22 +12,25 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Trip;
+import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.screen.map.MapsActivity;
 import com.lamnn.wego.utils.APIUtils;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ShareCodeActivity extends AppCompatActivity implements View.OnClickListener {
+public class ShareCodeActivity extends AppCompatActivity implements View.OnClickListener,
+        ShareCodeContract.View, InvitationFriendAdapter.OnUserFoundItemClickListener {
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
     private Toolbar mToolbar;
     private Button mButtonDone;
@@ -33,6 +38,11 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
     private TripService mTripService;
     private TextView mTextCode;
     private ProgressBar mProgressBar;
+    private ShareCodeContract.Presenter mPresenter;
+    private ImageView mImageViewCopy;
+    private RecyclerView mRecyclerViewInviteFriend;
+    private InvitationFriendAdapter mAdapter;
+    private ArrayList<User> mUsers;
 
     public static Intent getIntent(Context context, Trip trip) {
         Intent intent = new Intent(context, ShareCodeActivity.class);
@@ -47,6 +57,8 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
         receiveData();
         initView();
         initToolbar();
+        mPresenter = new ShareCodePresenter(this, this);
+        mPresenter.getUserFriends();
     }
 
 
@@ -60,6 +72,11 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
         mTextCode = findViewById(R.id.text_code);
         mTextCode.setText(mTrip.getCode());
         mProgressBar = findViewById(R.id.progress_bar_loading);
+        mRecyclerViewInviteFriend = findViewById(R.id.recycler_invite_friends);
+        mRecyclerViewInviteFriend.setHasFixedSize(false);
+        mRecyclerViewInviteFriend.setLayoutManager(new LinearLayoutManager(this));
+        mImageViewCopy = findViewById(R.id.image_copy);
+        mImageViewCopy.setOnClickListener(this);
     }
 
     private void initToolbar() {
@@ -91,6 +108,9 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
                 //TODO create trip and update db => Go to Maps
                 createTrip();
                 break;
+            case R.id.image_copy:
+                mPresenter.copyIdTripToClipboard(mTextCode.getText().toString());
+                break;
         }
     }
 
@@ -119,4 +139,22 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
         });
     }
 
+    @Override
+    public void showUserFriend(ArrayList<User> users) {
+        mUsers = users;
+        mAdapter = new InvitationFriendAdapter(this, mUsers, this);
+        mAdapter.setTripId(mTrip.getCode());
+        mRecyclerViewInviteFriend.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onUserFoundClick(User user) {
+
+    }
+
+    @Override
+    public void onInviteStatusClick(User user) {
+        mPresenter.onInviteStatusClick(user, mTrip);
+    }
 }

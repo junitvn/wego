@@ -12,6 +12,8 @@ import com.lamnn.wego.screen.info.info_member.InfoMemberActivity;
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String EXTRA_BUTTON_DIRECTION = "EXTRA_BUTTON_DIRECTION";
     private static final String EXTRA_BUTTON_CALL = "EXTRA_BUTTON_CALL";
+    private static final  String EXTRA_BUTTON_ALLOW = "EXTRA_BUTTON_ALLOW";
+    private static final  String EXTRA_BUTTON_DENY = "EXTRA_BUTTON_DENY";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
     private static final String EXTRA_EVENT = "EXTRA_EVENT";
     private Event mEvent;
@@ -33,10 +35,24 @@ public class NotificationReceiver extends BroadcastReceiver {
                 case EXTRA_BUTTON_CALL:
                     performAction2(context);
                     break;
+                case EXTRA_BUTTON_ALLOW:
+                    joinTrip();
+                    break;
+                case EXTRA_BUTTON_DENY:
+                    deny();
+                    break;
             }
         }
         Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         context.sendBroadcast(it);
+    }
+
+    private void deny() {
+
+    }
+
+    private void joinTrip() {
+
     }
 
     private void performAction1(Context context) {

@@ -1,93 +1,83 @@
 {
-  "status": "OK",
-  "geocoded_waypoints" : [
-     {
-        "geocoder_status" : "OK",
-        "place_id" : "ChIJ7cv00DwsDogRAMDACa2m4K8",
-        "types" : [ "locality", "political" ]
-     },
-     {
-        "geocoder_status" : "OK",
-        "place_id" : "ChIJ69Pk6jdlyIcRDqM1KDY3Fpg",
-        "types" : [ "locality", "political" ]
-     },
-     {
-        "geocoder_status" : "OK",
-        "place_id" : "ChIJgdL4flSKrYcRnTpP0XQSojM",
-        "types" : [ "locality", "political" ]
-     },
-     {
-        "geocoder_status" : "OK",
-        "place_id" : "ChIJE9on3F3HwoAR9AhGJW_fL-I",
-        "types" : [ "locality", "political" ]
-     }
-  ],
-  "routes": [ {
-    "summary": "I-40 W",
-    "legs": [ {
-      "steps": [ {
-        "travel_mode": "DRIVING",
-        "start_location": {
-          "lat": 41.8507300,
-          "lng": -87.6512600
-        },
-        "end_location": {
-          "lat": 41.8525800,
-          "lng": -87.6514100
-        },
-        "polyline": {
-          "points": "a~l~Fjk~uOwHJy@P"
-        },
-        "duration": {
-          "value": 19,
-          "text": "1 min"
-        },
-        "html_instructions": "as",
-        "distance": {
-          "value": 207,
-          "text": "0.1 mi"
-        }
-      }]
-    }],
-      "duration": {
-        "value": 74384,
-        "text": "20 hours 40 mins"
+  "plus_code": {
+    "compound_code": "2H29+2X Ahmedabad, Gujarat, India",
+    "global_code": "7JMJ2H29+2X"
+  },
+  "results": [
+    {
+      "address_components": [],
+      "formatted_address": "572, Santosh Nagar, near Ram Rahim Nagar, Calico Mills, Behrampura, Ahmedabad, Gujarat 380022, India",
+      "geometry": {},
+      "place_id": "ChIJa57PSqqFXjkRnhuO3XI_Wvw",
+      "plus_code": {
+        "compound_code": "XHX9+XV Ahmedabad, Gujarat, India",
+        "global_code": "7JJJXHX9+XV"
       },
-      "distance": {
-        "value": 2137146,
-        "text": "1,328 mi"
-      },
-      "start_location": {
-        "lat": 35.4675602,
-        "lng": -97.5164276
-      },
-      "end_location": {
-        "lat": 34.0522342,
-        "lng": -118.2436849
-      },
-      "start_address": "Oklahoma City, OK, USA",
-      "end_address": "Los Angeles, CA, USA"
-    } ],
-    "copyrights": "Map data ©2010 Google, Sanborn",
-    "overview_polyline": {
-      "points": "a~l~Fjk~uOnzh@vlbBtc~@tsE`vnApw{A`dw@~w\\|tNtqf@l{Yd_Fblh@rxo@b}@xxSfytA
-      blk@xxaBeJxlcBb~t@zbh@jc|Bx}C`rv@rw|@rlhA~dVzeo@vrSnc}Axf]fjz@xfFbw~@dz{A~d{A|zOxbrBbdUvpo@`
-      cFp~xBc`Hk@nurDznmFfwMbwz@bbl@lq~@loPpxq@bw_@v|{CbtY~jGqeMb{iF|n\\~mbDzeVh_Wr|Efc\\x`Ij{kE}mAb
-      ~uF{cNd}xBjp]fulBiwJpgg@|kHntyArpb@bijCk_Kv~eGyqTj_|@`uV`k|DcsNdwxAott@r}q@_gc@nu`CnvHx`k@dse
-      @j|p@zpiAp|gEicy@`omFvaErfo@igQxnlApqGze~AsyRzrjAb__@ftyB}pIlo_BflmA~yQftNboWzoAlzp@mz`@|}_
-      @fda@jakEitAn{fB_a]lexClshBtmqAdmY_hLxiZd~XtaBndgC"
+      "types": ["cemetery", "establishment", "point_of_interest"]
     },
-    "warnings": [ ],
-    "waypoint_order": [ 0, 1 ],
-    "bounds": {
-      "southwest": {
-        "lat": 34.0523600,
-        "lng": -118.2435600
+    {
+      "address_components": [
+        {
+          "long_name": "Calico Mills",
+          "short_name": "Calico Mills",
+          "types": ["political", "sublocality", "sublocality_level_2"]
+        },
+        {
+          "long_name": "Behrampura",
+          "short_name": "Behrampura",
+          "types": ["political", "sublocality", "sublocality_level_1"]
+        },
+        {
+          "long_name": "Ahmedabad",
+          "short_name": "Ahmedabad",
+          "types": ["locality", "political"]
+        },
+        {
+          "long_name": "Ahmedabad",
+          "short_name": "Ahmedabad",
+          "types": ["administrative_area_level_2", "political"]
+        },
+        {
+          "long_name": "Gujarat",
+          "short_name": "GJ",
+          "types": ["administrative_area_level_1", "political"]
+        },
+        {
+          "long_name": "India",
+          "short_name": "IN",
+          "types": ["country", "political"]
+        },
+        {
+          "long_name": "380022",
+          "short_name": "380022",
+          "types": ["postal_code"]
+        }
+      ],
+      "formatted_address": "572, Santosh Nagar, Near Ram Rahim Nagar Baherampura, Calico Mills, Behrampura, Ahmedabad, Gujarat 380022, India",
+      "geometry": {
+        "location": {
+          "lat": 22.9988459,
+          "lng": 72.5707584
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 23.0001948802915,
+            "lng": 72.57210738029151
+          },
+          "southwest": {
+            "lat": 22.9974969197085,
+            "lng": 72.56940941970849
+          }
+        }
       },
-      "northeast": {
-        "lat": 41.8781100,
-        "lng": -87.6297900
-      }
+      "place_id": "ChIJseKH1aCFXjkRH2LCsZ1LWjM",
+      "plus_code": {
+        "compound_code": "XHXC+G8 Ahmedabad, Gujarat, India",
+        "global_code": "7JJJXHXC+G8"
+      },
+      "types": ["street_address"]
     }
-  } ]
+  ],
+  "status": "OK"
 }

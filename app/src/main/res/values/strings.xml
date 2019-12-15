@@ -157,4 +157,10 @@
     <string name="end_point">End point</string>
     <string name="message_alert_save_changes">Are you want to save changes?</string>
     <string name="message_alert_delete_location">Are you want to delete this location?</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="invite">Invite</string>
+    <string name="joined">Joined</string>
+    <string name="action_join">JOIN</string>
+    <string name="action_deny">DENY</string>
+    <string name="text_intvite_you_to_join">invited you to join</string>
 </resources>

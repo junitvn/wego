@@ -1,16 +1,13 @@
 package com.lamnn.wego.screen.map;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -37,7 +34,6 @@ import com.lamnn.wego.data.model.route.RouteResponse;
 import com.lamnn.wego.data.remote.DirectionService;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.data.remote.UserService;
-import com.lamnn.wego.screen.trip.create_trip.RouteActivity;
 import com.lamnn.wego.utils.APIUtils;
 import com.lamnn.wego.utils.ClusterManagerRenderer;
 
@@ -47,8 +43,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.lamnn.wego.utils.Utils.getMarkerIconFromDrawable;
 
 public class MapsPresenter implements MapsContract.Presenter {
     private Context mContext;
@@ -400,10 +394,11 @@ public class MapsPresenter implements MapsContract.Presenter {
     private void subscribeToChannel(User user) {
         String topicDistance = "DI" + user.getActiveTrip();
         FirebaseMessaging.getInstance().subscribeToTopic(topicDistance);
-        for (String id : user.getMyTrips()) {
-            String topicGroupMessage = "GM" + id;
-            FirebaseMessaging.getInstance().subscribeToTopic(topicGroupMessage);
-        }
+        if (user.getMyTrips() != null)
+            for (String id : user.getMyTrips()) {
+                String topicGroupMessage = "GM" + id;
+                FirebaseMessaging.getInstance().subscribeToTopic(topicGroupMessage);
+            }
     }
 }
 

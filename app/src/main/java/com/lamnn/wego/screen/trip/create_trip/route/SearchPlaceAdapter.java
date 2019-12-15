@@ -1,4 +1,4 @@
-package com.lamnn.wego.screen.trip.create_trip;
+package com.lamnn.wego.screen.trip.create_trip.route;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -77,7 +77,7 @@ public class SearchPlaceAdapter extends RecyclerView.Adapter<SearchPlaceAdapter.
         }
     }
 
-    interface OnItemSearchPlaceClickListener {
+    public interface OnItemSearchPlaceClickListener {
         void onItemSearchPlaceClick(Result result);
     }
 }

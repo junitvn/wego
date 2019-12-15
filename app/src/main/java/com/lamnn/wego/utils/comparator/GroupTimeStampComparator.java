@@ -1,4 +1,4 @@
-package com.lamnn.wego.utils;
+package com.lamnn.wego.utils.comparator;
 
 import com.lamnn.wego.data.model.GroupMessage;
 import com.lamnn.wego.data.model.UserMessage;

@@ -19,8 +19,8 @@ import com.lamnn.wego.data.model.UserMessage;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 import com.lamnn.wego.data.remote.ChatService;
 import com.lamnn.wego.utils.APIUtils;
-import com.lamnn.wego.utils.GroupTimeStampComparator;
-import com.lamnn.wego.utils.UserTimeStampComparator;
+import com.lamnn.wego.utils.comparator.GroupTimeStampComparator;
+import com.lamnn.wego.utils.comparator.UserTimeStampComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;

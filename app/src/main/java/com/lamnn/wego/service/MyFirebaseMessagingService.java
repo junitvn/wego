@@ -22,6 +22,7 @@ import com.lamnn.wego.broadcast.MessageBroadcastReceiver;
 import com.lamnn.wego.broadcast.NotificationReceiver;
 import com.lamnn.wego.data.model.Event;
 import com.lamnn.wego.data.model.GroupMessage;
+import com.lamnn.wego.data.model.Invitation;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.data.model.UserMessage;
@@ -34,7 +35,6 @@ import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.CHANNEL_ID;
 import static com.lamnn.wego.screen.map.MapsActivity.DISTANCE_CHANNEL_ID;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    public static final String KEY_MESSAGE_ID = "KEY_MESSAGE_ID ";
     public static final String KEY_TEXT_REPLY = "key_text_reply";
     public static final String KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID";
     public static final String EXTRA_MESSAGE_NOTIFICATION = "EXTRA_MESSAGE_NOTIFICATION";
@@ -42,8 +42,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private String EXTRA_BUTTON_DIRECTION = "EXTRA_BUTTON_DIRECTION";
     private String EXTRA_BUTTON_CALL = "EXTRA_BUTTON_CALL";
+    private String EXTRA_BUTTON_ALLOW = "EXTRA_BUTTON_ALLOW";
+    private String EXTRA_BUTTON_DENY = "EXTRA_BUTTON_DENY";
     private String EXTRA_ACTION = "EXTRA_ACTION";
     private String EXTRA_EVENT = "EXTRA_EVENT";
+    private String EXTRA_INVITATION = "EXTRA_INVITATION";
     private NotificationTarget notificationTarget;
     private int NOTIFICATION_ID = 1;
     private User mUser;
@@ -52,6 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private GroupMessage mGroupMessage;
     private String mCurrentId;
     private UserLocation mLastMember;
+    private Invitation mInvitation;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -69,6 +73,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } else if (remoteMessage.getFrom().startsWith("/topics/DI")) {
                 mLastMember = gson.fromJson(remoteMessage.getData().get("last_member"), UserLocation.class);
                 showDistanceNotification();
+            } else if (remoteMessage.getFrom().startsWith("/topics/IN")) {
+                mInvitation = gson.fromJson(remoteMessage.getData().get("invitation"), Invitation.class);
+                showInvitationNotification();
             } else {
                 mUser = gson.fromJson(remoteMessage.getData().get("user"), User.class);
                 mEvent = gson.fromJson(remoteMessage.getData().get("event"), Event.class);
@@ -89,6 +96,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
 
         }
+    }
+
+    private void showInvitationNotification() {
+        RemoteViews collapseView = new RemoteViews(getPackageName(), R.layout.notification_invitation);
+        Intent clickIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
+        clickIntent.putExtra(EXTRA_INVITATION, mInvitation);
+        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this,
+                0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intentActionDirection = new Intent(getApplicationContext(), NotificationReceiver.class);
+        intentActionDirection.putExtra(EXTRA_ACTION, EXTRA_BUTTON_ALLOW);
+        intentActionDirection.putExtra(EXTRA_INVITATION, mInvitation);
+        PendingIntent pendingIntentActionDirection =
+                PendingIntent.getBroadcast(getApplicationContext(),
+                        1, intentActionDirection, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent intentActionCall = new Intent(getApplicationContext(), NotificationReceiver.class);
+        intentActionCall.putExtra(EXTRA_ACTION, EXTRA_BUTTON_DENY);
+        intentActionCall.putExtra(EXTRA_INVITATION, mInvitation);
+        PendingIntent pendingIntentActionCall =
+                PendingIntent.getBroadcast(getApplicationContext(),
+                        2, intentActionCall, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        collapseView.setTextViewText(R.id.text_noti_title, mInvitation.getCreator().getName() + getString(R.string.text_intvite_you_to_join) + mInvitation.getTrip().getName());
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_fox)
+                .setCustomContentView(collapseView)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .addAction(R.drawable.ic_fox, getString(R.string.action_join), pendingIntentActionDirection)
+                .addAction(R.drawable.ic_bee, getString(R.string.action_deny), pendingIntentActionCall)
+                .build();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     private void showMessageNotification(String type) {

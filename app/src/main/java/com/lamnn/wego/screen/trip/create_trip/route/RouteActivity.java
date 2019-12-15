@@ -1,4 +1,4 @@
-package com.lamnn.wego.screen.trip.create_trip;
+package com.lamnn.wego.screen.trip.create_trip.route;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +12,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -77,7 +74,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.lamnn.wego.screen.trip.create_trip.ShareCodeActivity.EXTRA_TRIP;
+import static com.lamnn.wego.screen.trip.create_trip.share_code.ShareCodeActivity.EXTRA_TRIP;
 import static com.lamnn.wego.utils.Utils.getMarkerIconFromDrawable;
 
 public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback,

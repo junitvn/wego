@@ -30,6 +30,8 @@ import com.lamnn.wego.data.model.Point;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.TripSetting;
 import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.screen.trip.create_trip.route.RouteActivity;
+import com.lamnn.wego.screen.trip.create_trip.share_code.ShareCodeActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import static com.lamnn.wego.screen.trip.create_trip.RouteActivity.EXTRA_POINTS;
+import static com.lamnn.wego.screen.trip.create_trip.route.RouteActivity.EXTRA_POINTS;
 
 public class CreateTripActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EXTRA_LAT = "EXTRA_LAT";

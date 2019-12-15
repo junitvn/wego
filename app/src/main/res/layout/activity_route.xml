@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.trip.create_trip.ShareCodeActivity">
+    tools:context=".screen.trip.create_trip.share_code.ShareCodeActivity">
 
     <fragment
         android:id="@+id/map"
@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/constraint_layout_place_info"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:context=".screen.trip.create_trip.RouteActivity" />
+        tools:context=".screen.trip.create_trip.route.RouteActivity" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout5"

@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.maps.android.PolyUtil;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Trip;
@@ -104,7 +105,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTextWelcome;
     private GoogleMap mMap;
     private MapsContract.Presenter mPresenter;
-    private ImageView mImageToggleDropdown, mImageRefresh, mImageAllMember;
+    private ImageView mImageViewToggleDropdown, mImageViewRefresh, mImageViewAllMember, mImageViewAddMember;
     private LinearLayout mLinearDropdown;
     private Button mButtonJoin, mButtonCreate;
     private TextView mTextTripName;
@@ -125,6 +126,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver locationUpdateReceiver;
     private Trip mTrip;
     private ConstraintLayout mLayoutAllMember;
+    private ConstraintLayout mLayoutAddMember;
 
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, MapsActivity.class);
@@ -146,6 +148,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         getData();
         initMaps();
         getLocationPermission();
+        subscribeInvitationChannel();
         createNotificationChannel();
         createDistanceNotificationChannel();
         final Intent locationService = new Intent(this.getApplication(), MyLocationService.class);
@@ -158,6 +161,11 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
         receiveData();
+    }
+
+    private void subscribeInvitationChannel() {
+        String topicInvitation = "IN" + FirebaseAuth.getInstance().getUid();
+        FirebaseMessaging.getInstance().subscribeToTopic(topicInvitation);
     }
 
 
@@ -205,6 +213,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     public void showTrips(List<Trip> trips) {
         if (trips.size() > 0) {
             mLayoutAllMember.setVisibility(View.VISIBLE);
+            mLayoutAddMember.setVisibility(View.VISIBLE);
+            mImageViewAddMember.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
         mTripAdapter = new TripAdapter(this, formattedTrips(trips), this);
         mRecyclerListTrip.setAdapter(mTripAdapter);
@@ -357,6 +367,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.image_circle_all:
                 mPresenter.showAllMember();
+                break;
+            case R.id.image_circle_add:
+
                 break;
             case R.id.image_toggle_dropdown:
             case R.id.text_trip_name:
@@ -541,8 +554,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         View headerView = mNavigationView.getHeaderView(0);
         mImageAvatar = headerView.findViewById(R.id.image_avatar);
         mImageAvatar.setOnClickListener(this);
-        mImageAllMember = findViewById(R.id.image_circle_all);
-        mImageAllMember.setOnClickListener(this);
+        mImageViewAllMember = findViewById(R.id.image_circle_all);
+        mImageViewAllMember.setOnClickListener(this);
         mTextWelcome = headerView.findViewById(R.id.text_nav_welcome);
         mTextWelcome.setOnClickListener(this);
         mLinearDropdown = findViewById(R.id.linear_dropdown);
@@ -558,6 +571,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         mButtonCreate.setOnClickListener(this);
         mProgressBar = findViewById(R.id.progress_bar_loading);
         mLayoutAllMember = findViewById(R.id.layout_all_member);
+        mLayoutAddMember = findViewById(R.id.layout_add_member);
+        mImageViewAddMember = findViewById(R.id.image_circle_add);
+        mImageViewAddMember.setOnClickListener(this);
     }
 
     private void initToolbar() {
@@ -567,13 +583,13 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
-        mImageToggleDropdown = toolbar.findViewById(R.id.image_toggle_dropdown);
-        mImageToggleDropdown.setOnClickListener(this);
+        mImageViewToggleDropdown = toolbar.findViewById(R.id.image_toggle_dropdown);
+        mImageViewToggleDropdown.setOnClickListener(this);
         mTextTripName = toolbar.findViewById(R.id.text_trip_name);
         mTextTripName.setOnClickListener(this);
         mTextTripName.setText(getString(R.string.app_name));
-        mImageRefresh = toolbar.findViewById(R.id.image_refresh);
-        mImageRefresh.setOnClickListener(this);
+        mImageViewRefresh = toolbar.findViewById(R.id.image_refresh);
+        mImageViewRefresh.setOnClickListener(this);
     }
 
     private void moveCamera(LatLng latLng, float defaultZoom) {
@@ -585,10 +601,10 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private void toggleDropdown() {
         if (mLinearDropdown.getVisibility() == View.GONE) {
             mLinearDropdown.setVisibility(View.VISIBLE);
-            mImageToggleDropdown.setImageResource(R.drawable.ic_sort_up);
+            mImageViewToggleDropdown.setImageResource(R.drawable.ic_sort_up);
         } else {
             mLinearDropdown.setVisibility(View.GONE);
-            mImageToggleDropdown.setImageResource(R.drawable.ic_sort_down);
+            mImageViewToggleDropdown.setImageResource(R.drawable.ic_sort_down);
         }
     }
 
@@ -608,12 +624,15 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        UserLocation userLocation = (UserLocation) marker.getTag();
-        String currentUid = FirebaseAuth.getInstance().getUid();
-        if (userLocation != null && userLocation.getUid().equals(currentUid)) {
-            startActivity(InfoUserActivity.getIntent(this, userLocation));
-        } else {
-            startActivity(InfoMemberActivity.getIntent(this, userLocation));
+        Object markerTag = marker.getTag();
+        if (markerTag.getClass() == UserLocation.class) {
+            UserLocation userLocation = (UserLocation) markerTag;
+            String currentUid = FirebaseAuth.getInstance().getUid();
+            if (userLocation != null && userLocation.getUid().equals(currentUid)) {
+                startActivity(InfoUserActivity.getIntent(this, userLocation));
+            } else {
+                startActivity(InfoMemberActivity.getIntent(this, userLocation));
+            }
         }
     }
 
