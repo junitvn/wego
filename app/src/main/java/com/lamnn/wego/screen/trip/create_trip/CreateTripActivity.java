@@ -26,10 +26,12 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Location;
-import com.lamnn.wego.data.model.Point;
+import com.lamnn.wego.data.model.place.Point;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.TripSetting;
 import com.lamnn.wego.data.model.User;
+import com.lamnn.wego.screen.trip.create_trip.route.RouteActivity;
+import com.lamnn.wego.screen.trip.create_trip.share_code.ShareCodeActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,9 +39,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import static com.lamnn.wego.screen.trip.create_trip.RouteActivity.EXTRA_POINTS;
+import static com.lamnn.wego.screen.trip.create_trip.route.RouteActivity.EXTRA_POINTS;
+import static com.lamnn.wego.utils.AppUtils.TYPE_END;
+import static com.lamnn.wego.utils.AppUtils.TYPE_START;
 
-public class CreateTripActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateTripActivity extends AppCompatActivity implements View.OnClickListener, CreateTripContract.View {
     public static final String EXTRA_LAT = "EXTRA_LAT";
     public static final String EXTRA_LNG = "EXTRA_LNG";
     public static final int REQUEST_WAYPOINTS = 101;
@@ -55,6 +59,7 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerViewPoint;
     private SpecialPointAdapter mPointAdapter;
+    private CreateTripPresenter mPresenter;
 
     public static Intent getIntent(Context context, double lat, double lng) {
         Intent intent = new Intent(context, CreateTripActivity.class);
@@ -76,6 +81,7 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         initView();
         initToolbar();
         receiveData();
+        mPresenter = new CreateTripPresenter(this, this);
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), "AIzaSyAGVGhyzB1hQcXpFmg9QCP6JMI8Qp-768Y");
         }
@@ -143,7 +149,7 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         mTextEndPlace.setText(place.getName());
         mTextNameTrip.setText(place.getName());
         mEndPoint = new Point();
-        mEndPoint.setType("end");
+        mEndPoint.setType(TYPE_END);
         mEndPoint.setLocation(new Location(place.getLatLng().latitude, place.getLatLng().longitude));
         mEndPoint.setName(place.getName());
         mTrip.setEndPoint(mEndPoint);
@@ -182,11 +188,15 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
     private void initStartPoint(double lat, double lng) {
         mStartPoint = new Point();
         mStartPoint.setLocation(new Location(lat, lng));
-        mStartPoint.setType("start");
+        mStartPoint.setType(TYPE_START);
         mTrip.setStartPoint(mStartPoint);
     }
 
     private void goToSeeDestination() {
+        if (mEndPoint == null) {
+            Toast.makeText(this, getString(R.string.have_not_choose_destination), Toast.LENGTH_SHORT).show();
+            return;
+        }
         FirebaseAuth auth = FirebaseAuth.getInstance();
         mTrip.setCode(generateRandomIntIntRange());
         mTrip.setCreatorId(auth.getUid());
@@ -201,7 +211,7 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         TripSetting tripSetting = new TripSetting();
         tripSetting.setDefaultValue();
         mTrip.setTripSetting(tripSetting);
-        startActivity(ShareCodeActivity.getIntent(this, mTrip));
+        mPresenter.createTrip(mTrip);
     }
 
     private void startAutoCompleteActivity() {
@@ -219,5 +229,15 @@ public class CreateTripActivity extends AppCompatActivity implements View.OnClic
         int max = 999999;
         int res = r.nextInt((max - min) + 1) + min;
         return res + "";
+    }
+
+    @Override
+    public void showLoading() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 }

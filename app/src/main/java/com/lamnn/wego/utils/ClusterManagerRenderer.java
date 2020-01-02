@@ -44,12 +44,17 @@ import com.lamnn.wego.data.model.route.MyTimeStamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.lamnn.wego.utils.AppUtils.KEY_EVENTS;
+import static com.lamnn.wego.utils.AppUtils.KEY_TIME_STAMP;
+import static com.lamnn.wego.utils.AppUtils.KEY_TRIP_ID;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_ID;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
+
 public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker> {
     private final ImageView mImageView;
     private final IconGenerator mIconGenerator;
     private final Context mContext;
     private UserLocation mUserLocation;
-    private static final String TAG = "RENDERER";
     Bitmap mBitmap;
 
     public ClusterManagerRenderer(Context context, GoogleMap map,
@@ -87,7 +92,6 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             //on load failed
-                            Log.d(TAG, "onLoadFailed: on rendered");
                             return false;
                         }
 
@@ -98,7 +102,6 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
                             if (marker != null) {
                                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(mBitmap));
                             }
-                            Log.d(TAG, "onResourceReady: cluster item rendered");
                             return false;
                         }
                     })
@@ -121,9 +124,9 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
             final UserLocation userLocation = updateMarker.getUserLocation();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             if (userLocation.getUser() != null) {
-                db.collection("events")
-                        .whereEqualTo("trip_id", userLocation.getUser().getActiveTrip())
-                        .whereEqualTo("user_id", userLocation.getUser().getUid())
+                db.collection(KEY_EVENTS)
+                        .whereEqualTo(KEY_TRIP_ID, userLocation.getUser().getActiveTrip())
+                        .whereEqualTo(KEY_USER_ID, userLocation.getUser().getUid())
                         .addSnapshotListener(new EventListener<QuerySnapshot>() {
                             @Override
                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -136,10 +139,10 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
                                     Gson gson = new Gson();
                                     JsonElement jsonElement = gson.toJsonTree(doc.getData());
                                     event = gson.fromJson(jsonElement, Event.class);
-                                    Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                                    Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                                     event.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                                     event.setEventId(doc.getId());
-                                    if (event.getStatus().equals("waiting")) {
+                                    if (event.getStatus().equals(TYPE_WAITING)) {
                                         events.add(event);
                                     }
                                 }
@@ -164,14 +167,12 @@ public class ClusterManagerRenderer extends DefaultClusterRenderer<ClusterMarker
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         //on load failed
-                        Log.d(TAG, "onLoadFailed: on create bitmap");
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
 //                        mClusterManager.cluster();
-                        Log.d(TAG, "onResourceReady: con create bitmap");
                         return false;
                     }
                 })

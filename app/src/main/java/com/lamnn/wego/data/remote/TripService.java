@@ -1,5 +1,6 @@
 package com.lamnn.wego.data.remote;
 
+import com.lamnn.wego.data.model.Invitation;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
@@ -32,4 +33,7 @@ public interface TripService {
 
     @POST("getListMember")
     Call<List<UserLocation>> getListMember(@Body User user);
+
+    @POST("inviteFriend")
+    Call<Boolean> inviteFriend(@Body Invitation invitation);
 }

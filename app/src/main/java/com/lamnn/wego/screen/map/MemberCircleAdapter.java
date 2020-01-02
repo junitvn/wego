@@ -30,6 +30,12 @@ import com.lamnn.wego.utils.GlideApp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.lamnn.wego.utils.AppUtils.KEY_EVENTS;
+import static com.lamnn.wego.utils.AppUtils.KEY_TIME_STAMP;
+import static com.lamnn.wego.utils.AppUtils.KEY_TRIP_ID;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_ID;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
+
 public class MemberCircleAdapter extends RecyclerView.Adapter<MemberCircleAdapter.ViewHolder> {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -104,9 +110,9 @@ public class MemberCircleAdapter extends RecyclerView.Adapter<MemberCircleAdapte
                         .into(mImageAvatar);
             }
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events")
-                    .whereEqualTo("trip_id", userLocation.getUser().getActiveTrip())
-                    .whereEqualTo("user_id", userLocation.getUser().getUid())
+            db.collection(KEY_EVENTS)
+                    .whereEqualTo(KEY_TRIP_ID, userLocation.getUser().getActiveTrip())
+                    .whereEqualTo(KEY_USER_ID, userLocation.getUser().getUid())
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -119,10 +125,10 @@ public class MemberCircleAdapter extends RecyclerView.Adapter<MemberCircleAdapte
                                 Gson gson = new Gson();
                                 JsonElement jsonElement = gson.toJsonTree(doc.getData());
                                 event = gson.fromJson(jsonElement, Event.class);
-                                Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                                Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                                 event.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                                 event.setEventId(doc.getId());
-                                if (event.getStatus().equals("waiting")) {
+                                if (event.getStatus().equals(TYPE_WAITING)) {
                                     events.add(event);
                                 }
                             }
@@ -140,7 +146,6 @@ public class MemberCircleAdapter extends RecyclerView.Adapter<MemberCircleAdapte
             if (mClickListener != null) {
                 mClickListener.onUserItemClick(mUserLocation);
             } else {
-                Toast.makeText(mContext, "Click listener null", Toast.LENGTH_SHORT).show();
             }
         }
     }

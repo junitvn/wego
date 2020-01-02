@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.UserLocation;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
@@ -24,6 +25,9 @@ import com.lamnn.wego.utils.APIUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.lamnn.wego.utils.AppUtils.KEY_TIME_STAMP;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_LOCATION;
 
 public class SettingTripPresenter implements SettingTripContract.Presenter {
     private Context mContext;
@@ -80,7 +84,7 @@ public class SettingTripPresenter implements SettingTripContract.Presenter {
 
     @Override
     public void updateUserLocation(UserLocation userLocation) {
-        mFirestore.collection("user_location").document(userLocation.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mFirestore.collection(KEY_USER_LOCATION).document(userLocation.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -89,7 +93,7 @@ public class SettingTripPresenter implements SettingTripContract.Presenter {
                         Gson gson = new Gson();
                         JsonElement jsonElement = gson.toJsonTree(doc.getData());
                         UserLocation userLocation = gson.fromJson(jsonElement, UserLocation.class);
-                        Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                        Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                         userLocation.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                         mView.updateUserLocation(userLocation);
                     } else {
@@ -105,6 +109,6 @@ public class SettingTripPresenter implements SettingTripContract.Presenter {
         ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("TRIP_CODE", code);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(mContext, "Copied " + code + " to clipboard", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, mContext.getString(R.string.copied) + code + mContext.getString(R.string.to_clipboard), Toast.LENGTH_SHORT).show();
     }
 }

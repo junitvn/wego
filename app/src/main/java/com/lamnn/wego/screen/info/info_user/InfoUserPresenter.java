@@ -36,6 +36,19 @@ import retrofit2.Response;
 
 import static com.lamnn.wego.utils.AppUtils.CAR_ICON_URI;
 import static com.lamnn.wego.utils.AppUtils.GAS_ICON_URI;
+import static com.lamnn.wego.utils.AppUtils.KEY_COMING_USERS;
+import static com.lamnn.wego.utils.AppUtils.KEY_EVENTS;
+import static com.lamnn.wego.utils.AppUtils.KEY_STATUS;
+import static com.lamnn.wego.utils.AppUtils.KEY_TIME_STAMP;
+import static com.lamnn.wego.utils.AppUtils.KEY_TRIP_ID;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_ID;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_LOCATION;
+import static com.lamnn.wego.utils.AppUtils.KEY_WAITING_USERS;
+import static com.lamnn.wego.utils.AppUtils.STATUS_DELETED;
+import static com.lamnn.wego.utils.AppUtils.STATUS_GOING;
+import static com.lamnn.wego.utils.AppUtils.TYPE_CAR;
+import static com.lamnn.wego.utils.AppUtils.TYPE_COMING;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
 
 public class InfoUserPresenter implements InfoUserContract.Presenter {
     private Context mContext;
@@ -51,9 +64,9 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
     public void getEventData(UserLocation userLocation) {
         mView.showLoading();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events")
-                .whereEqualTo("trip_id", userLocation.getUser().getActiveTrip())
-                .whereEqualTo("user_id", userLocation.getUser().getUid())
+        db.collection(KEY_EVENTS)
+                .whereEqualTo(KEY_TRIP_ID, userLocation.getUser().getActiveTrip())
+                .whereEqualTo(KEY_USER_ID, userLocation.getUser().getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -66,10 +79,10 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
                             Gson gson = new Gson();
                             JsonElement jsonElement = gson.toJsonTree(doc.getData());
                             event = gson.fromJson(jsonElement, Event.class);
-                            Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                            Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                             event.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                             event.setEventId(doc.getId());
-                            if (!event.getStatus().equals("deleted")) {
+                            if (!event.getStatus().equals(STATUS_DELETED)) {
                                 events.add(event);
                             }
                         }
@@ -83,7 +96,7 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
     public void getListMember(final List<String> users, final String type) {
         final List<UserLocation> userLocations = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
-            mFirestore.collection("user_location")
+            mFirestore.collection(KEY_USER_LOCATION)
                     .document(users.get(i))
                     .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                         @Override
@@ -91,7 +104,7 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
                             Gson gson = new Gson();
                             JsonElement jsonElement = gson.toJsonTree(doc.getData());
                             UserLocation userLocation = gson.fromJson(jsonElement, UserLocation.class);
-                            Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                            Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                             userLocation.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                             userLocations.add(userLocation);
                             if (userLocations.size() == users.size()) {
@@ -105,13 +118,13 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
     @Override
     public void updateStatus(Event event, String status) {
         mView.showLoading();
-        if (status.equals("deleted")) {
+        if (status.equals(STATUS_DELETED)) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events")
+            db.collection(KEY_EVENTS)
                     .document(event.getEventId())
-                    .update("status", status,
-                            "coming_users", FieldValue.arrayRemove(),
-                            "waiting_users", FieldValue.arrayRemove())
+                    .update(KEY_STATUS, status,
+                            KEY_COMING_USERS, FieldValue.arrayRemove(),
+                            KEY_WAITING_USERS, FieldValue.arrayRemove())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -126,9 +139,9 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
                     });
         } else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("events")
+            db.collection(KEY_EVENTS)
                     .document(event.getEventId())
-                    .update("status", status)
+                    .update(KEY_STATUS, status)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -152,12 +165,12 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
         event.setUserId(userLocation.getUid());
         event.setTripId(userLocation.getUser().getActiveTrip());
         event.setLocation(userLocation.getLocation());
-        event.setTitle(type.equals("car")
+        event.setTitle(type.equals(TYPE_CAR)
                 ? mContext.getString(R.string.text_car_broken)
                 : mContext.getString(R.string.text_out_of_gas));
-        event.setStatus("waiting");
+        event.setStatus(TYPE_WAITING);
         List<String> photos = new ArrayList<>();
-        if (type.equals("car")) {
+        if (type.equals(TYPE_CAR)) {
             photos.add(CAR_ICON_URI);
         } else {
             photos.add(GAS_ICON_URI);
@@ -178,7 +191,7 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
     }
 
     public void getUserLocationData(UserLocation userLocation) {
-        mFirestore.collection("user_location").document(userLocation.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        mFirestore.collection(KEY_USER_LOCATION).document(userLocation.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -187,7 +200,7 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
                         Gson gson = new Gson();
                         JsonElement jsonElement = gson.toJsonTree(doc.getData());
                         UserLocation userLocation = gson.fromJson(jsonElement, UserLocation.class);
-                        Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                        Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                         userLocation.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                         String status = "";
                         String type = "";
@@ -195,10 +208,10 @@ public class InfoUserPresenter implements InfoUserContract.Presenter {
                         if (userLocation.getEventStatuses() != null) {
                             for (EventStatus eventStatus : userLocation.getEventStatuses()) {
                                 if (eventStatus.getTripId().equals(userLocation.getUser().getActiveTrip())) {
-                                    if (!eventStatus.getStatus().equals("going")) {
+                                    if (!eventStatus.getStatus().equals(STATUS_GOING)) {
                                         type = eventStatus.getStatus();
                                         event = eventStatus.getEvent();
-                                        if (eventStatus.getStatus().equals("coming")) {
+                                        if (eventStatus.getStatus().equals(TYPE_COMING)) {
                                             status = mContext.getString(R.string.going_to) + eventStatus.getEvent().getUser().getName()
                                                     + mContext.getString(R.string.s_place);
                                         } else {

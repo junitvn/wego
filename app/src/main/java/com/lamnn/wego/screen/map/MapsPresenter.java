@@ -1,16 +1,13 @@
 package com.lamnn.wego.screen.map;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -29,7 +26,7 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.ClusterMarker;
-import com.lamnn.wego.data.model.Point;
+import com.lamnn.wego.data.model.place.Point;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserLocation;
@@ -37,7 +34,6 @@ import com.lamnn.wego.data.model.route.RouteResponse;
 import com.lamnn.wego.data.remote.DirectionService;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.data.remote.UserService;
-import com.lamnn.wego.screen.trip.create_trip.RouteActivity;
 import com.lamnn.wego.utils.APIUtils;
 import com.lamnn.wego.utils.ClusterManagerRenderer;
 
@@ -48,13 +44,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.lamnn.wego.utils.Utils.getMarkerIconFromDrawable;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAYPOINT;
 
 public class MapsPresenter implements MapsContract.Presenter {
     private Context mContext;
     private MapsContract.View mView;
     private GoogleMap mMap;
-    private static final String TAG = "MAP_ACTIVITY_TAG";
     private User mUser = null;
     private TripService mTripService;
     private UserService mUserService;
@@ -189,7 +184,6 @@ public class MapsPresenter implements MapsContract.Presenter {
                 }
             }
             mClusterManager.cluster();
-            Log.d(TAG, "initMarker: after cluster");
         }
     }
 
@@ -242,10 +236,8 @@ public class MapsPresenter implements MapsContract.Presenter {
                         }
                     }
                 } catch (Exception e) {
-                    Log.d(TAG, "_addMarkers: Exception" + e.getMessage());
                 }
             }
-            Log.d(TAG, "updateMarkers: ");
         }
     }
 
@@ -258,13 +250,10 @@ public class MapsPresenter implements MapsContract.Presenter {
         mUserService.updateStatus(userLocation).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                Log.d(TAG, "Update status: " + response.body());
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-//                mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
-                Log.d(TAG, "onFailure: update status");
             }
         });
     }
@@ -286,7 +275,6 @@ public class MapsPresenter implements MapsContract.Presenter {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 mView.showErrorMessage(mContext.getString(R.string.text_something_went_wrong));
-                Log.d(TAG, "onFailure: switch trip");
                 mView.hideLoading();
             }
         });
@@ -299,7 +287,6 @@ public class MapsPresenter implements MapsContract.Presenter {
         mUserService.initUserLocation(userLocation).enqueue(new Callback<UserLocation>() {
             @Override
             public void onResponse(Call<UserLocation> call, Response<UserLocation> response) {
-                Log.d(TAG, "onResponse: init user location");
                 for (ClusterMarker clusterMarker : mClusterMarkers) {
                     if (clusterMarker.getUserLocation().getUid().equals(FirebaseAuth.getInstance().getUid())) {
                         clusterMarker.setUserLocation(userLocation);
@@ -310,7 +297,6 @@ public class MapsPresenter implements MapsContract.Presenter {
 
             @Override
             public void onFailure(Call<UserLocation> call, Throwable t) {
-                Log.d(TAG, "onFailure: init user location" + t.getMessage());
             }
         });
     }
@@ -357,13 +343,12 @@ public class MapsPresenter implements MapsContract.Presenter {
         String origin = trip.getStartPoint().getLocation().getLat() + "," + trip.getStartPoint().getLocation().getLng();
         String destination = trip.getEndPoint().getLocation().getLat() + "," + trip.getEndPoint().getLocation().getLng();
         DirectionService directionService = APIUtils.getDirectionService();
-        directionService.getRoute(origin, destination, "AIzaSyBkrblFbEPs0h9HmkIC2CHcy7HSurPAVKk")
+        directionService.getRoute(origin, destination, mContext.getString(R.string.direction_api_key_ver2))
                 .enqueue(new Callback<RouteResponse>() {
                     @Override
                     public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
                         RouteResponse routeResponse = response.body();
                         if (routeResponse.getStatus().equals("REQUEST_DENIED")) {
-                            Toast.makeText(mContext, "Error from Maps API", Toast.LENGTH_SHORT).show();
                         } else {
                             mView.drawPoly(routeResponse);
                             mRouteResponse = routeResponse;
@@ -388,7 +373,7 @@ public class MapsPresenter implements MapsContract.Presenter {
                 Marker marker = mMap.addMarker(new MarkerOptions().title(point.getName())
                         .position(new LatLng(point.getLocation().getLat(), point.getLocation().getLng())));
                 marker.setTag(point);
-                if (point.getType().equals("waypoint")) {
+                if (point.getType().equals(TYPE_WAYPOINT)) {
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                 } else {
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
@@ -400,10 +385,11 @@ public class MapsPresenter implements MapsContract.Presenter {
     private void subscribeToChannel(User user) {
         String topicDistance = "DI" + user.getActiveTrip();
         FirebaseMessaging.getInstance().subscribeToTopic(topicDistance);
-        for (String id : user.getMyTrips()) {
-            String topicGroupMessage = "GM" + id;
-            FirebaseMessaging.getInstance().subscribeToTopic(topicGroupMessage);
-        }
+        if (user.getMyTrips() != null)
+            for (String id : user.getMyTrips()) {
+                String topicGroupMessage = "GM" + id;
+                FirebaseMessaging.getInstance().subscribeToTopic(topicGroupMessage);
+            }
     }
 }
 

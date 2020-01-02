@@ -24,4 +24,15 @@
     <dimen name="space15">15dp</dimen>
     <dimen name="spaceLR">40dp</dimen>
     <dimen name="max_width">170dp</dimen>
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_6dp">6dp</dimen>
+    <dimen name="margin_17dp">17dp</dimen>
+    <dimen name="padding_14dp">14dp</dimen>
+    <dimen name="text_size_20">20dp</dimen>
+    <dimen name="text_size_10">10dp</dimen>
+    <dimen name="text_size_45">45sp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="margin_40dp">40dp</dimen>
+    <dimen name="text_size_19">19sp</dimen>
 </resources>

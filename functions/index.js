@@ -515,10 +515,30 @@ const addEventToUserLocation = (req, res) => {
   });
 };
 
+const onWriteInvitation = (change, context) => {
+  const dataChanged = change.after.data();
+  if (dataChanged.status === "invited") {
+    const topic = "IN" + dataChanged.receiver_id;
+    const payload = {
+      data: {
+        invitation: JSON.stringify(dataChanged)
+      }
+    };
+    return admin
+      .messaging()
+      .sendToTopic(topic, payload)
+      .then(response => {
+        return;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  } else {
+    rteturn;
+  }
+};
+
 const onWriteEvent = (change, context) => {
-  console.log(context.params);
-  console.log("before ", change.before.data());
-  console.log("new ", change.after.data());
   let diffComing, diffComingReverse, diffWaiting, diffWaitingReverse;
   let difference = "";
   if (change.before.data()) {
@@ -564,7 +584,6 @@ const onWriteEvent = (change, context) => {
     .messaging()
     .sendToTopic(topic, payload)
     .then(response => {
-      console.log("Send ok", response);
       return;
     })
     .catch(e => {
@@ -983,6 +1002,20 @@ const searchUserByName = (req, res) => {
     });
 };
 
+const inviteFriend = (req, res) => {
+  const invitation = req.body;
+  return db
+    .collection("invitations")
+    .add(invitation)
+    .then(() => {
+      res.status(200).send(true);
+      return;
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
+
 function convertString(str) {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -1017,7 +1050,11 @@ module.exports = {
   createUserChannel: functions.https.onRequest(createUserChannel),
   searchUserByName: functions.https.onRequest(searchUserByName),
   getAllEvent: functions.https.onRequest(getAllEvent),
+  inviteFriend: functions.https.onRequest(inviteFriend),
   onWriteEvent: functions.firestore
     .document("events/{eventId}")
-    .onWrite(onWriteEvent)
+    .onWrite(onWriteEvent),
+  onWriteInvitation: functions.firestore
+    .document("invitations/{invitationId}")
+    .onWrite(onWriteInvitation)
 };

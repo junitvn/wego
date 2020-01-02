@@ -29,8 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="8dp"
-        android:text="This is a custom notification"
-        android:textColor="#FFF" />
+        android:textColor="@color/colorPrimaryDark" />
 
     <ImageView
         android:id="@+id/image_view_expanded"

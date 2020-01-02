@@ -56,8 +56,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private Context mContext;
         private TextView mTextViewName, mTextViewTime, mTextViewLastMessage;
-        private ImageView mImageViewNewMessage, mImageViewGroupAvatar;
-        private CheckBox mCheckBox;
+        private ImageView mImageViewGroupAvatar, mImageViewDot;
         private OnItemGroupCLickListener mListener;
         private GroupChannel mGroupChannel;
 
@@ -68,7 +67,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             mTextViewName = itemView.findViewById(R.id.text_item_group_name);
             mTextViewLastMessage = itemView.findViewById(R.id.text_item_group_last_message);
             mTextViewTime = itemView.findViewById(R.id.text_item_group_time);
-            mImageViewNewMessage = itemView.findViewById(R.id.image_item_group_new_massage);
+            mImageViewDot = itemView.findViewById(R.id.image_dot);
             mImageViewGroupAvatar = itemView.findViewById(R.id.image_item_group_avatar);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
@@ -96,6 +95,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
                 mGroupChannel = groupChannel;
                 mTextViewName.setText(mGroupChannel.getName());
                 if (mGroupChannel.getLastMessage() != null) {
+                    mTextViewLastMessage.setVisibility(View.VISIBLE);
+                    mTextViewTime.setVisibility(View.VISIBLE);
+                    mImageViewDot.setVisibility(View.VISIBLE);
                     String name = mGroupChannel.getLastMessage().getSender().getUid().equals(FirebaseAuth.getInstance().getUid())
                             ? mContext.getString(R.string.you)
                             : mGroupChannel.getLastMessage().getSender().getName();
@@ -103,6 +105,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
                     String displayMessage = lastMessage.length() < 30 ? lastMessage : lastMessage.substring(0, 29).concat("...");
                     mTextViewTime.setText(convertSecondToDataTime(Integer.parseInt(mGroupChannel.getLastMessage().getTimeStamp().getSeconds())));
                     mTextViewLastMessage.setText(displayMessage);
+                } else {
+                    mTextViewLastMessage.setVisibility(View.INVISIBLE);
+                    mTextViewTime.setVisibility(View.INVISIBLE);
+                    mImageViewDot.setVisibility(View.INVISIBLE);
                 }
             }
         }

@@ -29,6 +29,10 @@ import com.lamnn.wego.screen.map.MapsActivity;
 
 import java.util.List;
 
+import static com.lamnn.wego.utils.AppUtils.STATUS_ONLINE;
+import static com.lamnn.wego.utils.AppUtils.TYPE_COMING;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
+
 public class InfoMemberActivity extends AppCompatActivity implements View.OnClickListener, InfoMemberContract.View, MemberEventAdapter.OnEventItemClickListener, PopupMemberAdapter.OnMemberItemClickListener {
     public static final String EXTRA_USER = "EXTRA_USER";
     private Toolbar mToolbar;
@@ -146,12 +150,12 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onEventTextWhoComingClick(Event event) {
-        mPresenter.getListMember(event.getComingUsers(), "coming");
+        mPresenter.getListMember(event.getComingUsers(), TYPE_COMING);
     }
 
     @Override
     public void onEventTextWhoWaitingClick(Event event) {
-        mPresenter.getListMember(event.getWaitingUsers(), "waiting");
+        mPresenter.getListMember(event.getWaitingUsers(), TYPE_WAITING);
     }
 
     @Override
@@ -177,7 +181,7 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
             mEventFromStatus = event;
             mLayoutUserStatus.setVisibility(View.VISIBLE);
             mTextViewEventStatus.setText(status);
-            if (type.equals("coming")) {
+            if (type.equals(TYPE_COMING)) {
                 mTextViewEventStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
             } else {
                 mTextViewEventStatus.setTextColor(getResources().getColor(R.color.colorCaution));
@@ -196,7 +200,7 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
         TextView textViewPopupTitle;
         ImageView imageViewClosePopup;
         textViewPopupTitle = mDialog.findViewById(R.id.text_title_popup);
-        if (type.equals("coming")) {
+        if (type.equals(TYPE_COMING)) {
             textViewPopupTitle.setText(getString(R.string.people_who_coming));
         } else {
             textViewPopupTitle.setText(getString(R.string.people_who_waiting));
@@ -220,7 +224,7 @@ public class InfoMemberActivity extends AppCompatActivity implements View.OnClic
         mUserLocation = userLocation;
         if (mUserLocation != null) {
             getSupportActionBar().setTitle(mUserLocation.getUser().getName());
-            if (mUserLocation.getStatus().equals("online")) {
+            if (mUserLocation.getStatus().equals(STATUS_ONLINE)) {
                 mImageStatus.setImageResource(R.drawable.ic_online);
             }
         }

@@ -16,4 +16,6 @@
     <color name="colorCheckInLocation">#FF5722</color>
     <color name="colorWaypointLocation">#2196F3</color>
     <color name="colorEndtLocation">#F44336</color>
+    <color name="colorGreen">#4CAF50</color>
+    <color name="colorGray">#686868</color>
 </resources>

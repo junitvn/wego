@@ -20,13 +20,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -54,6 +52,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.maps.android.PolyUtil;
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Trip;
@@ -66,12 +65,12 @@ import com.lamnn.wego.screen.chat.ChatActivity;
 import com.lamnn.wego.screen.trip.create_trip.CreateTripActivity;
 import com.lamnn.wego.screen.info.info_member.InfoMemberActivity;
 import com.lamnn.wego.screen.info.info_user.InfoUserActivity;
+import com.lamnn.wego.screen.trip.create_trip.share_code.ShareCodeActivity;
 import com.lamnn.wego.screen.trip.join_trip.JoinTripActivity;
 import com.lamnn.wego.screen.login.LoginActivity;
 import com.lamnn.wego.screen.profile.update.ProfileUpdateActivity;
 import com.lamnn.wego.screen.trip.setting_trip.SettingTripActivity;
 import com.lamnn.wego.service.LocationService;
-import com.lamnn.wego.service.MyLocationService;
 import com.lamnn.wego.utils.APIUtils;
 import com.lamnn.wego.utils.GlideApp;
 
@@ -85,6 +84,7 @@ import retrofit2.Response;
 
 import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.CHANNEL_ID;
 import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.EXTRA_USER_LOCATION;
+import static com.lamnn.wego.utils.AppUtils.STATUS_ONLINE;
 
 public class MapsActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener, MapsContract.View, OnMapReadyCallback,
@@ -104,7 +104,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTextWelcome;
     private GoogleMap mMap;
     private MapsContract.Presenter mPresenter;
-    private ImageView mImageToggleDropdown, mImageRefresh, mImageAllMember;
+    private ImageView mImageViewToggleDropdown, mImageViewRefresh, mImageViewAllMember, mImageViewAddMember;
     private LinearLayout mLinearDropdown;
     private Button mButtonJoin, mButtonCreate;
     private TextView mTextTripName;
@@ -125,6 +125,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver locationUpdateReceiver;
     private Trip mTrip;
     private ConstraintLayout mLayoutAllMember;
+    private ConstraintLayout mLayoutAddMember;
 
     public static Intent getIntent(Context context) {
         Intent intent = new Intent(context, MapsActivity.class);
@@ -146,11 +147,11 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         getData();
         initMaps();
         getLocationPermission();
+        subscribeInvitationChannel();
         createNotificationChannel();
         createDistanceNotificationChannel();
-        final Intent locationService = new Intent(this.getApplication(), MyLocationService.class);
+        final Intent locationService = new Intent(this.getApplication(), LocationService.class);
         this.getApplication().startService(locationService);
-        this.getApplication().bindService(locationService, serviceConnection, Context.BIND_AUTO_CREATE);
         initBroadcastReceiver();
         if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
             Intent intent = new Intent();
@@ -158,6 +159,11 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
         receiveData();
+    }
+
+    private void subscribeInvitationChannel() {
+        String topicInvitation = "IN" + FirebaseAuth.getInstance().getUid();
+        FirebaseMessaging.getInstance().subscribeToTopic(topicInvitation);
     }
 
 
@@ -205,6 +211,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     public void showTrips(List<Trip> trips) {
         if (trips.size() > 0) {
             mLayoutAllMember.setVisibility(View.VISIBLE);
+            mLayoutAddMember.setVisibility(View.VISIBLE);
+            mImageViewAddMember.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
         mTripAdapter = new TripAdapter(this, formattedTrips(trips), this);
         mRecyclerListTrip.setAdapter(mTripAdapter);
@@ -358,6 +366,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.image_circle_all:
                 mPresenter.showAllMember();
                 break;
+            case R.id.image_circle_add:
+                startActivity(ShareCodeActivity.getIntent(this, mTrip));
+                break;
             case R.id.image_toggle_dropdown:
             case R.id.text_trip_name:
                 toggleDropdown();
@@ -410,7 +421,6 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReceive(Context context, Intent intent) {
                 Location newLocation = intent.getParcelableExtra(EXTRA_LOCATION);
-                Log.d(TAG, "new location " + newLocation + "");
                 com.lamnn.wego.data.model.Location location
                         = new com.lamnn.wego.data.model.Location(newLocation.getLatitude(), newLocation.getLongitude());
                 if (mUserLocation != null) {
@@ -421,14 +431,12 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                     mUpdateLocationService.updateLocation(mUserLocation).enqueue(new Callback<List<UserLocation>>() {
                         @Override
                         public void onResponse(Call<List<UserLocation>> call, Response<List<UserLocation>> response) {
-                            Log.d(TAG, "onResponse: " + response + "");
                             mUserLocations = response.body();
                             mPresenter.updateMarker(mUserLocations);
                         }
 
                         @Override
                         public void onFailure(Call<List<UserLocation>> call, Throwable t) {
-                            Log.d(TAG, "onFailure: ");
                         }
                     });
 
@@ -450,25 +458,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getData() {
         mPresenter.getUserData();
-//        mPresenter.getTrips();
     }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            String name = className.getClassName();
-            if (name.endsWith("LocationService")) {
-                mLocationService = ((LocationService.LocationServiceBinder) service).getService();
-                mLocationService.startUpdatingLocation();
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            if (className.getClassName().equals("LocationService")) {
-                mLocationService.stopUpdatingLocation();
-                mLocationService = null;
-            }
-        }
-    };
 
     private void getLocationPermission() {
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -496,7 +486,7 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mUserLocation = new UserLocation();
         mUserLocations = new ArrayList<>();
-        mUserLocation.setStatus("online");
+        mUserLocation.setStatus(STATUS_ONLINE);
         mUserLocation.setUid(FirebaseAuth.getInstance().getUid());
         try {
             if (mLocationPermissionsGranted) {
@@ -523,13 +513,11 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
                             mPresenter.initUserLocation(mUserLocation);
                             mPresenter.initMarker(mUserLocations, mMap);
                         } else {
-                            Toast.makeText(MapsActivity.this, "unable to get current location", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         } catch (SecurityException e) {
-            Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage());
         }
     }
 
@@ -541,8 +529,8 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         View headerView = mNavigationView.getHeaderView(0);
         mImageAvatar = headerView.findViewById(R.id.image_avatar);
         mImageAvatar.setOnClickListener(this);
-        mImageAllMember = findViewById(R.id.image_circle_all);
-        mImageAllMember.setOnClickListener(this);
+        mImageViewAllMember = findViewById(R.id.image_circle_all);
+        mImageViewAllMember.setOnClickListener(this);
         mTextWelcome = headerView.findViewById(R.id.text_nav_welcome);
         mTextWelcome.setOnClickListener(this);
         mLinearDropdown = findViewById(R.id.linear_dropdown);
@@ -558,6 +546,9 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         mButtonCreate.setOnClickListener(this);
         mProgressBar = findViewById(R.id.progress_bar_loading);
         mLayoutAllMember = findViewById(R.id.layout_all_member);
+        mLayoutAddMember = findViewById(R.id.layout_add_member);
+        mImageViewAddMember = findViewById(R.id.image_circle_add);
+        mImageViewAddMember.setOnClickListener(this);
     }
 
     private void initToolbar() {
@@ -567,13 +558,13 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
-        mImageToggleDropdown = toolbar.findViewById(R.id.image_toggle_dropdown);
-        mImageToggleDropdown.setOnClickListener(this);
+        mImageViewToggleDropdown = toolbar.findViewById(R.id.image_toggle_dropdown);
+        mImageViewToggleDropdown.setOnClickListener(this);
         mTextTripName = toolbar.findViewById(R.id.text_trip_name);
         mTextTripName.setOnClickListener(this);
         mTextTripName.setText(getString(R.string.app_name));
-        mImageRefresh = toolbar.findViewById(R.id.image_refresh);
-        mImageRefresh.setOnClickListener(this);
+        mImageViewRefresh = toolbar.findViewById(R.id.image_refresh);
+        mImageViewRefresh.setOnClickListener(this);
     }
 
     private void moveCamera(LatLng latLng, float defaultZoom) {
@@ -585,10 +576,10 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
     private void toggleDropdown() {
         if (mLinearDropdown.getVisibility() == View.GONE) {
             mLinearDropdown.setVisibility(View.VISIBLE);
-            mImageToggleDropdown.setImageResource(R.drawable.ic_sort_up);
+            mImageViewToggleDropdown.setImageResource(R.drawable.ic_sort_up);
         } else {
             mLinearDropdown.setVisibility(View.GONE);
-            mImageToggleDropdown.setImageResource(R.drawable.ic_sort_down);
+            mImageViewToggleDropdown.setImageResource(R.drawable.ic_sort_down);
         }
     }
 
@@ -608,12 +599,15 @@ public class MapsActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        UserLocation userLocation = (UserLocation) marker.getTag();
-        String currentUid = FirebaseAuth.getInstance().getUid();
-        if (userLocation != null && userLocation.getUid().equals(currentUid)) {
-            startActivity(InfoUserActivity.getIntent(this, userLocation));
-        } else {
-            startActivity(InfoMemberActivity.getIntent(this, userLocation));
+        Object markerTag = marker.getTag();
+        if (markerTag.getClass() == UserLocation.class) {
+            UserLocation userLocation = (UserLocation) markerTag;
+            String currentUid = FirebaseAuth.getInstance().getUid();
+            if (userLocation != null && userLocation.getUid().equals(currentUid)) {
+                startActivity(InfoUserActivity.getIntent(this, userLocation));
+            } else {
+                startActivity(InfoMemberActivity.getIntent(this, userLocation));
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.lamnn.wego.screen.chat.friend;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.model.UserChannel;
 import com.lamnn.wego.screen.chat.direct.DirectAdapter;
+import com.lamnn.wego.screen.conversation.ConversationActivity;
+import com.lamnn.wego.screen.profile.detail.ProfileDetailActivity;
 
 import java.util.List;
 
@@ -47,16 +51,18 @@ public class FriendFragment extends Fragment implements FriendAdapter.OnFriendIt
 
     @Override
     public void onFriendItemClick(User user) {
-
+        startActivity(ProfileDetailActivity.getIntent(getContext(), user));
     }
 
     @Override
     public void onFriendItemCallClick(User user) {
-
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + user.getPhone()));
+        startActivity(intent);
     }
 
     @Override
     public void onFriendItemMessageCLick(User user) {
-
+        startActivity(ConversationActivity.getIntent(getContext(), user));
     }
 }

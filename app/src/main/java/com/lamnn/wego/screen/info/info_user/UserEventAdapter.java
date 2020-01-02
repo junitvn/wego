@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.lamnn.wego.screen.map.InfoWindowAdapter.printDifference;
+import static com.lamnn.wego.utils.AppUtils.STATUS_DONE;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
 import static com.lamnn.wego.utils.Utils.checkExistUid;
 
 public class UserEventAdapter extends RecyclerView.Adapter<UserEventAdapter.ViewHolder> {
@@ -119,7 +121,7 @@ public class UserEventAdapter extends RecyclerView.Adapter<UserEventAdapter.View
             }
             mTextViewTitle.setText(event.getTitle());
             mTextViewNote.setText(event.getNote());
-            if (event.getStatus().equals("waiting")) {
+            if (event.getStatus().equals(TYPE_WAITING)) {
                 mTextViewStatus.setText(mContext.getString(R.string.text_waiting));
                 mImageViewStatus.setImageResource(R.drawable.ic_dot_orange);
             } else {
@@ -171,7 +173,7 @@ public class UserEventAdapter extends RecyclerView.Adapter<UserEventAdapter.View
                     mOnEventItemClickListener.onEventItemClick(mEvent);
                     break;
                 case R.id.button_event_im_waiting:
-                    if (mEvent.getStatus().equals("done")) {
+                    if (mEvent.getStatus().equals(STATUS_DONE)) {
                         showAlert();
                     } else {
                         mOnEventItemClickListener.onButtonEditClick(mEvent);
@@ -181,7 +183,7 @@ public class UserEventAdapter extends RecyclerView.Adapter<UserEventAdapter.View
                     mOnEventItemClickListener.onButtonDoneClick(mEvent);
                     break;
                 case R.id.button_event_im_coming:
-                    if (mEvent.getStatus().equals("done")) {
+                    if (mEvent.getStatus().equals(STATUS_DONE)) {
                         showAlert();
                     } else
                         mOnEventItemClickListener.onButtonDeleteClick(mEvent);

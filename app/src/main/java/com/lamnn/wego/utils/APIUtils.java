@@ -34,11 +34,6 @@ public class APIUtils {
 
     public static TripService getTripService() {
         RetrofitClient.reset();
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(logging)
-//                .build();
         return RetrofitClient.getClient(FUNCTION_BASE_URL).create(TripService.class);
     }
 

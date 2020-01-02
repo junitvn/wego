@@ -19,8 +19,8 @@ import com.lamnn.wego.data.model.UserMessage;
 import com.lamnn.wego.data.model.route.MyTimeStamp;
 import com.lamnn.wego.data.remote.ChatService;
 import com.lamnn.wego.utils.APIUtils;
-import com.lamnn.wego.utils.GroupTimeStampComparator;
-import com.lamnn.wego.utils.UserTimeStampComparator;
+import com.lamnn.wego.utils.comparator.GroupTimeStampComparator;
+import com.lamnn.wego.utils.comparator.UserTimeStampComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +29,12 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.lamnn.wego.utils.AppUtils.KEY_CHANNEL_ID;
+import static com.lamnn.wego.utils.AppUtils.KEY_GROUP_ID;
+import static com.lamnn.wego.utils.AppUtils.KEY_GROUP_MESSAGE;
+import static com.lamnn.wego.utils.AppUtils.KEY_TIME_STAMP;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_MESSAGE;
 
 public class ConversationPresenter implements ConversationContract.Presenter {
     private Context mContext;
@@ -45,7 +51,7 @@ public class ConversationPresenter implements ConversationContract.Presenter {
 
     @Override
     public void getConversationGroupData(final String groupId) {
-        mFirestore.collection("group_message").whereEqualTo("group_id", groupId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        mFirestore.collection(KEY_GROUP_MESSAGE).whereEqualTo(KEY_GROUP_ID, groupId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) return;
@@ -55,7 +61,7 @@ public class ConversationPresenter implements ConversationContract.Presenter {
                     Gson gson = new Gson();
                     JsonElement jsonElement = gson.toJsonTree(doc.getData());
                     groupMessage = gson.fromJson(jsonElement, GroupMessage.class);
-                    Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                    Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                     groupMessage.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                     groupMessages.add(groupMessage);
                 }
@@ -117,7 +123,7 @@ public class ConversationPresenter implements ConversationContract.Presenter {
 
     @Override
     public void getConversationUserData(String channelId) {
-        mFirestore.collection("user_message").whereEqualTo("channel_id", channelId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        mFirestore.collection(KEY_USER_MESSAGE).whereEqualTo(KEY_CHANNEL_ID, channelId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) return;
@@ -127,7 +133,7 @@ public class ConversationPresenter implements ConversationContract.Presenter {
                     Gson gson = new Gson();
                     JsonElement jsonElement = gson.toJsonTree(doc.getData());
                     userMessage = gson.fromJson(jsonElement, UserMessage.class);
-                    Timestamp timestamp = (Timestamp) doc.getData().get("time_stamp");
+                    Timestamp timestamp = (Timestamp) doc.getData().get(KEY_TIME_STAMP);
                     userMessage.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                     userMessages.add(userMessage);
                 }

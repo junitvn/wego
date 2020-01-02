@@ -37,10 +37,15 @@ import com.lamnn.wego.screen.map.MapsActivity;
 import java.util.List;
 
 import static com.lamnn.wego.screen.event.CreateEventActivity.EXTRA_EVENT;
+import static com.lamnn.wego.utils.AppUtils.STATUS_DELETED;
+import static com.lamnn.wego.utils.AppUtils.STATUS_DONE;
+import static com.lamnn.wego.utils.AppUtils.TYPE_CAR;
+import static com.lamnn.wego.utils.AppUtils.TYPE_COMING;
+import static com.lamnn.wego.utils.AppUtils.TYPE_GAS;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
 
 public class InfoUserActivity extends AppCompatActivity implements View.OnClickListener,
         UserEventAdapter.OnEventItemClickListener, InfoUserContract.View, PopupMemberAdapter.OnMemberItemClickListener {
-    public static final String EXTRA_USER = "EXTRA_USER";
     public static final String EXTRA_USER_LOCATION = "EXTRA_USER_LOCATION";
     private Toolbar mToolbar;
     private UserLocation mUserLocation;
@@ -102,7 +107,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
             mEventFromStatus = event;
             mLayoutUserStatus.setVisibility(View.VISIBLE);
             mTextViewEventStatus.setText(status);
-            if (type.equals("coming")) {
+            if (type.equals(TYPE_COMING)) {
                 mTextViewEventStatus.setTextColor(getResources().getColor(R.color.colorPrimary));
             } else {
                 mTextViewEventStatus.setTextColor(getResources().getColor(R.color.colorCaution));
@@ -121,7 +126,7 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
         TextView textViewPopupTitle;
         ImageView imageViewClosePopup;
         textViewPopupTitle = mDialog.findViewById(R.id.text_title_popup);
-        if (type.equals("coming")) {
+        if (type.equals(TYPE_COMING)) {
             textViewPopupTitle.setText(getString(R.string.people_who_coming));
         } else {
             textViewPopupTitle.setText(getString(R.string.people_who_waiting));
@@ -192,12 +197,12 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
         String type;
         switch (v.getId()) {
             case R.id.menu_item_car:
-                type = "car";
+                type = TYPE_CAR;
                 mPresenter.createQuickEvent(mUserLocation, type);
                 mMenu.close(false);
                 break;
             case R.id.menu_item_gas:
-                type = "gas";
+                type = TYPE_GAS;
                 mPresenter.createQuickEvent(mUserLocation, type);
                 mMenu.close(false);
                 break;
@@ -241,12 +246,12 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onEventTextWhoComingClick(Event event) {
-        mPresenter.getListMember(event.getComingUsers(), "coming");
+        mPresenter.getListMember(event.getComingUsers(), TYPE_COMING);
     }
 
     @Override
     public void onEventTextWhoWaitingClick(Event event) {
-        mPresenter.getListMember(event.getWaitingUsers(), "waiting");
+        mPresenter.getListMember(event.getWaitingUsers(), TYPE_WAITING);
     }
 
     @Override
@@ -256,15 +261,15 @@ public class InfoUserActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onButtonDeleteClick(Event event) {
-        mPresenter.updateStatus(event, "deleted");
+        mPresenter.updateStatus(event, STATUS_DELETED);
     }
 
     @Override
     public void onButtonDoneClick(Event event) {
-        if (event.getStatus().equals("done")) {
-            mPresenter.updateStatus(event, "waiting");
+        if (event.getStatus().equals(STATUS_DONE)) {
+            mPresenter.updateStatus(event, TYPE_WAITING);
         } else {
-            mPresenter.updateStatus(event, "done");
+            mPresenter.updateStatus(event, STATUS_DONE);
         }
     }
 
