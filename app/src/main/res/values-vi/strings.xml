@@ -156,4 +156,17 @@
     <string name="action_deny">TỪ CHỐI</string>
     <string name="action_join">THAM GIA</string>
     <string name="text_intvite_you_to_join">" đã mời bạn tham gia chuyến đi "</string>
+    <string name="app_name_lowcase">wego</string>
+    <string name="please_enter_phone_number">Hãy nhập số điện thoại của bạn</string>
+    <string name="check_connection">Kiểm tra lại kết nối</string>
+    <string name="phone_is_valid">Số điện thoại không đúng</string>
+    <string name="sms_qouta">Số lượng SMS đã quá giới hạn</string>
+    <string name="login_phone_error">Đăng nhập bằng số điện thoại thất bại</string>
+    <string name="login_fail">Đăng nhập thất bại</string>
+    <string name="invalid_code">Mã xác nhận không đúng</string>
+    <string name="authen_fail">Xác thực thất bại</string>
+    <string name="copied">"Đã sao chép "</string>
+    <string name="to_clipboard">" vào bộ nhớ đệm"</string>
+    <string name="missing_info">Thiếu thông tin</string>
+    <string name="have_not_choose_destination">Hãy chọn điểm đến cho chuyến đi</string>
 </resources>

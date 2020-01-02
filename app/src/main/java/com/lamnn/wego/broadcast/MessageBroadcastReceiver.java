@@ -23,9 +23,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.CHANNEL_ID;
-import static com.lamnn.wego.service.MyFirebaseMessagingService.EXTRA_MESSAGE_NOTIFICATION;
-import static com.lamnn.wego.service.MyFirebaseMessagingService.EXTRA_MESSAGE_TYPE;
-import static com.lamnn.wego.service.MyFirebaseMessagingService.KEY_TEXT_REPLY;
+import static com.lamnn.wego.service.FirebaseMessagingListenerService.EXTRA_MESSAGE_NOTIFICATION;
+import static com.lamnn.wego.service.FirebaseMessagingListenerService.EXTRA_MESSAGE_TYPE;
+import static com.lamnn.wego.service.FirebaseMessagingListenerService.KEY_TEXT_REPLY;
 
 public class MessageBroadcastReceiver extends BroadcastReceiver {
     public static final String REPLY_ACTION = "REPLY_ACTION";
@@ -118,7 +118,7 @@ public class MessageBroadcastReceiver extends BroadcastReceiver {
 
     private void notifyWhenSent() {
         try {
-            NotificationCompat.Builder notification = null;
+            NotificationCompat.Builder notification;
             notification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_fox)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
@@ -136,7 +136,6 @@ public class MessageBroadcastReceiver extends BroadcastReceiver {
             }
             mNotificationManager.notify(NOTIFICATION_ID, notification.build());
         } catch (IllegalMonitorStateException e) {
-            Log.d("NOTI", "notifyWhenSent: " + e.getMessage());
         }
     }
 }

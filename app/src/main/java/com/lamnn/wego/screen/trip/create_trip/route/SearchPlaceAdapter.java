@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.lamnn.wego.R;
-import com.lamnn.wego.data.model.Result;
+import com.lamnn.wego.data.model.place.Result;
 
 import java.util.List;
 

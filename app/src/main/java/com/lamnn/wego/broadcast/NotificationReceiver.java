@@ -12,10 +12,13 @@ import com.lamnn.wego.screen.info.info_member.InfoMemberActivity;
 public class NotificationReceiver extends BroadcastReceiver {
     private static final String EXTRA_BUTTON_DIRECTION = "EXTRA_BUTTON_DIRECTION";
     private static final String EXTRA_BUTTON_CALL = "EXTRA_BUTTON_CALL";
-    private static final  String EXTRA_BUTTON_ALLOW = "EXTRA_BUTTON_ALLOW";
-    private static final  String EXTRA_BUTTON_DENY = "EXTRA_BUTTON_DENY";
+    private static final String EXTRA_BUTTON_ALLOW = "EXTRA_BUTTON_ALLOW";
+    private static final String EXTRA_BUTTON_DENY = "EXTRA_BUTTON_DENY";
     private static final String EXTRA_ACTION = "EXTRA_ACTION";
     private static final String EXTRA_EVENT = "EXTRA_EVENT";
+    private static final String PACKAGE = "com.google.android.apps.maps";
+    private static final String PRE_QUERY = "google.navigation:q=";
+    private static final String MODE = "&mode=l&&avoid=thf";
     private Event mEvent;
 
     @Override
@@ -56,10 +59,10 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private void performAction1(Context context) {
-        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + mEvent.getLocation().getLat()
-                + "," + mEvent.getLocation().getLng() + "&mode=l&&avoid=thf");
+        Uri gmmIntentUri = Uri.parse(PRE_QUERY + mEvent.getLocation().getLat()
+                + "," + mEvent.getLocation().getLng() + MODE);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
+        mapIntent.setPackage(PACKAGE);
         mapIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(mapIntent);
     }

@@ -21,6 +21,7 @@ import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.data.remote.TripService;
 import com.lamnn.wego.screen.map.MapsActivity;
+import com.lamnn.wego.screen.profile.detail.ProfileDetailActivity;
 import com.lamnn.wego.utils.APIUtils;
 
 import java.util.ArrayList;
@@ -105,7 +106,6 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_create_done:
-                //TODO create trip and update db => Go to Maps
                 createTrip();
                 break;
             case R.id.image_copy:
@@ -123,34 +123,47 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void createTrip() {
-        showLoading();
-        mTripService = APIUtils.getTripService();
-        mTripService.createTrip(mTrip).enqueue(new Callback<Trip>() {
-            @Override
-            public void onResponse(Call<Trip> call, Response<Trip> response) {
-                hideLoading();
-                startActivity(MapsActivity.getIntent(getApplicationContext()));
-            }
+        startActivity(MapsActivity.getIntent(getApplicationContext()));
 
-            @Override
-            public void onFailure(Call<Trip> call, Throwable t) {
-                Log.d("FAIL_HIHI", t + " ");
-            }
-        });
+//        showLoading();
+//        mTripService = APIUtils.getTripService();
+//        mTripService.createTrip(mTrip).enqueue(new Callback<Trip>() {
+//            @Override
+//            public void onResponse(Call<Trip> call, Response<Trip> response) {
+//                hideLoading();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Trip> call, Throwable t) {
+//            }
+//        });
     }
 
     @Override
     public void showUserFriend(ArrayList<User> users) {
-        mUsers = users;
+        mUsers = removeParticipatedMember(users);
         mAdapter = new InvitationFriendAdapter(this, mUsers, this);
         mAdapter.setTripId(mTrip.getCode());
         mRecyclerViewInviteFriend.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
     }
 
+    private ArrayList<User> removeParticipatedMember(ArrayList<User> users) {
+        ArrayList<User> removedUsers = users;
+        if (mTrip.getMembers() != null && users != null)
+            for (String uid : mTrip.getMembers()) {
+                for (User user : users) {
+                    if (uid.equals(user.getUid())) {
+                        removedUsers.remove(user);
+                    }
+                }
+            }
+        return removedUsers;
+    }
+
     @Override
     public void onUserFoundClick(User user) {
-
+        startActivity(ProfileDetailActivity.getIntent(getApplicationContext(), user));
     }
 
     @Override

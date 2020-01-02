@@ -139,7 +139,6 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
                                 update(mUser);
                             } else {
                                 mView.showError();
-                                Log.d("UPDATE NAME", "onFailure: update name" + task.getException().getMessage());
                             }
                         }
                     });

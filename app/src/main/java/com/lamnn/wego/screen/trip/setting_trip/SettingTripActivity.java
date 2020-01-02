@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lamnn.wego.R;
-import com.lamnn.wego.data.model.Point;
+import com.lamnn.wego.data.model.place.Point;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.TripSetting;
 import com.lamnn.wego.data.model.UserLocation;
@@ -196,13 +196,13 @@ public class SettingTripActivity extends AppCompatActivity implements View.OnCli
         if (mEditTextMinDistance.getText().toString() != null) {
             tripSetting.setMinDistance(Long.parseLong(mEditTextMinDistance.getText().toString()));
         } else {
-            Toast.makeText(this, "Missing information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.missing_info), Toast.LENGTH_SHORT).show();
             return;
         }
         if (mEditTextTimeToRepeat.getText().toString() != null) {
             tripSetting.setTimeToRepeat(Integer.parseInt(mEditTextTimeToRepeat.getText().toString()));
         } else {
-            Toast.makeText(this, "Missing information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.missing_info), Toast.LENGTH_SHORT).show();
             return;
         }
         tripSetting.setReceiveNotification(mSwitchCompat.isChecked());

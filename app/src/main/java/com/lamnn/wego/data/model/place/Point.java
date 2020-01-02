@@ -1,10 +1,11 @@
-package com.lamnn.wego.data.model;
+package com.lamnn.wego.data.model.place;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.lamnn.wego.data.model.Location;
 
 public class Point implements Parcelable {
     @SerializedName("id")

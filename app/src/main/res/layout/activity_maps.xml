@@ -26,13 +26,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#fff"
-                android:textSize="20dp" />
+                android:textSize="@dimen/text_size_20" />
 
             <ImageView
                 android:id="@+id/image_toggle_dropdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="14dp"
+                android:padding="@dimen/padding_14dp"
                 app:srcCompat="@drawable/ic_sort_down" />
 
             <ImageView
@@ -40,8 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginRight="4dp"
-                android:padding="14dp"
+                android:layout_marginRight="@dimen/margin_4dp"
+                android:padding="@dimen/padding_14dp"
                 app:srcCompat="@drawable/ic_refresh" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -104,7 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginBottom="17dp"
+                android:layout_marginBottom="@dimen/margin_17dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -123,13 +123,13 @@
                         android:id="@+id/image_circle_all"
                         android:layout_width="@dimen/circle_avatar"
                         android:layout_height="@dimen/circle_avatar"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_marginBottom="2dp"
-                        app:civ_border_width="2dp"
+                        android:layout_marginStart="@dimen/margin_4dp"
+                        android:layout_marginLeft="@dimen/margin_2dp"
+                        android:layout_marginTop="@dimen/margin_2dp"
+                        android:layout_marginEnd="@dimen/margin_2dp"
+                        android:layout_marginRight="@dimen/margin_2dp"
+                        android:layout_marginBottom="@dimen/margin_2dp"
+                        app:civ_border_width="@dimen/margin_2dp"
                         app:civ_shadow="false"
                         app:civ_shadow_color="#3f51b5"
                         app:civ_shadow_radius="10"
@@ -146,6 +146,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="6dp"
                         android:text="@string/text_all"
+                        android:textColor="@color/colorTextBlack"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.505"
@@ -172,13 +173,13 @@
                         android:id="@+id/image_circle_add"
                         android:layout_width="@dimen/circle_avatar"
                         android:layout_height="@dimen/circle_avatar"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="2dp"
-                        android:layout_marginRight="2dp"
-                        android:layout_marginBottom="2dp"
-                        app:civ_border_width="2dp"
+                        android:layout_marginStart="@dimen/margin_4dp"
+                        android:layout_marginLeft="@dimen/margin_2dp"
+                        android:layout_marginTop="@dimen/margin_2dp"
+                        android:layout_marginEnd="@dimen/margin_2dp"
+                        android:layout_marginRight="@dimen/margin_2dp"
+                        android:layout_marginBottom="@dimen/margin_2dp"
+                        app:civ_border_width="@dimen/margin_2dp"
                         app:civ_shadow="false"
                         app:civ_shadow_color="#3f51b5"
                         app:civ_shadow_radius="10"
@@ -186,15 +187,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_add_group" />
+                        app:srcCompat="@drawable/add_user" />
 
                     <TextView
                         android:id="@+id/text_circle_add"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/text_all"
+                        android:layout_marginTop="@dimen/margin_2dp"
+                        android:layout_marginBottom="@dimen/margin_6dp"
+                        android:text="@string/add_friend"
+                        android:textColor="@color/colorTextBlack"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.505"
@@ -222,5 +224,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/my_navigation_items" />
+        app:menu="@menu/side_menu_items" />
 </androidx.drawerlayout.widget.DrawerLayout>

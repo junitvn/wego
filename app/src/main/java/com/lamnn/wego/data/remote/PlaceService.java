@@ -1,9 +1,6 @@
 package com.lamnn.wego.data.remote;
 
-import com.lamnn.wego.R;
-import com.lamnn.wego.data.model.PlaceResponse;
-
-import java.util.List;
+import com.lamnn.wego.data.model.place.PlaceResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

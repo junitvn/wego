@@ -34,7 +34,7 @@ import static com.lamnn.wego.broadcast.MessageBroadcastReceiver.REPLY_ACTION;
 import static com.lamnn.wego.screen.info.info_user.InfoUserActivity.CHANNEL_ID;
 import static com.lamnn.wego.screen.map.MapsActivity.DISTANCE_CHANNEL_ID;
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
+public class FirebaseMessagingListenerService extends FirebaseMessagingService {
     public static final String KEY_TEXT_REPLY = "key_text_reply";
     public static final String KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID";
     public static final String EXTRA_MESSAGE_NOTIFICATION = "EXTRA_MESSAGE_NOTIFICATION";
@@ -102,8 +102,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RemoteViews collapseView = new RemoteViews(getPackageName(), R.layout.notification_invitation);
         Intent clickIntent = new Intent(getApplicationContext(), NotificationReceiver.class);
         clickIntent.putExtra(EXTRA_INVITATION, mInvitation);
-        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this,
-                0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intentActionDirection = new Intent(getApplicationContext(), NotificationReceiver.class);
         intentActionDirection.putExtra(EXTRA_ACTION, EXTRA_BUTTON_ALLOW);
         intentActionDirection.putExtra(EXTRA_INVITATION, mInvitation);

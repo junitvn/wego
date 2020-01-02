@@ -52,11 +52,11 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.maps.android.PolyUtil;
 import com.lamnn.wego.R;
-import com.lamnn.wego.data.model.Geometry;
+import com.lamnn.wego.data.model.place.Geometry;
 import com.lamnn.wego.data.model.Location;
-import com.lamnn.wego.data.model.PlaceResponse;
-import com.lamnn.wego.data.model.Point;
-import com.lamnn.wego.data.model.Result;
+import com.lamnn.wego.data.model.place.PlaceResponse;
+import com.lamnn.wego.data.model.place.Point;
+import com.lamnn.wego.data.model.place.Result;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.geocode.GeocodeResponse;
 import com.lamnn.wego.data.model.route.RouteResponse;
@@ -75,6 +75,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.lamnn.wego.screen.trip.create_trip.share_code.ShareCodeActivity.EXTRA_TRIP;
+import static com.lamnn.wego.utils.AppUtils.TYPE_CHECK_IN;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAYPOINT;
 import static com.lamnn.wego.utils.Utils.getMarkerIconFromDrawable;
 
 public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -247,10 +249,9 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         mImageViewClearText.setVisibility(View.GONE);
         mConstraintLayoutPlaceInfo.setVisibility(View.GONE);
         final PlaceService placeService = APIUtils.getPlaceService();
-        placeService.searchPlace(s.toString(), "AIzaSyBkrblFbEPs0h9HmkIC2CHcy7HSurPAVKk").enqueue(new Callback<PlaceResponse>() {
+        placeService.searchPlace(s.toString(), getString(R.string.direction_api_key_ver2)).enqueue(new Callback<PlaceResponse>() {
             @Override
             public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
-                Log.d("asd", "onResponse: " + response.body());
                 PlaceResponse placeResponse = response.body();
                 if (placeResponse.getStatus().equals("OK")) {
                     if (placeResponse.getResults().size() > 0) {
@@ -285,10 +286,10 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
-                mType = "waypoint";
+                mType = TYPE_WAYPOINT;
                 break;
             case 1:
-                mType = "check-in";
+                mType = TYPE_CHECK_IN;
                 break;
         }
     }
@@ -398,7 +399,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 Marker marker = mMap.addMarker(new MarkerOptions().title(point.getName())
                         .position(new LatLng(point.getLocation().getLat(), point.getLocation().getLng())));
                 marker.setTag(point);
-                if (point.getType().equals("waypoint")) {
+                if (point.getType().equals(TYPE_WAYPOINT)) {
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                 } else {
                     marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
@@ -433,13 +434,12 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private void getDirection() {
         String origin = mTrip.getStartPoint().getLocation().getLat() + "," + mTrip.getStartPoint().getLocation().getLng();
         String destination = mTrip.getEndPoint().getLocation().getLat() + "," + mTrip.getEndPoint().getLocation().getLng();
-        mDirectionService.getRoute(origin, destination, "AIzaSyBkrblFbEPs0h9HmkIC2CHcy7HSurPAVKk")
+        mDirectionService.getRoute(origin, destination, getString(R.string.direction_api_key_ver2))
                 .enqueue(new Callback<RouteResponse>() {
                     @Override
                     public void onResponse(Call<RouteResponse> call, Response<RouteResponse> response) {
                         RouteResponse routeResponse = response.body();
                         if (routeResponse.getStatus().equals("REQUEST_DENIED")) {
-                            Toast.makeText(RouteActivity.this, "Error from Maps API", Toast.LENGTH_SHORT).show();
                         } else {
                             drawPoly(routeResponse);
                         }
@@ -455,10 +455,9 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private void getPlaceInfo(LatLng latLng) {
         GeocodeService geocodeService = APIUtils.getGeocodeService();
         String latlng = latLng.latitude + "," + latLng.longitude;
-        geocodeService.getPlace(latlng, "AIzaSyBkrblFbEPs0h9HmkIC2CHcy7HSurPAVKk").enqueue(new Callback<GeocodeResponse>() {
+        geocodeService.getPlace(latlng, getString(R.string.direction_api_key_ver2)).enqueue(new Callback<GeocodeResponse>() {
             @Override
             public void onResponse(Call<GeocodeResponse> call, Response<GeocodeResponse> response) {
-                Log.d("asd", "onResponse: ok");
                 if (response.body().getResults().size() > 0) {
                     getPlaceInfoById(response.body().getResults().get(0).getPlaceId());
                 }
@@ -481,7 +480,6 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
             @Override
             public void onSuccess(FetchPlaceResponse fetchPlaceResponse) {
-                Log.d("ASd", "onSuccess: " + fetchPlaceResponse);
                 Place place = fetchPlaceResponse.getPlace();
                 Result result = new Result();
                 if (place.getName() != null) {

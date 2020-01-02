@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     private void initToolbar() {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Sign up");
+        getSupportActionBar().setTitle(getString(R.string.text_sign_up));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

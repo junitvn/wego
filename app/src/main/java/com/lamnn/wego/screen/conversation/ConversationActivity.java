@@ -130,6 +130,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.ic_left_arrow);
         if (mGroupChannel != null) {
             getSupportActionBar().setTitle(mGroupChannel.getName());
         }

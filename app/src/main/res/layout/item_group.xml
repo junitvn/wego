@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:text="Last message"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/rl_photo"
         app:layout_constraintTop_toBottomOf="@+id/text_item_group_name" />
@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="3dp"
-        android:text="5:02pm"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/text_item_group_last_message"
         app:layout_constraintStart_toEndOf="@+id/image_dot"
         app:layout_constraintTop_toTopOf="@+id/text_item_group_last_message" />
@@ -71,6 +71,7 @@
         android:id="@+id/image_dot"
         android:layout_width="2dp"
         android:layout_height="2dp"
+        android:visibility="invisible"
         android:layout_marginLeft="3dp"
         app:layout_constraintBottom_toBottomOf="@+id/text_item_group_last_message"
         app:layout_constraintStart_toEndOf="@+id/text_item_group_last_message"

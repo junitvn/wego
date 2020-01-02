@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Invitation;
 import com.lamnn.wego.data.model.Trip;
 import com.lamnn.wego.data.model.User;
@@ -28,6 +29,12 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.lamnn.wego.utils.AppUtils.KEY_INVITATIONS;
+import static com.lamnn.wego.utils.AppUtils.KEY_STATUS;
+import static com.lamnn.wego.utils.AppUtils.KEY_USERS;
+import static com.lamnn.wego.utils.AppUtils.STATUS_CANCEL;
+import static com.lamnn.wego.utils.AppUtils.STATUS_INVITED;
 
 public class ShareCodePresenter implements ShareCodeContract.Presenter {
     private Context mContext;
@@ -45,7 +52,7 @@ public class ShareCodePresenter implements ShareCodeContract.Presenter {
     @Override
     public void getUserFriends() {
         final ArrayList<User> users = new ArrayList<>();
-        mFirestore.collection("users")
+        mFirestore.collection(KEY_USERS)
                 .document(FirebaseAuth.getInstance().getUid())
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -59,7 +66,7 @@ public class ShareCodePresenter implements ShareCodeContract.Presenter {
                             final User user = gson.fromJson(jsonElement, User.class);
                             if (user.getFriends() != null && user.getFriends().size() != 0) {
                                 for (String uid : user.getFriends()) {
-                                    mFirestore.collection("users")
+                                    mFirestore.collection(KEY_USERS)
                                             .document(uid)
                                             .get()
                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -89,7 +96,7 @@ public class ShareCodePresenter implements ShareCodeContract.Presenter {
         ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("TRIP_CODE", code);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(mContext, "Copied " + code + " to clipboard", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, mContext.getString(R.string.copied) + code + mContext.getString(R.string.to_clipboard), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -100,13 +107,13 @@ public class ShareCodePresenter implements ShareCodeContract.Presenter {
         currentUser.setName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         invitation.setCreator(currentUser);
         invitation.setReceiverId(user.getUid());
-        invitation.setStatus("invited");
+        invitation.setStatus(STATUS_INVITED);
         invitation.setTrip(trip);
         if (user.getInvitation() != null) {
-            if (user.getInvitation().getStatus().equals("cancel")) {
-                updateInvitationStatus(user, "invited");
+            if (user.getInvitation().getStatus().equals(STATUS_CANCEL)) {
+                updateInvitationStatus(user, STATUS_INVITED);
             } else {
-                updateInvitationStatus(user, "cancel");
+                updateInvitationStatus(user, STATUS_CANCEL);
             }
         } else {
             mTripService.inviteFriend(invitation).enqueue(new Callback<Boolean>() {
@@ -124,8 +131,8 @@ public class ShareCodePresenter implements ShareCodeContract.Presenter {
     }
 
     private void updateInvitationStatus(User user, String status) {
-        mFirestore.collection("invitations")
+        mFirestore.collection(KEY_INVITATIONS)
                 .document(user.getInvitation().getId())
-                .update("status", status);
+                .update(KEY_STATUS, status);
     }
 }

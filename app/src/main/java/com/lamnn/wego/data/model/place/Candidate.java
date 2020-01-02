@@ -1,8 +1,11 @@
-package com.lamnn.wego.data.model;
+package com.lamnn.wego.data.model.place;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.lamnn.wego.data.model.place.Geometry;
+import com.lamnn.wego.data.model.place.OpeningHours;
+import com.lamnn.wego.data.model.place.Photo;
 
 public class Candidate {
 

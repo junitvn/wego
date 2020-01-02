@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.lamnn.wego.screen.map.InfoWindowAdapter.printDifference;
+import static com.lamnn.wego.utils.AppUtils.STATUS_DONE;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
 import static com.lamnn.wego.utils.Utils.checkExistUid;
 
 public class MemberEventAdapter extends RecyclerView.Adapter<MemberEventAdapter.ViewHolder> {
@@ -147,14 +149,14 @@ public class MemberEventAdapter extends RecyclerView.Adapter<MemberEventAdapter.
                 mTextViewWhoWaiting.setText(waiting);
                 mTextViewWhoWaiting.setVisibility(View.VISIBLE);
             }
-            if (event.getStatus().equals("waiting")) {
+            if (event.getStatus().equals(TYPE_WAITING)) {
                 mTextViewStatus.setText(mContext.getString(R.string.text_waiting));
                 mImageViewStatus.setImageResource(R.drawable.ic_dot_orange);
             } else {
                 mTextViewStatus.setText(mContext.getString(R.string.text_done));
                 mImageViewStatus.setImageResource(R.drawable.ic_dot_blue);
             }
-            if (mEvent.getStatus().equals("done")) {
+            if (mEvent.getStatus().equals(STATUS_DONE)) {
                 mButtonImWaiting.setTextColor(mContext.getResources().getColor(R.color.colorButtonDisable));
                 mButtonImComing.setTextColor(mContext.getResources().getColor(R.color.colorButtonDisable));
             }
@@ -175,13 +177,13 @@ public class MemberEventAdapter extends RecyclerView.Adapter<MemberEventAdapter.
                     mOnEventItemClickListener.onEventTextWhoWaitingClick(mEvent);
                     break;
                 case R.id.button_event_im_coming:
-                    if (mEvent.getStatus().equals("done")) {
+                    if (mEvent.getStatus().equals(STATUS_DONE)) {
                         showAlert();
                     } else
                         mOnEventItemClickListener.onButtonImComingClick(mEvent);
                     break;
                 case R.id.button_event_im_waiting:
-                    if (mEvent.getStatus().equals("done")) {
+                    if (mEvent.getStatus().equals(STATUS_DONE)) {
                         showAlert();
                     } else
                         mOnEventItemClickListener.onButtonImWaitingClick(mEvent);

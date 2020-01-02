@@ -32,6 +32,12 @@ import com.lamnn.wego.utils.GlideApp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.lamnn.wego.utils.AppUtils.KEY_INVITATIONS;
+import static com.lamnn.wego.utils.AppUtils.KEY_RECEIVER_ID;
+import static com.lamnn.wego.utils.AppUtils.STATUS_CANCEL;
+import static com.lamnn.wego.utils.AppUtils.STATUS_INVITED;
+import static com.lamnn.wego.utils.AppUtils.STATUS_JOINED;
+
 public class InvitationFriendAdapter extends RecyclerView.Adapter<InvitationFriendAdapter.ViewHolder> {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -107,8 +113,8 @@ public class InvitationFriendAdapter extends RecyclerView.Adapter<InvitationFrie
 
         private void getInvitation() {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("invitations")
-                    .whereEqualTo("receiver_id", mUser.getUid())
+            db.collection(KEY_INVITATIONS)
+                    .whereEqualTo(KEY_RECEIVER_ID, mUser.getUid())
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -134,15 +140,15 @@ public class InvitationFriendAdapter extends RecyclerView.Adapter<InvitationFrie
             mUser.setInvitation(invitation);
             String status = "";
             switch (invitation.getStatus()) {
-                case "cancel":
+                case STATUS_CANCEL:
                     status = mContext.getString(R.string.invite);
                     mTextViewInviteStatus.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
                     break;
-                case "invited":
+                case STATUS_INVITED:
                     status = mContext.getString(R.string.cancel);
                     mTextViewInviteStatus.setTextColor(mContext.getResources().getColor(R.color.colorEditTextDisable));
                     break;
-                case "joined":
+                case STATUS_JOINED:
                     status = mContext.getString(R.string.joined);
                     mTextViewInviteStatus.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
                 default:

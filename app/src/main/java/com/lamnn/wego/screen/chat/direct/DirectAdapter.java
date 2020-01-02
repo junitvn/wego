@@ -58,7 +58,7 @@ public class DirectAdapter extends RecyclerView.Adapter<DirectAdapter.ViewHolder
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private Context mContext;
         private TextView mTextViewName, mTextViewTime, mTextViewLastMessage;
-        private ImageView mImageViewNewMessage, mImageViewGroupAvatar;
+        private ImageView mImageViewNewMessage, mImageViewGroupAvatar, mImageViewDot;
         private CheckBox mCheckBox;
         private OnItemUserChannelCLickListener mListener;
         private UserChannel mUserChannel;
@@ -72,6 +72,7 @@ public class DirectAdapter extends RecyclerView.Adapter<DirectAdapter.ViewHolder
             mTextViewTime = itemView.findViewById(R.id.text_item_group_time);
             mImageViewNewMessage = itemView.findViewById(R.id.image_item_group_new_massage);
             mImageViewGroupAvatar = itemView.findViewById(R.id.image_item_group_avatar);
+            mImageViewDot = itemView.findViewById(R.id.image_dot);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
@@ -99,6 +100,9 @@ public class DirectAdapter extends RecyclerView.Adapter<DirectAdapter.ViewHolder
                         : mUserChannel.getMembers().get(0);
                 mTextViewName.setText(partner.getName());
                 if (mUserChannel.getLastMessage() != null) {
+                    mTextViewLastMessage.setVisibility(View.VISIBLE);
+                    mTextViewTime.setVisibility(View.VISIBLE);
+                    mImageViewDot.setVisibility(View.VISIBLE);
                     String name = mUserChannel.getLastMessage().getSender().getUid().equals(FirebaseAuth.getInstance().getUid())
                             ? mContext.getString(R.string.you) + ": "
                             : "";
@@ -106,6 +110,10 @@ public class DirectAdapter extends RecyclerView.Adapter<DirectAdapter.ViewHolder
                     String displayMessage = lastMessage.length() < 30 ? lastMessage : lastMessage.substring(0, 29).concat("...");
                     mTextViewLastMessage.setText(displayMessage);
                     mTextViewTime.setText(convertSecondToDataTime(Integer.parseInt(mUserChannel.getLastMessage().getTimeStamp().getSeconds())));
+                } else {
+                    mTextViewLastMessage.setVisibility(View.INVISIBLE);
+                    mTextViewTime.setVisibility(View.INVISIBLE);
+                    mImageViewDot.setVisibility(View.INVISIBLE);
                 }
                 GlideApp.with(mContext)
                         .load(partner.getPhotoUri())

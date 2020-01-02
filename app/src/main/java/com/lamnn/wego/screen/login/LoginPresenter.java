@@ -56,15 +56,15 @@ public class LoginPresenter implements LoginContract.Presenter {
         mPhoneNumber = phoneNumber;
         mActivity = activity;
         if (phoneNumber.isEmpty()) {
-            mView.onLoginFailure("Please enter your phone number!");
+            mView.onLoginFailure(activity.getString(R.string.please_enter_phone_number));
         } else {
             FirebaseApp.initializeApp(activity);
             PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                    phoneNumber,        // Phone number to verify
-                    60,                 // Timeout duration
-                    TimeUnit.SECONDS,   // Unit of timeout
-                    activity,               // Activity (for callback binding)
-                    mCallbacks);        // OnVerificationStateChangedCallbacks
+                    phoneNumber,
+                    60,
+                    TimeUnit.SECONDS,
+                    activity,
+                    mCallbacks);
         }
     }
 
@@ -93,7 +93,6 @@ public class LoginPresenter implements LoginContract.Presenter {
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(activity, "mCallbackManager FB error" + error, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -111,7 +110,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            mView.onLoginSuccess("ok");
+                            mView.onLoginSuccess("");
                         } else {
                             try {
                                 throw task.getException();
@@ -149,11 +148,11 @@ public class LoginPresenter implements LoginContract.Presenter {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    Toast.makeText(mActivity, "Phone number is invalid", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, mActivity.getString(R.string.phone_is_valid), Toast.LENGTH_SHORT).show();
                 } else if (e instanceof FirebaseTooManyRequestsException) {
-                    Toast.makeText(mActivity, "SMS quota has been exceeded", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, mActivity.getString(R.string.sms_qouta), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mActivity, "Check internet connection and try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, mActivity.getString(R.string.check_connection), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -176,16 +175,16 @@ public class LoginPresenter implements LoginContract.Presenter {
                                 mUser = new User(fUser.getDisplayName(), fUser.getPhoneNumber(), fUser.getEmail(), fUser.getUid());
                                 mActivity.startActivity(MapsActivity.getIntent(mActivity));
                             } else {
-                                Toast.makeText(mActivity, "Login with phone number error. Try again.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, mActivity.getString(R.string.login_phone_error), Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             try {
                                 throw task.getException();
                             } catch (Exception e) {
                                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                    Toast.makeText(mActivity, "Invalid verify code", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, mActivity.getString(R.string.invalid_code), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(mActivity, "Login failed", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mActivity, mActivity.getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -207,7 +206,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                             try {
                                 throw task.getException();
                             } catch (Exception e) {
-                                Toast.makeText(mActivity, "Authentication failed" + e,
+                                Toast.makeText(mActivity, mActivity.getString(R.string.authen_fail) + e,
                                         Toast.LENGTH_SHORT).show();
                             }
                         }

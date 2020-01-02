@@ -36,11 +36,11 @@ import java.util.List;
 
 import static com.lamnn.wego.screen.profile.update.ProfileUpdateActivity.GALLERY_REQUEST_CODE;
 import static com.lamnn.wego.screen.profile.update.ProfileUpdateActivity.TAKE_PHOTO_REQUEST_CODE;
+import static com.lamnn.wego.utils.AppUtils.TYPE_WAITING;
 
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener, CreateEventContract.View, EventPhotoAdapter.OnPhotoItemClickListener {
     public static final String EXTRA_USER = "EXTRA_USER";
     public static final String EXTRA_EVENT = "EXTRA_EVENT";
-    private static final String TAG = "CREATE EVENT";
     private Toolbar mToolbar;
     private User mUser;
     private UserLocation mUserLocation;
@@ -205,7 +205,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         mEvent.setLocation(mUserLocation.getLocation());
         mEvent.setUserId(mUser.getUid());
         mEvent.setTripId(mUser.getActiveTrip());
-        mEvent.setStatus("waiting");
+        mEvent.setStatus(TYPE_WAITING);
         mEvent.setNote(mEditTextNote.getText().toString());
         mEvent.setTitle(mEditTextTitle.getText().toString());
         mEvent.setPhotos(mUris);
@@ -254,7 +254,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onPhotoItemClick(Uri uri) {
-        Log.d(TAG, "onPhotoItemClick: OPEN PHOTO IN NEW ACTIVITY");
     }
 
     @Override

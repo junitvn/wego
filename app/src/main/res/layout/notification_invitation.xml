@@ -5,8 +5,8 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:layout_marginBottom="@dimen/margin_10dp"
         android:id="@+id/text_noti_title"
         style="@style/TextAppearance.Compat.Notification.Title"
         android:layout_width="wrap_content"

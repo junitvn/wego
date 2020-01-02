@@ -1,5 +1,5 @@
 
-package com.lamnn.wego.data.model;
+package com.lamnn.wego.data.model.place;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -41,9 +41,12 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
+            android:background="@drawable/toolbar"
             android:layout_height="wrap_content"
+            app:itemIconTint="@drawable/bottom_navigation_icon_color_selector"
+            app:itemTextColor="@drawable/bottom_navigation_icon_color_selector"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/menu_bottom_chat" />
+            app:menu="@menu/bottom_menu_chat_items" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -71,5 +74,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/my_navigation_items" />
+        app:menu="@menu/side_menu_items" />
 </androidx.drawerlayout.widget.DrawerLayout>

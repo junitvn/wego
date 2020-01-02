@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="40dp"
-        android:text="code: asdasd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_item_spinner_name" />
@@ -34,10 +33,9 @@
         android:id="@+id/text_item_spinner_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Ha noi - hai phong"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="@dimen/margin_40dp"
         android:textColor="#E62E2D2D"
-        android:textSize="19dp"
+        android:textSize="@dimen/text_size_19"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

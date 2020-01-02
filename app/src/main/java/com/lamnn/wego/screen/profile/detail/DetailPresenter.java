@@ -16,6 +16,9 @@ import com.google.gson.JsonElement;
 import com.lamnn.wego.data.model.User;
 import com.lamnn.wego.utils.Utils;
 
+import static com.lamnn.wego.utils.AppUtils.KEY_FRIENDS;
+import static com.lamnn.wego.utils.AppUtils.KEY_USERS;
+
 public class DetailPresenter implements DetailContract.Presenter {
     private Context mContext;
     private DetailContract.View mView;
@@ -30,7 +33,7 @@ public class DetailPresenter implements DetailContract.Presenter {
     @Override
     public void getUserData(final String friendId) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        DocumentReference docRef = mFirestore.collection("users").document(auth.getUid());
+        DocumentReference docRef = mFirestore.collection(KEY_USERS).document(auth.getUid());
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
@@ -59,16 +62,16 @@ public class DetailPresenter implements DetailContract.Presenter {
     @Override
     public void addFriend(String uid) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        mFirestore.collection("users")
+        mFirestore.collection(KEY_USERS)
                 .document(auth.getUid())
-                .update("friends", FieldValue.arrayUnion(uid));
+                .update(KEY_FRIENDS, FieldValue.arrayUnion(uid));
     }
 
     @Override
     public void removeFriend(String uid) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        mFirestore.collection("users")
+        mFirestore.collection(KEY_USERS)
                 .document(auth.getUid())
-                .update("friends", FieldValue.arrayRemove(uid));
+                .update(KEY_FRIENDS, FieldValue.arrayRemove(uid));
     }
 }

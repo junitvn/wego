@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -51,7 +52,15 @@ public class ProfileDetailActivity extends AppCompatActivity implements View.OnC
         showUserData();
         mPresenter.getUserData(mUser.getUid());
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private void receiveData() {
         mUser = new User();
         mUser = getIntent().getExtras().getParcelable(EXTRA_USER);

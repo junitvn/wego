@@ -36,12 +36,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.lamnn.wego.utils.AppUtils.KEY_LAST_MESSAGE;
+import static com.lamnn.wego.utils.AppUtils.KEY_MEMBER_UID;
+import static com.lamnn.wego.utils.AppUtils.KEY_TIME_STAMP;
+import static com.lamnn.wego.utils.AppUtils.KEY_USERS;
+import static com.lamnn.wego.utils.AppUtils.KEY_USER_CHANNEL;
+
 public class ChatPresenter implements ChatContract.Presenter {
     private Context mContext;
     private ChatContract.View mView;
     private FirebaseFirestore mFirestore;
     private ChatService mChatService;
-    private String TAG = "TAG";
 
     public ChatPresenter(Context context, ChatContract.View view) {
         mContext = context;
@@ -66,8 +71,8 @@ public class ChatPresenter implements ChatContract.Presenter {
     }
 
     private void getUserChannelData(User user) {
-        mFirestore.collection("user_channel")
-                .whereArrayContains("member_uid", user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        mFirestore.collection(KEY_USER_CHANNEL)
+                .whereArrayContains(KEY_MEMBER_UID, user.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e == null) {
@@ -78,11 +83,11 @@ public class ChatPresenter implements ChatContract.Presenter {
                         Gson gson = new Gson();
                         JsonElement jsonElement = gson.toJsonTree(doc.getData());
                         userChannel = gson.fromJson(jsonElement, UserChannel.class);
-                        if (doc.getData().get("last_message") != null) {
-                            JsonElement lastMessageChannel = gson.toJsonTree(doc.getData().get("last_message"));
+                        if (doc.getData().get(KEY_LAST_MESSAGE) != null) {
+                            JsonElement lastMessageChannel = gson.toJsonTree(doc.getData().get(KEY_LAST_MESSAGE));
                             lastMessage = gson.fromJson(lastMessageChannel, UserMessage.class);
                             JsonObject jsonObject = lastMessageChannel.getAsJsonObject();
-                            Timestamp timestamp = gson.fromJson(jsonObject.get("time_stamp"), Timestamp.class);
+                            Timestamp timestamp = gson.fromJson(jsonObject.get(KEY_TIME_STAMP), Timestamp.class);
                             lastMessage.setTimeStamp(new MyTimeStamp(timestamp.getSeconds() + ""));
                             userChannel.setLastMessage(lastMessage);
                         }
@@ -97,7 +102,7 @@ public class ChatPresenter implements ChatContract.Presenter {
 
     private void getFriendsData(User user) {
         final ArrayList<User> users = new ArrayList<>();
-        mFirestore.collection("users")
+        mFirestore.collection(KEY_USERS)
                 .document(user.getUid())
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -111,7 +116,7 @@ public class ChatPresenter implements ChatContract.Presenter {
                             final User user = gson.fromJson(jsonElement, User.class);
                             if (user.getFriends() != null && user.getFriends().size() != 0) {
                                 for (String uid : user.getFriends()) {
-                                    mFirestore.collection("users")
+                                    mFirestore.collection(KEY_USERS)
                                             .document(uid)
                                             .get()
                                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

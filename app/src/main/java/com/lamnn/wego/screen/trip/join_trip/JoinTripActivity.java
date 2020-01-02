@@ -87,7 +87,6 @@ public class JoinTripActivity extends AppCompatActivity implements View.OnClickL
         mJoinTripService.joinTrip(mUser).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                Log.d(TAG, "onResponse: " + response);
                 if (response.body() == null || response.body() == false) {
                     hideLoading();
                     Toast.makeText(JoinTripActivity.this, getString(R.string.text_id_trip_error), Toast.LENGTH_SHORT).show();
@@ -100,7 +99,6 @@ public class JoinTripActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t);
             }
         });
     }
