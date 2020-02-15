@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lamnn.wego.R;
 import com.lamnn.wego.data.model.Trip;
@@ -25,6 +26,7 @@ import com.lamnn.wego.screen.profile.detail.ProfileDetailActivity;
 import com.lamnn.wego.utils.APIUtils;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -150,14 +152,21 @@ public class ShareCodeActivity extends AppCompatActivity implements View.OnClick
 
     private ArrayList<User> removeParticipatedMember(ArrayList<User> users) {
         ArrayList<User> removedUsers = users;
-        if (mTrip.getMembers() != null && users != null)
-            for (String uid : mTrip.getMembers()) {
-                for (User user : users) {
-                    if (uid.equals(user.getUid())) {
-                        removedUsers.remove(user);
+        try {
+            if (mTrip.getMembers() != null && users != null)
+                for (String uid : mTrip.getMembers()) {
+                    for (User user : users) {
+                        if (uid.equals(user.getUid())) {
+                            removedUsers.remove(user);
+                        }
                     }
                 }
-            }
+        } catch (ConcurrentModificationException e){
+            Toast.makeText(this, getString(R.string.error_when_load_friend), Toast.LENGTH_SHORT).show();
+        } catch (Exception e){
+            Toast.makeText(this, getString(R.string.error_when_load_friend), Toast.LENGTH_SHORT).show();
+        }
+
         return removedUsers;
     }
 

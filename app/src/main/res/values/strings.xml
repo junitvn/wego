@@ -178,4 +178,5 @@
     <string name="missing_info">Missing information</string>
     <string name="unnamed_road">Unnamed Road</string>
     <string name="have_not_choose_destination">You haven\'t choose the destination</string>
+    <string name="error_when_load_friend">Error when load friends</string>
 </resources>

@@ -169,4 +169,6 @@
     <string name="to_clipboard">" vào bộ nhớ đệm"</string>
     <string name="missing_info">Thiếu thông tin</string>
     <string name="have_not_choose_destination">Hãy chọn điểm đến cho chuyến đi</string>
+    <string name="error_when_load_friend">Lỗi khi tải danh sách bạn bè</string>
+    <string name="unnamed_road">Tên đường không xác định</string>
 </resources>
